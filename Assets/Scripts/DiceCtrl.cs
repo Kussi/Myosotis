@@ -3,7 +3,6 @@ using System.Collections;
 
 public class DiceCtrl : MonoBehaviour {
 
-	public bool isClicked;
 	
 	// Use this for initialization
 	void Start () {
