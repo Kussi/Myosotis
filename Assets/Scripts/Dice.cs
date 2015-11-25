@@ -1,68 +1,61 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Dice : MonoBehaviour
-{
-    private bool isActive = false;
-    private int facedNumber = 1;
+public class Dice : MonoBehaviour {
+
     private Player parent;
+    private bool isActive = false;
+    private int value = 1;
 
-    private Ray ray;
-    private RaycastHit hit;
-
-    // Use this for initialization
-    void Start ()
+    public Player Parent
     {
-        parent = new Player("red");
+        get { return this.parent; }
+        set { parent = value; }
+    }
+
+	// Use this for initialization
+	void Start () {
         Refresh();
 	}
 
-	
-	// Update is called once per frame
-	void Update ()
+    // Update is called once per frame
+    void Update()
     {
-		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		if(Physics.Raycast(ray, out hit)){
-			if(Input.GetMouseButtonDown(0)){
+        if(Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                Debug.Log(parent.ToString() + " Dice has been touched");
-
-                if (isActive)
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("Dice has been touched");
+                if (hit.collider.tag == parent.Color)
                 {
-                    try
+                    if(isActive)
                     {
-                        facedNumber = ThrowDice();
-                        Refresh();
-                        Notify();
+                        ThrowDice();
                     }
-                    catch (UnityException) { }
                 }
             }
-		}
-	}
+        }
+    }
+
+    public void ThrowDice()
+    {
+        value = Random.Range(1, 7);
+        Refresh();
+
+        Debug.Log(parent.ToString() + " dice has thrown a " + value);
+    }
 
     public void SetActive(bool isActive)
     {
+        Debug.Log("set active");
         this.isActive = isActive;
-        Debug.Log(parent.ToString() + " dice is active = " + isActive);
     }
 
-    private int ThrowDice()
+    public void Refresh()
     {
-        int thrownNumber = Random.Range(1, 7);
-
-        Debug.Log(parent.ToString() + " dice has thrown a " + thrownNumber);
-
-        return thrownNumber;
-    }
-
-    private void Refresh()
-    {
-        gameObject.GetComponent<TextMesh>().text = facedNumber.ToString();
-    }
-
-    private void Notify ()
-    {
-        MainController.PlayerInfo(parent);
+        gameObject.GetComponent<TextMesh>().text = value.ToString();
     }
 }
