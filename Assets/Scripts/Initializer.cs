@@ -5,20 +5,20 @@ public class Initializer : MonoBehaviour
 {
     private const int nofGameFields = 68;
 
-    private const int redHomeBank = 5;
-    private const int redStairBank = 68;
+    private const int redHomeBank = 4;
+    private const int redStairBank = 67;
     private const int redFirstStairStep = 101;
 
-    private const int yellowHomeBank = 22;
-    private const int yellowStairBank = 17;
+    private const int yellowHomeBank = 21;
+    private const int yellowStairBank = 16;
     private const int yellowFirstStairStep = 201;
 
-    private const int blueHomeBank = 39;
-    private const int blueStairBank = 34;
+    private const int blueHomeBank = 38;
+    private const int blueStairBank = 33;
     private const int blueFirstStairStep = 301;
 
-    private const int greenHomeBank = 56;
-    private const int greenStairBank = 51;
+    private const int greenHomeBank = 55;
+    private const int greenStairBank = 50;
     private const int greenFirstStairStep = 401;
 
     private static ArrayList gameFields;
@@ -30,7 +30,7 @@ public class Initializer : MonoBehaviour
         gameFields = new ArrayList();
 
         // Adding all Gamefields (except of the stairs) to the list
-        for (int i = 1; i <= nofGameFields; ++i)
+        for (int i = 0; i < nofGameFields; ++i)
         {
             gameFields.Add((GameField)GameObject.Find("Field" + i).GetComponent<MonoBehaviour>());
         }

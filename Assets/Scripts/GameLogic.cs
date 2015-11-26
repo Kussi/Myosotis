@@ -8,7 +8,7 @@ public static class GameLogic {
     private static AbstractLogicState logicState;
     private static int lastDiceValue = 0;
 
-    private static int playerOnTurn = 4;
+    private static int playerOnTurn = 3;
 
     public static Player PlayerOnTurn
     {
@@ -107,15 +107,31 @@ public static class GameLogic {
     {
         if(figure.Field.GetType() == typeof(HomeField))
         {
-            figure.transform.position = ((GameField)gameFields[figure.Parent.HomeBank-1]).transform.position;
+            figure.Field = (GameField)gameFields[figure.Parent.HomeBank];
+            figure.transform.position = figure.Field.transform.position;
+            
             foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
             GameLogic.State = new LogicStateThrowingDice();
         }
         else
         {
-            // TODO
+            for(int i = 0; i < lastDiceValue; ++i)
+            {
+                GoOneStep(figure);
+            }
+
+            foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
+            GameLogic.State = new LogicStateThrowingDice();
         }
 
         figure.Parent.RefreshState();
+    }
+
+    public static void GoOneStep(GameFigure figure)
+    {
+        int actualPosition = figure.Field.Index;
+        int nextPosition = (actualPosition + 1) % gameFields.Count;
+        figure.Field = (GameField)gameFields[nextPosition];
+        figure.transform.position = figure.Field.transform.position;
     }
 }
