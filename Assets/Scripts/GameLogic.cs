@@ -41,4 +41,30 @@ public static class GameLogic {
             PlayerOnTurn.State.ThrowsRegular(number);
         }
     }
+
+    public static GameFigure[] GetFiguresOnGameFields(GameFigure[] figures)
+    {
+        ArrayList figuresOnGameFields = new ArrayList();
+        foreach(GameFigure figure in figures)
+        {
+            if(figure.Field.GetType() == typeof(GameField))
+            {
+                figuresOnGameFields.Add(figure);
+            }
+        }
+        return (GameFigure[])figuresOnGameFields.ToArray();
+    }
+
+    public static GameFigure[] GetFiguresOnGameOrHomeFields(GameFigure[] figures)
+    {
+        ArrayList figuresOnGameFields = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (figure.Field.GetType() == typeof(GameField) || figure.Field.GetType() == typeof(HomeField))
+            {
+                figuresOnGameFields.Add(figure);
+            }
+        }
+        return (GameFigure[])figuresOnGameFields.ToArray();
+    }
 }

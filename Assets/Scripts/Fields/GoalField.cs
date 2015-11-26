@@ -1,15 +1,7 @@
 ﻿using UnityEngine;
 
-public class GoalField : MonoBehaviour
+public class GoalField : AbstractGameField
 {
-
-    private GameFigure[] gameFigures;
-    private int index;
-
-    public int Index
-    {
-        get { return index; }
-    }
 
     // Use this for initialization
     void Start()

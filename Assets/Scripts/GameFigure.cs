@@ -5,7 +5,7 @@ public class GameFigure : MonoBehaviour
 {
     private Player parent;
     private int index;
-    private int field;
+    private AbstractGameField field;
     private bool isActive = false;
     
 
@@ -20,9 +20,10 @@ public class GameFigure : MonoBehaviour
         get { return index; }
         set { index = value; }
     }
-    public int Field
+    public AbstractGameField Field
     {
         get { return field; }
+        set { field = value; }
     }
 
     // Use this for initialization
@@ -50,5 +51,10 @@ public class GameFigure : MonoBehaviour
                 //}
             }
         }
+    }
+
+    public void SetActive(bool isActive)
+    {
+        this.isActive = isActive;
     }
 }

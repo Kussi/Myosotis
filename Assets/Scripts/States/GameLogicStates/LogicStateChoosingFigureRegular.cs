@@ -4,7 +4,7 @@ public class LogicStateChoosingFigureRegular : AbstractLogicState {
 
     public LogicStateChoosingFigureRegular()
     {
-        //GameLogic.PlayerOnTurn.GameFigures
+        GameFigure[] figures = GameLogic.GetFiguresOnGameFields(GameLogic.PlayerOnTurn.GameFigures);
+        foreach (GameFigure figure in figures) figure.SetActive(true);
     }
-	
 }

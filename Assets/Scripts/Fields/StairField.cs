@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class StairField : MonoBehaviour {
+public class StairField : AbstractGameField
+{
 
 	// Use this for initialization
 	void Start () {
