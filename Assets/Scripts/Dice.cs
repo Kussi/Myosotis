@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Dice : MonoBehaviour {
 
@@ -28,7 +27,7 @@ public class Dice : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log("Dice has been touched");
+                Debug.Log(hit.collider.tag + " Dice has been touched");
                 if (hit.collider.tag == parent.Color)
                 {
                     if(isActive)
@@ -43,7 +42,9 @@ public class Dice : MonoBehaviour {
     public void ThrowDice()
     {
         value = Random.Range(1, 7);
+        SetActive(false);
         Refresh();
+        GameLogic.ExecuteTurn(value);
 
         Debug.Log(parent.ToString() + " dice has thrown a " + value);
     }

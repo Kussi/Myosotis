@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Player {
 
@@ -7,8 +6,8 @@ public class Player {
 
     private string color;
     private Dice dice;
-    private GameObject[] gameFigures;
-    private AbstractState state;
+    private GameFigure[] gameFigures;
+    private AbstractPlayerState state;
     private int homeBank;
     private int stairBank;
     private int firstStairStep;
@@ -16,6 +15,15 @@ public class Player {
     public string Color
     {
         get { return color; }
+    }
+    public GameFigure[] GameFigures
+    {
+        get { return gameFigures; }
+    }
+    public AbstractPlayerState State
+    {
+        get { return state; }
+        set { state = value; }
     }
     public int HomeBank
     {
@@ -36,25 +44,27 @@ public class Player {
         this.homeBank = homeBank;
         this.stairBank = stairBank;
         this.firstStairStep = firstStairStep;
-        this.state = new StateAllAtHome();
+        this.state = new PlayerStateAllAtHome();
 
         // instantiate all gameFigures 
-        gameFigures = new GameObject[4];
+        gameFigures = new GameFigure[4];
         for (int i = 0; i < nofGameFigures; ++i)
         {
-         
-            gameFigures[i] = (GameObject)GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            //gameFigures[i] = new GameFigure((GameObject)Instantiate(Resources.Load("Prefabs/dice_1x1", typeof(GameObject))));
-            gameFigures[i].name = (this.color + "GameFigure" + (i+1));
+            GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Capsule", typeof(GameObject)));
+            figure.name = (this.color + "GameFigure" + (i+1));
 
-            Vector3 spawnPosition = GameObject.Find(this.color + "SpawnPoint" + (i+1)).transform.position;
-            gameFigures[i].transform.position = spawnPosition;
+            Vector3 spawnPosition = GameObject.Find(this.color + "HomeField" + (i+1)).transform.position;
+            figure.transform.position = spawnPosition;
 
             Material material = (Material)Resources.Load("Materials/" + color + "Player", typeof(Material));
-            gameFigures[i].GetComponent<Renderer>().material = material;
+            figure.GetComponent<Renderer>().material = material;
+
+            gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
+            gameFigures[i].Index = (i + 1);
+            gameFigures[i].Parent = this;
         }
 
-        GameObject dice = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Dice"));
+        GameObject dice = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Dice", typeof(GameObject)));
         dice.name = (this.color + "Dice");
         Vector3 dicePosition = GameObject.Find(this.color + "DicePosition").transform.position;
         dice.transform.position = dicePosition;
@@ -63,10 +73,4 @@ public class Player {
         this.dice = (Dice)dice.GetComponent<MonoBehaviour>();
         this.dice.Parent = this;
 	}
-
-    public void Play()
-    {
-        Debug.Log(this.color + " begins to play.");
-        dice.SetActive(true);
-    }
 }

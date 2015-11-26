@@ -1,11 +1,12 @@
 ﻿
 using UnityEngine;
 
-public class StateAllAtHome : AbstractState {
+public class PlayerStateAllAtHome : AbstractPlayerState {
 
     // Figure can be released
-    public new void ThrowsFive()
+    public override void ThrowsFive()
     {
+        GameLogic.State = new LogicStateChoosingFigureFive();
         Debug.Log("[" + this.GetType().Name + "] 5 has been thrown. A figure can be released.");
     }
 }
