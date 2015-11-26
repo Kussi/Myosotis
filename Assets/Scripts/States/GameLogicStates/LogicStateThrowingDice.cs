@@ -2,8 +2,9 @@
 
 public class LogicStateThrowingDice : AbstractLogicState {
 
-    public override void ActivateDice()
+    public LogicStateThrowingDice()
     {
-        Debug.Log("[" + this.GetType().Name + "] " + GameLogic.PlayerOnTurn.Color + " dice will be activated.");
+        GameLogic.NextPlayer();
+        GameLogic.PlayerOnTurn.Dice.SetActive(true);
     }
 }

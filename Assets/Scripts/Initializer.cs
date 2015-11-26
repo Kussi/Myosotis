@@ -32,7 +32,7 @@ public class Initializer : MonoBehaviour
         // Adding all Gamefields (except of the stairs) to the list
         for (int i = 1; i <= nofGameFields; ++i)
         {
-            gameFields.Add(GameObject.Find("Field" + i));
+            gameFields.Add((GameField)GameObject.Find("Field" + i).GetComponent<MonoBehaviour>());
         }
 
         // Instanciating Players

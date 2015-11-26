@@ -29,7 +29,7 @@ public class GameFigure : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        Debug.Log(parent.Color + index);
+
     }
 	
 	// Update is called once per frame
@@ -42,13 +42,15 @@ public class GameFigure : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                //if (hit.collider.tag == parent.Color)
-                //{
-                //    if (isActive)
-                //    {
-                //        ThrowDice();
-                //    }
-                //}
+                if (hit.collider.name == gameObject.name)
+                {
+                    if (isActive)
+                    {
+                        Debug.Log(gameObject.name + " does something cool." );
+                        SetActive(false);
+                        GameLogic.Move(this);
+                    }
+                }
             }
         }
     }
