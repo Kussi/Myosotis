@@ -72,19 +72,15 @@ public class Player {
             GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Capsule", typeof(GameObject)));
             gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
 
-            Debug.Log(this.color + "hier ist 1");
-
             gameFigures[i].Index = i;
             gameFigures[i].Parent = this;
             gameFigures[i].Field = homeFields[i];
-            Debug.Log(this.color + "hier ist 2");
             gameFigures[i].Field.PlaceGameFigure(gameFigures[i]);
 
             Material material = (Material)Resources.Load("Materials/" + color + "Player", typeof(Material));
             gameFigures[i].gameObject.GetComponent<Renderer>().material = material;
             gameFigures[i].gameObject.name = (this.color + "GameFigure" + i);
             gameFigures[i].gameObject.transform.position = homeFields[i].transform.position;
-            Debug.Log(this.color + "hier ist 3");
         }
 
         // instantiate the dice

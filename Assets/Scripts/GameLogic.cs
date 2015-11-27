@@ -154,12 +154,15 @@ public static class GameLogic {
 
     private static void SendHome(GameFigure figure, GameField field)
     {
-        GameFigure[] figures = field.GameFigures;
-        foreach (GameFigure gameFigure in figures)
+        if (!field.IsBench)
         {
-            if(gameFigure != null && !gameFigure.Parent.Color.Equals(figure.Parent.Color))
+            GameFigure[] figures = field.GameFigures;
+            foreach (GameFigure gameFigure in figures)
             {
-                GameLogic.GoHome(gameFigure);
+                if (gameFigure != null && !gameFigure.Parent.Color.Equals(figure.Parent.Color))
+                {
+                    GameLogic.GoHome(gameFigure);
+                }
             }
         }
     }
