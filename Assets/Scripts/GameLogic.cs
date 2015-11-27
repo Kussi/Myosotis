@@ -7,8 +7,11 @@ public static class GameLogic {
     private static Player[] player;
     private static ArrayList gameFields;
     private static Dictionary<int, StairField> stairFields;
+    private static GoalField goalField;
     private static AbstractLogicState logicState;
     private static int lastDiceValue = 0;
+    private static bool hasToGoBackwards = false;
+    private static bool skipOneStep = false;
 
     private static int playerOnTurn = 0;
 
@@ -28,11 +31,12 @@ public static class GameLogic {
         get { return lastDiceValue; }
     }
 
-    public static void Initialize(Player[] player, ArrayList gameFields, Dictionary<int, StairField> stairFields)
+    public static void Initialize(Player[] player, ArrayList gameFields, Dictionary<int, StairField> stairFields, GoalField goalField)
     {
         GameLogic.player = player;
         GameLogic.gameFields = gameFields;
         GameLogic.stairFields = stairFields;
+        GameLogic.goalField = goalField;
         GameLogic.logicState = new LogicStateThrowingDice();
     }
 
@@ -154,9 +158,21 @@ public static class GameLogic {
         {
             for(int i = 0; i < lastDiceValue; ++i)
             {
-                GoOneStep(figure);
+                if (!hasToGoBackwards)
+                {
+                    GoOneStep(figure, i == lastDiceValue - 1);
+                }
+                else
+                {
+                    if(!skipOneStep)
+                    {
+                        GoOneStepBack(figure);
+                    }
+                    skipOneStep = false; 
+                } 
             }
 
+            hasToGoBackwards = false;
             foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
             GameLogic.State = new LogicStateThrowingDice();
         }
@@ -164,7 +180,7 @@ public static class GameLogic {
         figure.Parent.RefreshState();
     }
 
-    public static void GoOneStep(GameFigure figure)
+    public static void GoOneStep(GameFigure figure, bool isLastStep)
     {
         int actualPosition = figure.Field.Index;
         int nextPosition = actualPosition + 1;
@@ -198,18 +214,46 @@ public static class GameLogic {
         }
         else
         {
-            if(nextPosition%100 == 1)
+            // im Ziel
+            if(actualPosition%100 == 7 && isLastStep)
             {
-                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+                stairFields[actualPosition].RemoveGameFigure(figure);
+                goalField.PlaceGameFigure(figure);
+                figure.Field = goalField;
+                figure.transform.position = figure.Field.transform.position;
+
+            }
+            else if(actualPosition%100 == 7)
+            {
+                hasToGoBackwards = true;
+                skipOneStep = true;
             }
             else
             {
-                stairFields[actualPosition].RemoveGameFigure(figure);
+                if (nextPosition % 100 == 1)
+                {
+                    ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+                }
+                else
+                {
+                    stairFields[actualPosition].RemoveGameFigure(figure);
+                }
+                stairFields[nextPosition].PlaceGameFigure(figure);
+                figure.Field = stairFields[nextPosition];
+                figure.transform.position = figure.Field.transform.position;
             }
-            stairFields[nextPosition].PlaceGameFigure(figure);
-            figure.Field = stairFields[nextPosition];
-            figure.transform.position = figure.Field.transform.position;
         }
+    }
+
+    public static void GoOneStepBack(GameFigure figure)
+    {
+        int actualPosition = figure.Field.Index;
+        int nextPosition = actualPosition - 1;
+
+        stairFields[actualPosition].RemoveGameFigure(figure);
+        stairFields[nextPosition].PlaceGameFigure(figure);
+        figure.Field = stairFields[nextPosition];
+        figure.transform.position = figure.Field.transform.position;
     }
 
     private static void SendHome(GameFigure figure, GameField field)
@@ -243,6 +287,7 @@ public static class GameLogic {
                 nextPosition.PlaceGameFigure(figure);
                 figure.Field = nextPosition;
                 figure.transform.position = nextPosition.transform.position;
+                figure.Parent.RefreshState();
                 hasSpace = true;
                 break;
             }

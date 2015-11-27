@@ -26,6 +26,7 @@ public class Initializer : MonoBehaviour
 
     private static ArrayList gameFields;
     private static Dictionary<int, StairField> stairFields;
+    private static GoalField goalField;
     private Player[] player;
 
 	// Use this for initialization
@@ -52,6 +53,9 @@ public class Initializer : MonoBehaviour
             
         }
 
+        // Getting GoalField
+        goalField = (GoalField)GameObject.Find("GoalField").GetComponent<GoalField>();
+
         // Instanciating Players
         player = new Player[4];
         player[0] = new Player("red", redHomeBank, redStairBank, redFirstStairStep);
@@ -59,6 +63,6 @@ public class Initializer : MonoBehaviour
         player[2] = new Player("blue", blueHomeBank, blueStairBank, blueFirstStairStep);
         player[3] = new Player("green", greenHomeBank, greenStairBank, greenFirstStairStep);
 
-        GameLogic.Initialize(player, gameFields, stairFields);
+        GameLogic.Initialize(player, gameFields, stairFields, goalField);
     }
 }
