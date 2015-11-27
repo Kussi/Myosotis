@@ -9,9 +9,13 @@ public class HomeField : AbstractGameField
     {
         get { return gameFigures[0] != null; }
     }
+    public Player Parent
+    {
+        get { return parent; }
+    }
 
     // Use this for initialization
-    void Start()
+    void OnEnable()
     {
         gameFigures = new GameFigure[figureCapacity];
         index = System.Int32.Parse(gameObject.name.Substring(gameObject.name.Length-1));

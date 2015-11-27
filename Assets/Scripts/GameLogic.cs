@@ -8,7 +8,7 @@ public static class GameLogic {
     private static AbstractLogicState logicState;
     private static int lastDiceValue = 0;
 
-    private static int playerOnTurn = 3;
+    private static int playerOnTurn = 0;
 
     public static Player PlayerOnTurn
     {
@@ -112,7 +112,10 @@ public static class GameLogic {
     {
         if(figure.Field.GetType() == typeof(HomeField))
         {
+            figure.Field.RemoveGameFigure(figure);
             figure.Field = (GameField)gameFields[figure.Parent.HomeBank];
+            figure.Field.PlaceGameFigure(figure);
+
             figure.transform.position = figure.Field.transform.position;
             
             foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
@@ -136,12 +139,44 @@ public static class GameLogic {
     {
         int actualPosition = figure.Field.Index;
         int nextPosition = (actualPosition + 1) % gameFields.Count;
-        figure.Field = (GameField)gameFields[nextPosition];
+
+        ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+        ((AbstractGameField)gameFields[nextPosition]).PlaceGameFigure(figure);
+        figure.Field = (AbstractGameField)gameFields[nextPosition];
+
+        if(figure.Field.GetType() == typeof(GameField))
+        {
+            GameLogic.SendHome(figure, (GameField)figure.Field);
+        }
+
         figure.transform.position = figure.Field.transform.position;
     }
 
-    public static void GoHome(GameFigure figure)
+    private static void SendHome(GameFigure figure, GameField field)
     {
-        HomeField[] homeFields = figure.Parent.
+        GameFigure[] figures = field.GameFigures;
+        foreach (GameFigure gameFigure in figures)
+        {
+            if(gameFigure != null && !gameFigure.Parent.Color.Equals(figure.Parent.Color))
+            {
+                GameLogic.GoHome(gameFigure);
+            }
+        }
+    }
+
+    private static void GoHome(GameFigure figure)
+    {
+        bool hasSpace = false;
+        HomeField[] homeFields = figure.Parent.HomeFields;
+        for(int i = 0; i < homeFields.Length; ++i)
+        {
+            if(!homeFields[i].IsOccupied)
+            {
+                figure.transform.position = homeFields[i].transform.position;
+                hasSpace = true;
+                break;
+            }
+        }
+        if (!hasSpace) throw new UnityException();
     }
 }

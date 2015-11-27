@@ -11,10 +11,14 @@ public abstract class AbstractGameField : MonoBehaviour
     {
         get { return index; }
     }
+    public GameFigure[] GameFigures
+    {
+        get { return gameFigures; }
+    }
 
     // Use this for initialization
     void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
@@ -43,7 +47,7 @@ public abstract class AbstractGameField : MonoBehaviour
         bool figureFound = false;
         for(int i = 0; i < gameFigures.Length; ++i)
         {
-            if(gameFigures[i].Equals(figure))
+            if(gameFigures[i] != null && gameFigures[i].Equals(figure))
             {
                 gameFigures[i] = null;
                 figure.Field = null;
@@ -52,10 +56,5 @@ public abstract class AbstractGameField : MonoBehaviour
             }
         }
         if(!figureFound) throw new UnityException();
-    }
-
-    public GameFigure[] GetGameFigures()
-    {
-        return gameFigures;
     }
 }

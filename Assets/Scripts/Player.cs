@@ -30,6 +30,10 @@ public class Player {
         get { return state; }
         set { state = value; }
     }
+    public HomeField[] HomeFields
+    {
+        get { return homeFields; }
+    }
     public int HomeBank
     {
         get { return homeBank; }
@@ -55,26 +59,32 @@ public class Player {
         homeFields = new HomeField[nofGameFigures];
         for (int i = 0; i < homeFields.Length; ++i)
         {
-            homeFields[i] = 
+            GameObject homeField = GameObject.Find(this.color + "HomeField" + i);
+            homeFields[i] = (HomeField)homeField.gameObject.GetComponent<MonoBehaviour>();
         }
+
 
         // instantiate all gameFigures 
         gameFigures = new GameFigure[nofGameFigures];
+        Debug.Log("gameFigures: " + gameFigures.Length);
         for (int i = 0; i < gameFigures.Length; ++i)
         {
             GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Capsule", typeof(GameObject)));
-            figure.name = (this.color + "GameFigure" + (i + 1));
+            gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
 
-            Vector3 spawnPosition = GameObject.Find(this.color + "HomeField" + (i + 1)).transform.position;
-            figure.transform.position = spawnPosition;
+            Debug.Log(this.color + "hier ist 1");
+
+            gameFigures[i].Index = i;
+            gameFigures[i].Parent = this;
+            gameFigures[i].Field = homeFields[i];
+            Debug.Log(this.color + "hier ist 2");
+            gameFigures[i].Field.PlaceGameFigure(gameFigures[i]);
 
             Material material = (Material)Resources.Load("Materials/" + color + "Player", typeof(Material));
-            figure.GetComponent<Renderer>().material = material;
-
-            gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
-            gameFigures[i].Field = (HomeField)GameObject.Find(this.color + "HomeField" + (i + 1)).GetComponent<MonoBehaviour>();
-            gameFigures[i].Index = (i + 1);
-            gameFigures[i].Parent = this;
+            gameFigures[i].gameObject.GetComponent<Renderer>().material = material;
+            gameFigures[i].gameObject.name = (this.color + "GameFigure" + i);
+            gameFigures[i].gameObject.transform.position = homeFields[i].transform.position;
+            Debug.Log(this.color + "hier ist 3");
         }
 
         // instantiate the dice
