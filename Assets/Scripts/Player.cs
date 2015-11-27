@@ -8,6 +8,7 @@ public class Player {
     private Dice dice;
     private GameFigure[] gameFigures;
     private AbstractPlayerState state;
+    private HomeField[] homeFields;
     private int homeBank;
     private int stairBank;
     private int firstStairStep;
@@ -50,6 +51,13 @@ public class Player {
         this.firstStairStep = firstStairStep;
         this.state = new PlayerStateAllAtHome();
 
+        // instantiate all homeFields
+        homeFields = new HomeField[nofGameFigures];
+        for (int i = 0; i < homeFields.Length; ++i)
+        {
+            homeFields[i] = 
+        }
+
         // instantiate all gameFigures 
         gameFigures = new GameFigure[nofGameFigures];
         for (int i = 0; i < gameFigures.Length; ++i)
@@ -62,7 +70,6 @@ public class Player {
 
             Material material = (Material)Resources.Load("Materials/" + color + "Player", typeof(Material));
             figure.GetComponent<Renderer>().material = material;
-            
 
             gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
             gameFigures[i].Field = (HomeField)GameObject.Find(this.color + "HomeField" + (i + 1)).GetComponent<MonoBehaviour>();

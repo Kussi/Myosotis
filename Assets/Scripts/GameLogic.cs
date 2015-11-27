@@ -21,6 +21,11 @@ public static class GameLogic {
         set { logicState = value; }
     }
 
+    public static int LastDiceValue
+    {
+        get { return lastDiceValue; }
+    }
+
     public static void Initialize(Player[] player, ArrayList gameFields)
     {
         GameLogic.player = player;
@@ -133,5 +138,10 @@ public static class GameLogic {
         int nextPosition = (actualPosition + 1) % gameFields.Count;
         figure.Field = (GameField)gameFields[nextPosition];
         figure.transform.position = figure.Field.transform.position;
+    }
+
+    public static void GoHome(GameFigure figure)
+    {
+        HomeField[] homeFields = figure.Parent.
     }
 }
