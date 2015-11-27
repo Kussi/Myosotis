@@ -1,10 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameLogic {
 
     private static Player[] player;
     private static ArrayList gameFields;
+    private static Dictionary<int, StairField> stairFields;
     private static AbstractLogicState logicState;
     private static int lastDiceValue = 0;
 
@@ -26,10 +28,11 @@ public static class GameLogic {
         get { return lastDiceValue; }
     }
 
-    public static void Initialize(Player[] player, ArrayList gameFields)
+    public static void Initialize(Player[] player, ArrayList gameFields, Dictionary<int, StairField> stairFields)
     {
         GameLogic.player = player;
         GameLogic.gameFields = gameFields;
+        GameLogic.stairFields = stairFields;
         GameLogic.logicState = new LogicStateThrowingDice();
     }
 
@@ -103,6 +106,32 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
+    public static GameFigure[] GetFiguresOnGameOrHomeOrStairField(GameFigure[] figures)
+    {
+        ArrayList result = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (figure.Field.GetType() != typeof(GoalField))
+            {
+                result.Add(figure);
+            }
+        }
+        return (GameFigure[])result.ToArray(typeof(GameFigure));
+    }
+
+    public static GameFigure[] GetFiguresOnGameOrStairField(GameFigure[] figures)
+    {
+        ArrayList result = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (figure.Field.GetType() == typeof(GameField) || figure.Field.GetType() == typeof(StairField))
+            {
+                result.Add(figure);
+            }
+        }
+        return (GameFigure[])result.ToArray(typeof(GameFigure));
+    }
+
     public static void NextPlayer()
     {
         playerOnTurn = (playerOnTurn + 1) % 4;
@@ -138,18 +167,49 @@ public static class GameLogic {
     public static void GoOneStep(GameFigure figure)
     {
         int actualPosition = figure.Field.Index;
-        int nextPosition = (actualPosition + 1) % gameFields.Count;
+        int nextPosition = actualPosition + 1;
+        bool nextIsStairField = false;
 
-        ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
-        ((AbstractGameField)gameFields[nextPosition]).PlaceGameFigure(figure);
-        figure.Field = (AbstractGameField)gameFields[nextPosition];
-
-        if(figure.Field.GetType() == typeof(GameField))
+        if(actualPosition == figure.Parent.StairBank)
         {
-            GameLogic.SendHome(figure, (GameField)figure.Field);
+            nextPosition = figure.Parent.FirstStairStep;
+            nextIsStairField = true;
+        }
+        else if(actualPosition > 100)
+        {
+            nextIsStairField = true;
+        }
+        else if(nextPosition >= gameFields.Count)
+        {
+            nextPosition %= gameFields.Count;
         }
 
-        figure.transform.position = figure.Field.transform.position;
+        if(!nextIsStairField)
+        {
+            if (!((GameField)gameFields[nextPosition]).IsBarrier)
+            {
+                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+                ((AbstractGameField)gameFields[nextPosition]).PlaceGameFigure(figure);
+                figure.Field = (AbstractGameField)gameFields[nextPosition];
+
+                GameLogic.SendHome(figure, (GameField)figure.Field);
+                figure.transform.position = figure.Field.transform.position;
+            }
+        }
+        else
+        {
+            if(nextPosition%100 == 1)
+            {
+                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+            }
+            else
+            {
+                stairFields[actualPosition].RemoveGameFigure(figure);
+            }
+            stairFields[nextPosition].PlaceGameFigure(figure);
+            figure.Field = stairFields[nextPosition];
+            figure.transform.position = figure.Field.transform.position;
+        }
     }
 
     private static void SendHome(GameFigure figure, GameField field)
@@ -171,11 +231,18 @@ public static class GameLogic {
     {
         bool hasSpace = false;
         HomeField[] homeFields = figure.Parent.HomeFields;
+        int actualPosition = figure.Field.Index;
+        HomeField nextPosition;
+
         for(int i = 0; i < homeFields.Length; ++i)
         {
             if(!homeFields[i].IsOccupied)
             {
-                figure.transform.position = homeFields[i].transform.position;
+                nextPosition = homeFields[i];
+                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
+                nextPosition.PlaceGameFigure(figure);
+                figure.Field = nextPosition;
+                figure.transform.position = nextPosition.transform.position;
                 hasSpace = true;
                 break;
             }
