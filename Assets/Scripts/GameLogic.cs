@@ -38,6 +38,7 @@ public static class GameLogic {
         GameLogic.stairFields = stairFields;
         GameLogic.goalField = goalField;
         GameLogic.logicState = new LogicStateThrowingDice();
+        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
     }
 
     public static void ExecuteTurn(int number)
@@ -138,7 +139,10 @@ public static class GameLogic {
 
     public static void NextPlayer()
     {
+        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
         playerOnTurn = (playerOnTurn + 1) % 4;
+        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+
     }
 
     public static void Move(GameFigure figure)
