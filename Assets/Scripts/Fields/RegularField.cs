@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GameField : AbstractGameField
+public class RegularField : GameFieldBase
 {
 
     private const int figureCapacity = 2;
@@ -21,7 +21,7 @@ public class GameField : AbstractGameField
     void Start()
     {
         gameFigures = new GameFigure[figureCapacity];
-        index = System.Int32.Parse(gameObject.name.Substring("Field".Length));
+        Index = System.Int32.Parse(gameObject.name.Substring("Field".Length));
         if(gameObject.transform.parent.name.Equals(parentBenchObject))
         {
             isBench = true;

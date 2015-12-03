@@ -7,10 +7,10 @@ public class Player {
     private string color;
     private Dice dice;
     private GameFigure[] gameFigures;
-    private AbstractPlayerState state;
+    private PlayerStateBase state;
     private HomeField[] homeFields;
-    private int homeBank;
-    private int stairBank;
+    private int homeBench;
+    private int stairBench;
     private int firstStairStep;
 
     public string Color
@@ -25,7 +25,7 @@ public class Player {
     {
         get { return gameFigures; }
     }
-    public AbstractPlayerState State
+    public PlayerStateBase State
     {
         get { return state; }
         set { state = value; }
@@ -34,13 +34,13 @@ public class Player {
     {
         get { return homeFields; }
     }
-    public int HomeBank
+    public int HomeBench
     {
-        get { return homeBank; }
+        get { return homeBench; }
     }
-    public int StairBank
+    public int StairBench
     {
-        get { return stairBank; }
+        get { return stairBench; }
     }
     public int FirstStairStep
     {
@@ -50,8 +50,8 @@ public class Player {
     public Player(string color, int homeBank, int stairBank, int firstStairStep)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
-        this.homeBank = homeBank;
-        this.stairBank = stairBank;
+        this.homeBench = homeBank;
+        this.stairBench = stairBank;
         this.firstStairStep = firstStairStep;
         this.state = new PlayerStateAllAtHome();
 
@@ -66,7 +66,6 @@ public class Player {
 
         // instantiate all gameFigures 
         gameFigures = new GameFigure[nofGameFigures];
-        Debug.Log("gameFigures: " + gameFigures.Length);
         for (int i = 0; i < gameFigures.Length; ++i)
         {
             GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Capsule", typeof(GameObject)));
@@ -95,13 +94,12 @@ public class Player {
 
     public void RefreshState()
     {
-        int figuresOnGameField = GameLogic.GetFiguresOnGameField(gameFigures).Length;
+        int figuresOnGameField = GameLogic.GetFiguresOnRegularField(gameFigures).Length;
         int figuresOnGoalField = GameLogic.GetFiguresOnGoalField(gameFigures).Length;
         int figuresOnHomeField = GameLogic.GetFiguresOnHomeField(gameFigures).Length;
 
         if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
         else if (figuresOnGameField == 0) State = new PlayerStateAllAtHome();
-        else if (figuresOnHomeField == 0) State = new PlayerStateAllOut();
         else State = new PlayerStateAtLeastOneOut();
     }
 }

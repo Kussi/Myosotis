@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerStateAtLeastOneOut : AbstractPlayerState {
+public class PlayerStateAtLeastOneOut : PlayerStateBase {
 
     // released figure can walk <number> steps
     public override void ThrowsRegular (int number)
@@ -17,7 +17,7 @@ public class PlayerStateAtLeastOneOut : AbstractPlayerState {
     }
 
     // released figure can walk 6 steps and the player may throw the dice another time
-    public override void ThrowsSix ()
+    public override void ThrowsSix()
     {
         GameLogic.State = new LogicStateChoosingFigureSix();
         Debug.Log("[" + this.GetType().Name + "] 6 has been thrown. A released figure can walk 6 steps and the player may throw the dice another time.");

@@ -12,6 +12,11 @@ public class Dice : MonoBehaviour {
         set { parent = value; }
     }
 
+    public int Value
+    {
+        get { return value; }
+    }
+
 	// Use this for initialization
 	void Start () {
         Refresh();
@@ -27,11 +32,11 @@ public class Dice : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log(hit.collider.name + " has been touched");
                 if (hit.collider.name == gameObject.name)
                 {
                     if (isActive)
                     {
+						SetActive(false);
                         ThrowDice();
                     }
                 }
@@ -41,17 +46,13 @@ public class Dice : MonoBehaviour {
 
     public void ThrowDice()
     {
-        value = Random.Range(1, 7);
-        SetActive(false);
+        value = Random.Range(5, 7);
         Refresh();
         GameLogic.ExecuteTurn(value);
-
-        Debug.Log(parent.ToString() + " dice has thrown a " + value);
     }
 
     public void SetActive(bool isActive)
     {
-        Debug.Log("set active " + isActive);
         this.isActive = isActive;
     }
 

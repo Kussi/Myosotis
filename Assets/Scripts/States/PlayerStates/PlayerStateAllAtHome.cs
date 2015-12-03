@@ -1,9 +1,8 @@
 ﻿
 using UnityEngine;
 
-public class PlayerStateAllAtHome : AbstractPlayerState {
+public class PlayerStateAllAtHome : PlayerStateBase {
 
-    // Figure can be released
     public override void ThrowsFive()
     {
         GameLogic.State = new LogicStateChoosingFigureFive();

@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 
-public class LogicStateThrowingDice : AbstractLogicState {
+public class LogicStateThrowingDice : ILogicState {
 
     public LogicStateThrowingDice()
     {
-        if(GameLogic.LastDiceValue != 6 && GameLogic.State != null && GameLogic.State.GetType() != typeof(LogicStateChoosingFigureSix))
+        if (GameLogic.PlayerOnTurn.Dice.Value != 6 
+            && GameLogic.State != null 
+            && GameLogic.State.GetType() != typeof(LogicStateChoosingFigureSix))
         {
             GameLogic.NextPlayer();
         }
-        GameLogic.PlayerOnTurn.Dice.SetActive(true);
+
+        GameLogic.ActivateDice();
     }
 }

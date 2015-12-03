@@ -1,31 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class AbstractGameField : MonoBehaviour
+public abstract class GameFieldBase : MonoBehaviour
 {
 
-    protected int index;
+    private int index;
     protected GameFigure[] gameFigures;
 
     public int Index
     {
         get { return index; }
+        protected set { index = value; }
     }
+
     public GameFigure[] GameFigures
     {
         get { return gameFigures; }
     }
 
-    // Use this for initialization
-    void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
+    /// <summary>
+    /// Places a GameFigure on this Field and changes the Field attribute of the figure to this
+    /// </summary>
+    /// <param name="figure">Figure that has to be placed</param>
     public void PlaceGameFigure(GameFigure figure)
     {
         bool isFullyOccupied = true;
@@ -39,9 +35,13 @@ public abstract class AbstractGameField : MonoBehaviour
                 break;
             }
         }
-        if(isFullyOccupied) throw new UnityException();
+        if(isFullyOccupied) throw new InvalidGameStateException("Figure cannot be placed on this Field (" + gameObject.name + ")");
     }
 
+    /// <summary>
+    /// Removes a GameFigure from this Field and changes the Field attribute of the figure to null
+    /// </summary>
+    /// <param name="figure">Figure that has to be removed</param>
     public void RemoveGameFigure(GameFigure figure)
     {
         bool figureFound = false;
@@ -55,6 +55,6 @@ public abstract class AbstractGameField : MonoBehaviour
                 break;
             }
         }
-        if(!figureFound) throw new UnityException();
+        if(!figureFound) throw new InvalidGameStateException("Figure cannot be removed from this Field (" + gameObject.name + ")");
     }
 }

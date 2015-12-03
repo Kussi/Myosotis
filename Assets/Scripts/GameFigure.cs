@@ -5,10 +5,9 @@ public class GameFigure : MonoBehaviour
 {
     private Player parent;
     private int index;
-    private AbstractGameField field;
+    private GameFieldBase field;
     private bool isActive = false;
     
-
     public Player Parent
     {
         get { return this.parent; }
@@ -20,7 +19,7 @@ public class GameFigure : MonoBehaviour
         get { return index; }
         set { index = value; }
     }
-    public AbstractGameField Field
+    public GameFieldBase Field
     {
         get { return field; }
         set { field = value; }
@@ -46,9 +45,10 @@ public class GameFigure : MonoBehaviour
                 {
                     if (isActive)
                     {
-                        Debug.Log(gameObject.name + " does something cool." );
                         SetActive(false);
-                        GameLogic.Move(this);
+
+                        if (this.Field.GetType() == typeof(HomeField)) GameLogic.ReleaseFigure(this);
+                        else GameLogic.MoveFigure(this);
                     }
                 }
             }

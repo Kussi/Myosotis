@@ -1,50 +1,45 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameLogic {
 
     private static Player[] player;
-    private static ArrayList gameFields;
-    private static Dictionary<int, StairField> stairFields;
-    private static GoalField goalField;
-    private static AbstractLogicState logicState;
-    private static int lastDiceValue = 0;
+    private static Dictionary<int, GameFieldBase> gameFields;
+    private static ILogicState state;
     private static bool hasToGoBackwards = false;
-    private static bool skipOneStep = false;
+    private static int nofRegularFields = 68;
 
     private static int playerOnTurn = 0;
 
     public static Player PlayerOnTurn
     {
         get { return player[playerOnTurn]; }
+        private set { player[playerOnTurn] = value; }
     }
 
-    public static AbstractLogicState State
+    public static ILogicState State
     {
-        get { return logicState; }
-        set { logicState = value; }
+        get { return state; }
+        set
+        {
+            state = value;
+            Debug.Log("[GameLogic] State has been changed to " + State);
+        }
     }
 
-    public static int LastDiceValue
-    {
-        get { return lastDiceValue; }
-    }
-
-    public static void Initialize(Player[] player, ArrayList gameFields, Dictionary<int, StairField> stairFields, GoalField goalField)
+    public static void Initialize(Player[] player, Dictionary<int, GameFieldBase> gameFields)
     {
         GameLogic.player = player;
         GameLogic.gameFields = gameFields;
-        GameLogic.stairFields = stairFields;
-        GameLogic.goalField = goalField;
-        GameLogic.logicState = new LogicStateThrowingDice();
-        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+        GameLogic.State = new LogicStateThrowingDice();
+        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+        Debug.Log("[GameLogic] Game has initialized successfully");
     }
 
     public static void ExecuteTurn(int number)
     {
-        lastDiceValue = number;
-
         if (number == 5)
         {
             PlayerOnTurn.State.ThrowsFive();
@@ -59,12 +54,17 @@ public static class GameLogic {
         }
     }
 
-    public static GameFigure[] GetFiguresOnGameField(GameFigure[] figures)
+    /// <summary>
+    /// Takes an Array of GameFigures and returns all, which are currently on a RegularField
+    /// </summary>
+    /// <param name="figures">Regularly all GameFigures of a Player</param>
+    /// <returns>All Figures, which are currently on a RegularField</returns>
+    public static GameFigure[] GetFiguresOnRegularField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
         foreach(GameFigure figure in figures)
         {
-            if(figure.Field.GetType() == typeof(GameField))
+            if(figure.Field.GetType() == typeof(RegularField))
             {
                 result.Add(figure);
             }
@@ -72,19 +72,11 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
-    public static GameFigure[] GetFiguresOnGameOrHomeField(GameFigure[] figures)
-    {
-        ArrayList result = new ArrayList();
-        foreach (GameFigure figure in figures)
-        {
-            if (figure.Field.GetType() == typeof(GameField) || figure.Field.GetType() == typeof(HomeField))
-            {
-                result.Add(figure);
-            }
-        }
-        return (GameFigure[])result.ToArray(typeof(GameFigure));
-    }
-
+    /// <summary>
+    /// Takes an Array of GameFigures and returns all, which are currently on a GoalField
+    /// </summary>
+    /// <param name="figures">Regularly all GameFigures of a Player</param>
+    /// <returns>All Figures, which are currently on a GoalField</returns>
     public static GameFigure[] GetFiguresOnGoalField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
@@ -98,6 +90,11 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
+    /// <summary>
+    /// Takes an Array of GameFigures and returns all, which are currently on a HomeField
+    /// </summary>
+    /// <param name="figures">Regularly all GameFigures of a Player</param>
+    /// <returns>All Figures, which are currently on a HomeField</returns>
     public static GameFigure[] GetFiguresOnHomeField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
@@ -111,7 +108,12 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
-    public static GameFigure[] GetFiguresOnGameOrHomeOrStairField(GameFigure[] figures)
+    /// <summary>
+    /// Takes an Array of GameFigures and returns all, which are currently on a RegularField or on a HomeField or on a StairField
+    /// </summary>
+    /// <param name="figures">Regularly all GameFigures of a Player</param>
+    /// <returns>All Figures, which are currently on a RegularField or on a HomeField or on a StairField</returns>
+    private static GameFigure[] GetFiguresOnRegularOrHomeOrStairField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
@@ -124,12 +126,17 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
-    public static GameFigure[] GetFiguresOnGameOrStairField(GameFigure[] figures)
+    /// <summary>
+    /// Takes an Array of GameFigures and returns all, which are currently on a RegularField or on a StairField
+    /// </summary>
+    /// <param name="figures">Regularly all GameFigures of a Player</param>
+    /// <returns>All Figures, which are currently on a RegularField or on a StairField</returns>
+    private static GameFigure[] GetFiguresOnRegularOrStairField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
         {
-            if (figure.Field.GetType() == typeof(GameField) || figure.Field.GetType() == typeof(StairField))
+            if (figure.Field.GetType() == typeof(RegularField) || figure.Field.GetType() == typeof(StairField))
             {
                 result.Add(figure);
             }
@@ -137,139 +144,153 @@ public static class GameLogic {
         return (GameFigure[])result.ToArray(typeof(GameFigure));
     }
 
-    public static void NextPlayer()
+    /// <summary>
+    /// Activates GameFigures from PlayerOnTurn, which are currently on a RegularField or on a HomeField or on a StairField
+    /// </summary>
+    public static void ActivateFiguresOnRegularOrHomeOrStairField()
     {
-        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
-        playerOnTurn = (playerOnTurn + 1) % 4;
-        player[playerOnTurn].Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
-
+        GameFigure[] figures = GetFiguresOnRegularOrHomeOrStairField(PlayerOnTurn.GameFigures);
+        foreach (GameFigure figure in figures) figure.SetActive(true);
     }
 
-    public static void Move(GameFigure figure)
+    /// <summary>
+    /// Activates GameFigures from PlayerOnTurn, which are currently on a RegularField or on a StairField
+    /// </summary>
+    public static void ActivateFiguresOnRegularOrStairField()
     {
-        if(figure.Field.GetType() == typeof(HomeField))
+        GameFigure[] figures = GetFiguresOnRegularOrStairField(PlayerOnTurn.GameFigures);
+        foreach (GameFigure figure in figures) figure.SetActive(true);
+    }
+
+    /// <summary>
+    /// Activates all Figures
+    /// </summary>
+    /// <param name="figures">All figures, which have to be activated</param>
+    private static void ActivateFigures(GameFigure[] figures)
+    {
+        foreach (GameFigure figure in figures) ActivateFigure(figure);
+    }
+
+    /// <summary>
+    /// Deactivates all Figures
+    /// </summary>
+    /// <param name="figures">All figures, which have to be deactivated</param>
+    private static void DeactivateFigures(GameFigure[] figures)
+    {
+        foreach (GameFigure figure in figures) DeactivateFigure(figure);
+    }
+
+    public static void ActivateDice()
+    {
+        PlayerOnTurn.Dice.SetActive(true);
+    }
+
+    public static void NextPlayer()
+    {
+        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
+        playerOnTurn = (playerOnTurn + 1) % 4;
+        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+        Debug.Log("[GameLogic] PlayerOnTurn: " + PlayerOnTurn.Color);
+    }
+
+    public static void MoveFigure(GameFigure figure)
+    {
+        for(int i = 0; i < figure.Parent.Dice.Value; ++i)
         {
-            figure.Field.RemoveGameFigure(figure);
-            figure.Field = (GameField)gameFields[figure.Parent.HomeBank];
-            figure.Field.PlaceGameFigure(figure);
-
-            figure.transform.position = figure.Field.transform.position;
-            
-            foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
-            GameLogic.State = new LogicStateThrowingDice();
+            GoOneStep(figure, i == figure.Parent.Dice.Value - 1);
         }
-        else
-        {
-            for(int i = 0; i < lastDiceValue; ++i)
-            {
-                if (!hasToGoBackwards)
-                {
-                    GoOneStep(figure, i == lastDiceValue - 1);
-                }
-                else
-                {
-                    if(!skipOneStep)
-                    {
-                        GoOneStepBack(figure);
-                    }
-                    skipOneStep = false; 
-                } 
-            }
-
-            hasToGoBackwards = false;
-            foreach (GameFigure gameFigure in figure.Parent.GameFigures) gameFigure.SetActive(false);
-            GameLogic.State = new LogicStateThrowingDice();
-        }
-
-        figure.Parent.RefreshState();
+        hasToGoBackwards = false;
+        FinishTurn();  
     }
 
     public static void GoOneStep(GameFigure figure, bool isLastStep)
     {
         int actualPosition = figure.Field.Index;
         int nextPosition = actualPosition + 1;
-        bool nextIsStairField = false;
 
-        if(actualPosition == figure.Parent.StairBank)
+        // Figure stands on the StairBench and can enter its stair with this step
+        if (actualPosition == figure.Parent.StairBench) 
         {
-            nextPosition = figure.Parent.FirstStairStep;
-            nextIsStairField = true;
+            EnterStair(figure);
         }
-        else if(actualPosition > 100)
+        
+        // Figure has entered the stair and is from now on only walking on the stair steps
+        else if (gameFields[actualPosition].GetType() == typeof(StairField)) 
         {
-            nextIsStairField = true;
-        }
-        else if(nextPosition >= gameFields.Count)
-        {
-            nextPosition %= gameFields.Count;
+            GoOneStepOnStair(figure, isLastStep);
         }
 
-        if(!nextIsStairField)
+        // Figure walks on the Regular Fields and is stepping over the last field index 
+        else if(nextPosition <= nofRegularFields)
         {
-            if (!((GameField)gameFields[nextPosition]).IsBarrier)
+            nextPosition %= nofRegularFields;
+
+            // Next Field is NOT blocked by a barrier
+            if (!((RegularField)gameFields[nextPosition]).IsBarrier)
             {
-                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
-                ((AbstractGameField)gameFields[nextPosition]).PlaceGameFigure(figure);
-                figure.Field = (AbstractGameField)gameFields[nextPosition];
-
-                GameLogic.SendHome(figure, (GameField)figure.Field);
-                figure.transform.position = figure.Field.transform.position;
+                PlaceFigureOnField(figure, nextPosition);
+                SendHome(figure, nextPosition);
             }
+
+            // Next Field is blocked by a barrier.
+            else
+            {
+                PlaceFigureOnField(figure, actualPosition);
+            }
+        } 
+    }
+
+    /// <summary>
+    /// Figure takes a regular step on the stair. If it reached the end
+    /// and has steps left, it walks backwards, otherwise it enters the goal. 
+    /// </summary>
+    /// <param name="figure">figure that walks</param>
+    /// <param name="isLastStep">value, if this step is the last step of this round</param>
+    private static void GoOneStepOnStair(GameFigure figure, bool isLastStep)
+    {
+        int actualPosition = figure.Field.Index;
+        int nextPosition = actualPosition + 1;
+
+        if (hasToGoBackwards) GoOneStepBack(figure);
+        else if (nextPosition % 100 == Initializer.NofStairFieldsEachPlayer)
+        {
+            PlaceFigureOnField(figure, Initializer.GoalFieldIndex);
+            if (!isLastStep) hasToGoBackwards = true;
         }
         else
         {
-            // im Ziel
-            if(actualPosition%100 == 7 && isLastStep)
-            {
-                stairFields[actualPosition].RemoveGameFigure(figure);
-                goalField.PlaceGameFigure(figure);
-                figure.Field = goalField;
-                figure.transform.position = figure.Field.transform.position;
-
-            }
-            else if(actualPosition%100 == 7)
-            {
-                hasToGoBackwards = true;
-                skipOneStep = true;
-            }
-            else
-            {
-                if (nextPosition % 100 == 1)
-                {
-                    ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
-                }
-                else
-                {
-                    stairFields[actualPosition].RemoveGameFigure(figure);
-                }
-                stairFields[nextPosition].PlaceGameFigure(figure);
-                figure.Field = stairFields[nextPosition];
-                figure.transform.position = figure.Field.transform.position;
-            }
+            PlaceFigureOnField(figure, nextPosition);
         }
     }
 
+    private static void EnterStair(GameFigure figure)
+    {
+        PlaceFigureOnField(figure, figure.Parent.FirstStairStep);
+    }
+
+    /// <summary>
+    /// Figure will go one step backwards on stair
+    /// </summary>
+    /// <param name="figure">figure which has to walk</param>
     public static void GoOneStepBack(GameFigure figure)
     {
         int actualPosition = figure.Field.Index;
         int nextPosition = actualPosition - 1;
 
-        stairFields[actualPosition].RemoveGameFigure(figure);
-        stairFields[nextPosition].PlaceGameFigure(figure);
-        figure.Field = stairFields[nextPosition];
-        figure.transform.position = figure.Field.transform.position;
+        PlaceFigureOnField(figure, nextPosition);
     }
 
-    private static void SendHome(GameFigure figure, GameField field)
+    private static void SendHome(GameFigure figure, int fieldIndex)
     {
+        RegularField field = (RegularField)gameFields[fieldIndex];
         if (!field.IsBench)
         {
-            GameFigure[] figures = field.GameFigures;
-            foreach (GameFigure gameFigure in figures)
+            GameFigure[] figuresOnNextField = field.GameFigures;
+            foreach (GameFigure figureOnNextField in figuresOnNextField)
             {
-                if (gameFigure != null && !gameFigure.Parent.Color.Equals(figure.Parent.Color))
+                if (figureOnNextField != null && !figureOnNextField.Parent.Equals(figure.Parent))
                 {
-                    GameLogic.GoHome(gameFigure);
+                    GameLogic.GoHome(figureOnNextField);
                 }
             }
         }
@@ -279,23 +300,53 @@ public static class GameLogic {
     {
         bool hasSpace = false;
         HomeField[] homeFields = figure.Parent.HomeFields;
-        int actualPosition = figure.Field.Index;
-        HomeField nextPosition;
 
         for(int i = 0; i < homeFields.Length; ++i)
         {
             if(!homeFields[i].IsOccupied)
             {
-                nextPosition = homeFields[i];
-                ((AbstractGameField)gameFields[actualPosition]).RemoveGameFigure(figure);
-                nextPosition.PlaceGameFigure(figure);
-                figure.Field = nextPosition;
-                figure.transform.position = nextPosition.transform.position;
-                figure.Parent.RefreshState();
+                PlaceFigureOnField(figure, homeFields[i]);
                 hasSpace = true;
                 break;
             }
         }
-        if (!hasSpace) throw new UnityException();
+        if (!hasSpace) throw new InvalidGameStateException();
+    }
+
+    private static void PlaceFigureOnField(GameFigure figure, int fieldIndex)
+    {
+        PlaceFigureOnField(figure, gameFields[fieldIndex]);
+    }
+
+    private static void PlaceFigureOnField(GameFigure figure, GameFieldBase field)
+    {
+        figure.Field.RemoveGameFigure(figure);
+        field.PlaceGameFigure(figure);
+        figure.Parent.RefreshState();
+        figure.transform.position = figure.Field.transform.position;
+    }
+
+    private static void FinishTurn()
+    {
+        foreach (GameFigure gameFigure in PlayerOnTurn.GameFigures) gameFigure.SetActive(false);
+        GameLogic.State = new LogicStateThrowingDice();
+    }
+
+    public static void ReleaseFigure(GameFigure figure)
+    {
+        PlaceFigureOnField(figure, figure.Parent.HomeBench);
+        FinishTurn();
+    }
+
+    private static void ActivateFigure(GameFigure figure)
+    {
+        figure.SetActive(true);
+        Debug.Log(figure.gameObject.name + " has been activated.");
+    }
+
+    private static void DeactivateFigure(GameFigure figure)
+    {
+        figure.SetActive(false);
+        Debug.Log(figure.gameObject.name + " has been deactivated.");
     }
 }

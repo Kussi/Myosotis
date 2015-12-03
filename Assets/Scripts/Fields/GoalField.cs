@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GoalField : AbstractGameField
+public class GoalField : GameFieldBase
 {
 
     private const int figureCapacity = 16;
@@ -9,7 +9,7 @@ public class GoalField : AbstractGameField
     void Start()
     {
         gameFigures = new GameFigure[figureCapacity];
-        index = 1000;
+        Index = 1000;
     }
 
     // Update is called once per frame

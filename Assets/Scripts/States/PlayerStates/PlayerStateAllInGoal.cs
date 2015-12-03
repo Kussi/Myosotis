@@ -1,6 +1,6 @@
 ﻿
 using UnityEngine;
 
-public class PlayerStateStateAllInGoal : AbstractPlayerState {
+public class PlayerStateStateAllInGoal : PlayerStateBase {
 
 }
