@@ -29,6 +29,8 @@ public class Initializer : MonoBehaviour
 
     public const int GoalFieldIndex = 1000;
 
+    private readonly ArrayList bendFieldIndexes = new ArrayList {5, 6, 7, 8, 9, 10, 22, 23, 24, 25, 26, 27, 39, 40, 41, 42, 43, 44, 56, 57, 58, 59, 60, 61};
+
     private static Dictionary<int, GameFieldBase> gameFields;
     private static Player[] players;
     private static int nofPlayers;
@@ -40,10 +42,34 @@ public class Initializer : MonoBehaviour
 
         gameFields = new Dictionary<int, GameFieldBase>();
 
+        Vector3 pos1, pos2, pos3, pos4;
+
         // Adding all Regularfields (= Bench and Regular) to the list
         for (int i = 0; i < NofRegularFields; ++i)
         {
             gameFields[i] = (RegularField)GameObject.Find("Field" + i).GetComponent<MonoBehaviour>();
+            GameObject pos1Obj = new GameObject();
+            GameObject pos2Obj = new GameObject();
+            pos1Obj.transform.parent = gameFields[i].gameObject.transform;
+            pos2Obj.transform.parent = gameFields[i].gameObject.transform;
+            pos1Obj.name = "pos1";
+            pos2Obj.name = "pos2";
+
+
+            if (bendFieldIndexes.Contains(i))
+            {
+                pos1 = new Vector3(0.7F, 0, 0);
+                pos2 = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                pos1 = new Vector3(0, 0, 0.5F);
+                pos2 = new Vector3(0, 0, -0.5F);
+            }
+
+            pos1Obj.transform.localPosition = pos1;
+            pos2Obj.transform.localPosition = pos2;
+
         }
 
         // Adding all Stairfields to the list
@@ -53,6 +79,30 @@ public class Initializer : MonoBehaviour
             {
                 int index = 100 * (i + 1) + j;
                 gameFields[index] = (StairField)GameObject.Find("StairField" + index).GetComponent<MonoBehaviour>();
+
+                GameObject pos1Obj = new GameObject();
+                GameObject pos2Obj = new GameObject();
+                GameObject pos3Obj = new GameObject();
+                GameObject pos4Obj = new GameObject();
+
+                pos1Obj.transform.parent = gameFields[index].gameObject.transform;
+                pos2Obj.transform.parent = gameFields[index].gameObject.transform;
+                pos3Obj.transform.parent = gameFields[index].gameObject.transform;
+                pos4Obj.transform.parent = gameFields[index].gameObject.transform;
+                pos1Obj.name = "pos1";
+                pos2Obj.name = "pos2";
+                pos3Obj.name = "pos3";
+                pos4Obj.name = "pos4";
+
+                pos1 = new Vector3(0, 0, 0.3F);
+                pos2 = new Vector3(0, 0, -0.3F);
+                pos3 = new Vector3(0, 0, 0.9F);
+                pos4 = new Vector3(0, 0, -0.9F);
+
+                pos1Obj.transform.localPosition = pos1;
+                pos2Obj.transform.localPosition = pos2;
+                pos3Obj.transform.localPosition = pos3;
+                pos4Obj.transform.localPosition = pos4;
             }
         }
 

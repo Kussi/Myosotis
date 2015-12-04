@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class GameLogic {
 
-    private static Player[] player;
+    private static Player[] players;
     private static Dictionary<int, GameFieldBase> gameFields;
     private static ILogicState state;
     private static bool hasToGoBackwards = false;
@@ -15,8 +15,8 @@ public static class GameLogic {
 
     public static Player PlayerOnTurn
     {
-        get { return player[playerOnTurn]; }
-        private set { player[playerOnTurn] = value; }
+        get { return players[playerOnTurn]; }
+        private set { players[playerOnTurn] = value; }
     }
 
     public static ILogicState State
@@ -36,7 +36,7 @@ public static class GameLogic {
     /// <param name="gameFields">all GameFields of the game</param>
     public static void Initialize(Player[] players, Dictionary<int, GameFieldBase> gameFields)
     {
-        GameLogic.player = players;
+        GameLogic.players = players;
         GameLogic.gameFields = gameFields;
         GameLogic.State = new LogicStateThrowingDice();
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
