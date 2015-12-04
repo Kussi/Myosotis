@@ -29,15 +29,25 @@ public static class GameLogic {
         }
     }
 
-    public static void Initialize(Player[] player, Dictionary<int, GameFieldBase> gameFields)
+    /// <summary>
+    /// Initializes the Game
+    /// </summary>
+    /// <param name="players">all Players that will play the game</param>
+    /// <param name="gameFields">all GameFields of the game</param>
+    public static void Initialize(Player[] players, Dictionary<int, GameFieldBase> gameFields)
     {
-        GameLogic.player = player;
+        GameLogic.player = players;
         GameLogic.gameFields = gameFields;
         GameLogic.State = new LogicStateThrowingDice();
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
         Debug.Log("[GameLogic] Game has initialized successfully");
     }
 
+    /// <summary>
+    /// Executes Turn, according to the diced number. This Method is calld from
+    /// the Dice itself.
+    /// </summary>
+    /// <param name="number">diced value</param>
     public static void ExecuteTurn(int number)
     {
         if (number == 5)
@@ -180,11 +190,17 @@ public static class GameLogic {
         foreach (GameFigure figure in figures) DeactivateFigure(figure);
     }
 
+    /// <summary>
+    /// Activates the Dice of the PlayerOnTurn and therefore makes it touchable
+    /// </summary>
     public static void ActivateDice()
     {
         PlayerOnTurn.Dice.SetActive(true);
     }
 
+    /// <summary>
+    /// Changes the PlayerOnTurn
+    /// </summary>
     public static void NextPlayer()
     {
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
@@ -193,6 +209,11 @@ public static class GameLogic {
         Debug.Log("[GameLogic] PlayerOnTurn: " + PlayerOnTurn.Color);
     }
 
+    /// <summary>
+    /// Controls the Movement of a figure and the diced number. For each steps to be done
+    /// GoOneStep is called.
+    /// </summary>
+    /// <param name="figure">figure, that will be moved</param>
     public static void MoveFigure(GameFigure figure)
     {
         for(int i = 0; i < figure.Parent.Dice.Value; ++i)
@@ -203,6 +224,12 @@ public static class GameLogic {
         FinishTurn();  
     }
 
+    /// <summary>
+    /// Moves a figure one step, if the game situation allows it
+    /// </summary>
+    /// <param name="figure">figure, that will be moved</param>
+    /// <param name="isLastStep">value, whether this is the last step of
+    /// the diced number or not</param>
     public static void GoOneStep(GameFigure figure, bool isLastStep)
     {
         int actualPosition = figure.Field.Index;
@@ -244,7 +271,7 @@ public static class GameLogic {
     /// Figure takes a regular step on the stair. If it reached the end
     /// and has steps left, it walks backwards, otherwise it enters the goal. 
     /// </summary>
-    /// <param name="figure">figure that walks</param>
+    /// <param name="figure">figure, that walks</param>
     /// <param name="isLastStep">value, if this step is the last step of this round</param>
     private static void GoOneStepOnStair(GameFigure figure, bool isLastStep)
     {
@@ -271,7 +298,7 @@ public static class GameLogic {
     /// <summary>
     /// Figure will go one step backwards on stair
     /// </summary>
-    /// <param name="figure">figure which has to walk</param>
+    /// <param name="figure">figure that has to walk</param>
     public static void GoOneStepBack(GameFigure figure)
     {
         int actualPosition = figure.Field.Index;
@@ -280,6 +307,12 @@ public static class GameLogic {
         PlaceFigureOnField(figure, nextPosition);
     }
 
+    /// <summary>
+    /// figures on the field with index fieldIndex will be sent home, if
+    /// they are figures of another Player
+    /// </summary>
+    /// <param name="figure">figure, that sends the others home</param>
+    /// <param name="fieldIndex">field, which is affected</param>
     private static void SendHome(GameFigure figure, int fieldIndex)
     {
         RegularField field = (RegularField)gameFields[fieldIndex];
@@ -296,6 +329,10 @@ public static class GameLogic {
         }
     }
 
+    /// <summary>
+    /// Moves a figure to one of its HomeFields
+    /// </summary>
+    /// <param name="figure">figure, that goes home</param>
     private static void GoHome(GameFigure figure)
     {
         bool hasSpace = false;
@@ -313,11 +350,23 @@ public static class GameLogic {
         if (!hasSpace) throw new InvalidGameStateException();
     }
 
+    /// <summary>
+    /// Moves a figure to another GameField. Figure is entered in the figure Array
+    /// of the Field and the field in the field attribute of the figure.
+    /// </summary>
+    /// <param name="figure">figure, that will be moved</param>
+    /// <param name="fieldIndex">target field</param>
     private static void PlaceFigureOnField(GameFigure figure, int fieldIndex)
     {
         PlaceFigureOnField(figure, gameFields[fieldIndex]);
     }
 
+    /// <summary>
+    /// Moves a figure to another GameField. Figure is entered in the figure Array
+    /// of the Field and the field in the field attribute of the figure.
+    /// </summary>
+    /// <param name="figure">figure, that will be moved</param>
+    /// <param name="fieldIndex">target field</param>
     private static void PlaceFigureOnField(GameFigure figure, GameFieldBase field)
     {
         figure.Field.RemoveGameFigure(figure);
@@ -326,24 +375,45 @@ public static class GameLogic {
         figure.transform.position = figure.Field.transform.position;
     }
 
+    /// <summary>
+    /// Deactivates all GameFigures and changes the GameLogicState
+    /// </summary>
     private static void FinishTurn()
     {
         foreach (GameFigure gameFigure in PlayerOnTurn.GameFigures) gameFigure.SetActive(false);
         GameLogic.State = new LogicStateThrowingDice();
     }
 
+    /// <summary>
+    /// Releases a figure from its home, if there is no barrier on the HomeBench
+    /// </summary>
+    /// <param name="figure">figure, that will be released</param>
     public static void ReleaseFigure(GameFigure figure)
     {
-        PlaceFigureOnField(figure, figure.Parent.HomeBench);
-        FinishTurn();
+        int homeBench = figure.Parent.HomeBench;
+
+        // If there is a barrier on the HomeBench, no figure can be released
+        if(!((RegularField)gameFields[homeBench]).IsBarrier)
+        {
+            PlaceFigureOnField(figure, figure.Parent.HomeBench);
+            FinishTurn();
+        }
     }
 
+    /// <summary>
+    /// Activates a figure and therefore makes it touchable
+    /// </summary>
+    /// <param name="figure">figure, that is affected</param>
     private static void ActivateFigure(GameFigure figure)
     {
         figure.SetActive(true);
         Debug.Log(figure.gameObject.name + " has been activated.");
     }
 
+    /// <summary>
+    /// Deactivates a figure and therefore makes it untouchable
+    /// </summary>
+    /// <param name="figure">figure, that is affected</param>
     private static void DeactivateFigure(GameFigure figure)
     {
         figure.SetActive(false);

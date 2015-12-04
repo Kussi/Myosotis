@@ -27,10 +27,4 @@ public class RegularField : GameFieldBase
             isBench = true;
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

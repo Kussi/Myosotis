@@ -68,7 +68,7 @@ public class Player {
         gameFigures = new GameFigure[nofGameFigures];
         for (int i = 0; i < gameFigures.Length; ++i)
         {
-            GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Capsule", typeof(GameObject)));
+            GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/GameFigure", typeof(GameObject)));
             gameFigures[i] = (GameFigure)figure.GetComponent<MonoBehaviour>();
 
             gameFigures[i].Index = i;
