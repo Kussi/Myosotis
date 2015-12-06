@@ -1,29 +1,37 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class HomeField : GameFieldBase
 {
-    private const int figureCapacity = 1;
-    private Player parent = null;
+    private const int figureCapacity = 4;
+    private readonly Vector3[] positions = new Vector3[] { new Vector3(1, 0, 1),
+        new Vector3(-1, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) };
 
-    public bool IsOccupied
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    void OnEnable ()
     {
-        get { return gameFigures[0] != null; }
+        SetFieldPositions(new FieldPosition[figureCapacity]);
+
+        for (int i = 0; i < FieldPositions.Length; ++i)
+        {
+            GameObject positionObject = new GameObject();
+            positionObject.name = "position" + i;
+            positionObject.transform.parent = gameObject.transform;
+
+            positionObject.transform.localPosition = positions[i];
+
+            positionObject.AddComponent<FieldPosition>();
+            FieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+        }
     }
-    public Player Parent
-    {
-        get { return parent; }
-    }
 
-    // Use this for initialization
-    void OnEnable()
+    /// <summary>
+    /// adjusts the positions of the figures
+    /// </summary>
+    protected override void RefreshPositionsAfterRemoval()
     {
-        gameFigures = new GameFigure[figureCapacity];
-        Index = System.Int32.Parse(gameObject.name.Substring(gameObject.name.Length - 1));
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        // Nothing to adjust
     }
 }

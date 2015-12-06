@@ -39,6 +39,8 @@ public static class GameLogic {
         GameLogic.players = players;
         GameLogic.gameFields = gameFields;
         GameLogic.State = new LogicStateThrowingDice();
+        GameLogic.PlaceAllFiguresAtHome();
+
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
         Debug.Log("[GameLogic] Game has initialized successfully");
     }
@@ -62,6 +64,7 @@ public static class GameLogic {
         {
             PlayerOnTurn.State.ThrowsRegular(number);
         }
+        PlayerOnTurn.RefreshState();
     }
 
     /// <summary>
@@ -204,7 +207,7 @@ public static class GameLogic {
     public static void NextPlayer()
     {
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
-        playerOnTurn = (playerOnTurn + 1) % 4;
+        playerOnTurn = (playerOnTurn + 1) % 4; //MagicNumber => 4 = Number of players
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
         Debug.Log("[GameLogic] PlayerOnTurn: " + PlayerOnTurn.Color);
     }
@@ -236,7 +239,7 @@ public static class GameLogic {
         int nextPosition = actualPosition + 1;
 
         // Figure stands on the StairBench and can enter its stair with this step
-        if (actualPosition == figure.Parent.StairBench) 
+        if (actualPosition == figure.Parent.StairBenchIndex) 
         {
             EnterStair(figure);
         }
@@ -290,9 +293,13 @@ public static class GameLogic {
         }
     }
 
+    /// <summary>
+    /// figure can walk on its first stair step
+    /// </summary>
+    /// <param name="figure">figure that walks</param>
     private static void EnterStair(GameFigure figure)
     {
-        PlaceFigureOnField(figure, figure.Parent.FirstStairStep);
+        PlaceFigureOnField(figure, figure.Parent.FirstStairStepIndex);
     }
 
     /// <summary>
@@ -318,7 +325,7 @@ public static class GameLogic {
         RegularField field = (RegularField)gameFields[fieldIndex];
         if (!field.IsBench)
         {
-            GameFigure[] figuresOnNextField = field.GameFigures;
+            GameFigure[] figuresOnNextField = field.GetGameFigures();
             foreach (GameFigure figureOnNextField in figuresOnNextField)
             {
                 if (figureOnNextField != null && !figureOnNextField.Parent.Equals(figure.Parent))
@@ -335,19 +342,8 @@ public static class GameLogic {
     /// <param name="figure">figure, that goes home</param>
     private static void GoHome(GameFigure figure)
     {
-        bool hasSpace = false;
-        HomeField[] homeFields = figure.Parent.HomeFields;
-
-        for(int i = 0; i < homeFields.Length; ++i)
-        {
-            if(!homeFields[i].IsOccupied)
-            {
-                PlaceFigureOnField(figure, homeFields[i]);
-                hasSpace = true;
-                break;
-            }
-        }
-        if (!hasSpace) throw new InvalidGameStateException();
+        HomeField homeField = (HomeField)gameFields[figure.Parent.HomeFieldIndex];
+        PlaceFigureOnField(figure, homeField);
     }
 
     /// <summary>
@@ -366,13 +362,12 @@ public static class GameLogic {
     /// of the Field and the field in the field attribute of the figure.
     /// </summary>
     /// <param name="figure">figure, that will be moved</param>
-    /// <param name="fieldIndex">target field</param>
+    /// <param name="field">target field</param>
     private static void PlaceFigureOnField(GameFigure figure, GameFieldBase field)
     {
+        Debug.Log(figure);
         figure.Field.RemoveGameFigure(figure);
         field.PlaceGameFigure(figure);
-        figure.Parent.RefreshState();
-        figure.transform.position = figure.Field.transform.position;
     }
 
     /// <summary>
@@ -390,12 +385,12 @@ public static class GameLogic {
     /// <param name="figure">figure, that will be released</param>
     public static void ReleaseFigure(GameFigure figure)
     {
-        int homeBench = figure.Parent.HomeBench;
+        int homeBench = figure.Parent.HomeBenchIndex;
 
         // If there is a barrier on the HomeBench, no figure can be released
         if(!((RegularField)gameFields[homeBench]).IsBarrier)
         {
-            PlaceFigureOnField(figure, figure.Parent.HomeBench);
+            PlaceFigureOnField(figure, figure.Parent.HomeBenchIndex);
             FinishTurn();
         }
     }
@@ -418,5 +413,19 @@ public static class GameLogic {
     {
         figure.SetActive(false);
         Debug.Log(figure.gameObject.name + " has been deactivated.");
+    }
+
+    /// <summary>
+    /// changes the positions of all figures to their homefield
+    /// </summary>
+    private static void PlaceAllFiguresAtHome()
+    {
+        foreach(Player player in players)
+        {
+            foreach(GameFigure gameFigure in player.GameFigures)
+            {
+                gameFields[player.HomeFieldIndex].PlaceGameFigure(gameFigure);
+            }
+        }
     }
 }

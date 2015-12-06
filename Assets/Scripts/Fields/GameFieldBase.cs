@@ -3,58 +3,133 @@ using System.Collections;
 
 public abstract class GameFieldBase : MonoBehaviour
 {
-
     private int index;
-    protected GameFigure[] gameFigures;
+    private FieldPosition[] fieldPositions;
 
     public int Index
     {
         get { return index; }
-        protected set { index = value; }
+        private set { index = value; }
     }
 
-    public GameFigure[] GameFigures
+    public FieldPosition[] FieldPositions
     {
-        get { return gameFigures; }
+        get { return fieldPositions; }
+    }
+
+    protected virtual bool IsOccupied
+    {
+        get {
+            foreach (FieldPosition fieldPosition in FieldPositions)
+            {
+                if(!fieldPosition.IsOccupied) return false;
+            }
+            return true;
+        }
     }
 
     /// <summary>
-    /// Places a GameFigure on this Field and changes the Field attribute of the figure to this
+    /// Use this for initialization
     /// </summary>
-    /// <param name="figure">Figure that has to be placed</param>
-    public void PlaceGameFigure(GameFigure figure)
+    void Awake()
     {
-        bool isFullyOccupied = true;
-        for(int i = 0; i < gameFigures.Length; ++i)
+        Index = getIndexFromName();
+    }
+
+    /// <summary>
+    /// Getting all Gamefigures, that are currently staying on this field
+    /// </summary>
+    /// <returns>returns the Gamefigures of this field</returns>
+    public GameFigure[] GetGameFigures()
+    {
+        ArrayList gameFigures = new ArrayList();
+        foreach(FieldPosition fieldPosition in fieldPositions)
         {
-            if(gameFigures[i] == null)
+            if (fieldPosition.IsOccupied) gameFigures.Add(fieldPosition.GameFigure);
+        }
+        return (GameFigure[])gameFigures.ToArray(typeof(GameFigure));
+    }
+
+    /// <summary>
+    /// Sets the Fieldpositions of this field
+    /// </summary>
+    /// <param name="fieldPositions">possible positions a GameFigure can stand on this field</param>
+    protected void SetFieldPositions(FieldPosition[] fieldPositions)
+    {
+        if (FieldPositions == null) this.fieldPositions = fieldPositions;
+    }
+
+    /// <summary>
+    /// Removes the GameFigure from its actual field an places it here
+    /// </summary>
+    /// <param name="figure">Figure that has to be moved</param>
+    public virtual void PlaceGameFigure(GameFigure figure)
+    {
+        if (IsOccupied) throw new InvalidGameStateException("Figure cannot be placed on this Field (" + gameObject.name + ")");
+
+        foreach (FieldPosition fieldPosition in FieldPositions)
+        {
+            if (!fieldPosition.IsOccupied)
             {
-                gameFigures[i] = figure;
-                figure.Field = this;
-                isFullyOccupied = false;
+                fieldPosition.GameFigure = figure;
+                RefreshPositionsAfterPlacement();
                 break;
             }
         }
-        if(isFullyOccupied) throw new InvalidGameStateException("Figure cannot be placed on this Field (" + gameObject.name + ")");
     }
 
     /// <summary>
     /// Removes a GameFigure from this Field and changes the Field attribute of the figure to null
     /// </summary>
     /// <param name="figure">Figure that has to be removed</param>
-    public void RemoveGameFigure(GameFigure figure)
+    public virtual void RemoveGameFigure(GameFigure figure)
     {
         bool figureFound = false;
-        for(int i = 0; i < gameFigures.Length; ++i)
+
+        for (int i = 0; i < FieldPositions.Length; ++i)
         {
-            if(gameFigures[i] != null && gameFigures[i].Equals(figure))
-            {
-                gameFigures[i] = null;
-                figure.Field = null;
-                figureFound = true;
-                break;
+            if (FieldPositions[i].GameFigure != null) {
+                if (FieldPositions[i].GameFigure.Equals(figure))
+                {
+                    FieldPositions[i].GameFigure = null;
+                    figureFound = true;
+                    break;
+                }
             }
         }
-        if(!figureFound) throw new InvalidGameStateException("Figure cannot be removed from this Field (" + gameObject.name + ")");
+        if (!figureFound) throw new InvalidGameStateException("Figure cannot be removed from this Field (" + gameObject.name + ")");
+
+        RefreshPositionsAfterRemoval();
+    }
+
+    /// <summary>
+    /// moves the figure objects to their position
+    /// </summary>
+    protected void RefreshPositionsAfterPlacement()
+    {
+        foreach(FieldPosition fieldPosition in fieldPositions)
+        {
+            Vector3 figurePosition = fieldPosition.GameFigure.transform.position;
+            if (fieldPosition.IsOccupied && figurePosition != fieldPosition.transform.position)
+            {
+                fieldPosition.GameFigure.Field = this;
+                fieldPosition.GameFigure.transform.position = fieldPosition.transform.position;
+            } 
+        }
+    }
+
+    /// <summary>
+    /// adjusts the positions of the figures
+    /// </summary>
+    protected abstract void RefreshPositionsAfterRemoval();
+
+    /// <summary>
+    /// gets the indexnumber from the name of the gameobject
+    /// </summary>
+    /// <returns>the index of the gameObject</returns>
+    protected int getIndexFromName()
+    {
+        int indexLength = 3; // Gamefieldnames have always the form <Prefix><3-digit-index>
+        return int.Parse(gameObject.name.Substring(gameObject.name.Length - indexLength));
     }
 }

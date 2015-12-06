@@ -9,20 +9,29 @@ public class Dice : MonoBehaviour {
     public Player Parent
     {
         get { return this.parent; }
-        set { parent = value; }
+        set
+        {
+            if (parent == null) parent = value;
+
+        }
     }
 
     public int Value
     {
         get { return value; }
+        private set { this.value = value; }
     }
 
-	// Use this for initialization
-	void Start () {
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    void Start () {
         Refresh();
 	}
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame
+    /// </summary>
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -44,18 +53,28 @@ public class Dice : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// performs a dice throw
+    /// </summary>
     public void ThrowDice()
     {
-        value = Random.Range(5, 7);
+        Value = Random.Range(5, 7);
         Refresh();
         GameLogic.ExecuteTurn(value);
     }
 
+    /// <summary>
+    /// activtaes the dice, that is can be thrown
+    /// </summary>
+    /// <param name="isActive"></param>
     public void SetActive(bool isActive)
     {
         this.isActive = isActive;
     }
 
+    /// <summary>
+    /// adjusts the shown number on the dice
+    /// </summary>
     public void Refresh()
     {
         gameObject.GetComponent<TextMesh>().text = value.ToString();
