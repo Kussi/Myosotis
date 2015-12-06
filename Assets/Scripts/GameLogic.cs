@@ -207,6 +207,10 @@ public static class GameLogic {
     {
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
         playerOnTurn = (playerOnTurn + 1) % 4; //MagicNumber => 4 = Number of players
+
+        GameObject sun = GameObject.Find("Sun");
+        sun.GetComponent<Sun>().Angle = PlayerOnTurn.LightAngle;
+
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
         Debug.Log("[GameLogic] PlayerOnTurn: " + PlayerOnTurn.Color);
     }

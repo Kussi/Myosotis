@@ -9,6 +9,7 @@ public class Initializer : MonoBehaviour
     private const string StairFieldPrefix = "StairField";
     private const string HomeFieldPrefix = "HomeField";
     private const string GoalFieldPrefix = "GoalField";
+    private const string Light = "Sun";
 
     public const int GoalFieldIndex = 999;
 
@@ -22,21 +23,25 @@ public class Initializer : MonoBehaviour
     private const int RedStairBench = 67;
     private const int RedFirstStairStep = 100;
     private const int RedHomeField = 110;
+    private const int RedLightAngle = -135;
 
     private const int YellowHomeBench = 21;
     private const int YellowStairBench = 16;
     private const int YellowFirstStairStep = 200;
     private const int YellowHomeField = 210;
+    private const int YellowLightAngle = -225;
 
     private const int BlueHomeBench = 38;
     private const int BlueStairBench = 33;
     private const int BlueFirstStairStep = 300;
     private const int BlueHomeField = 310;
+    private const int BlueLightAngle = -315;
 
     private const int GreenHomeBench = 55;
     private const int GreenStairBench = 50;
     private const int GreenFirstStairStep = 400;
     private const int GreenHomeField = 410;
+    private const int GreenLightAngle = -45;
 
     private static Dictionary<int, GameFieldBase> gameFields;
     private static Player[] players;
@@ -93,6 +98,9 @@ public class Initializer : MonoBehaviour
         GameObject goal = GameObject.Find(GoalFieldPrefix + GoalFieldIndex.ToString("D3"));
         goal.AddComponent<GoalField>();
         gameFields[GoalFieldIndex] = goal.GetComponent<GoalField>();
+
+        // initializing Light
+        GameObject.Find(Light).AddComponent<Sun>();
     }
 
     /// <summary>
@@ -113,14 +121,14 @@ public class Initializer : MonoBehaviour
             case 1:
                 goto case 2;
             case 2:
-                players[0] = new Player("red", RedHomeField, RedHomeBench, RedStairBench, RedFirstStairStep);
-                players[1] = new Player("yellow", YellowHomeField, YellowHomeBench, YellowStairBench, YellowFirstStairStep);
+                players[0] = new Player("red", RedHomeField, RedHomeBench, RedStairBench, RedFirstStairStep, RedLightAngle);
+                players[1] = new Player("yellow", YellowHomeField, YellowHomeBench, YellowStairBench, YellowFirstStairStep, YellowLightAngle);
                 break;
             case 3:
-                players[2] = new Player("blue", BlueHomeField, BlueHomeBench, BlueStairBench, BlueFirstStairStep);
+                players[2] = new Player("blue", BlueHomeField, BlueHomeBench, BlueStairBench, BlueFirstStairStep, BlueLightAngle);
                 goto case 2;
             case 4:
-                players[3] = new Player("green", GreenHomeField, GreenHomeBench, GreenStairBench, GreenFirstStairStep);
+                players[3] = new Player("green", GreenHomeField, GreenHomeBench, GreenStairBench, GreenFirstStairStep, GreenLightAngle);
                 goto case 3;
             default:
                 Console.WriteLine("Default case");

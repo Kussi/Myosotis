@@ -16,6 +16,7 @@ public class Player {
     private readonly int homeBenchIndex;
     private readonly int stairBenchIndex;
     private readonly int firstStairStepIndex;
+    private readonly int lightAngle;
 
     public string Color
     {
@@ -62,6 +63,11 @@ public class Player {
         get { return firstStairStepIndex; }
     }
 
+    public int LightAngle
+    {
+        get { return lightAngle; }
+    }
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -70,7 +76,7 @@ public class Player {
     /// <param name="homeBench">index of the players homebench</param>
     /// <param name="stairBench">index of the the players stairbench</param>
     /// <param name="firstStairStep">index of the players first stair step</param>
-    public Player(string color, int homeField, int homeBench, int stairBench, int firstStairStep)
+    public Player(string color, int homeField, int homeBench, int stairBench, int firstStairStep, int lightAngle)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
 
@@ -78,6 +84,8 @@ public class Player {
         homeBenchIndex = homeBench;
         stairBenchIndex = stairBench;
         firstStairStepIndex = firstStairStep;
+
+        this.lightAngle = lightAngle;
 
         // initiate the first Playerstate
         this.state = new PlayerStateAllAtHome();

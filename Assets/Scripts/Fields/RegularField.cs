@@ -28,7 +28,17 @@ public class RegularField : GameFieldBase
     public bool IsBarrier
     {
         // if there are two figures present, FieldPosition[0] has to be free
-        get { return FieldPositions[1].IsOccupied && FieldPositions[2].IsOccupied; }
+        get
+        {
+            if (IsBend)
+            {
+                return FieldPositions[0].IsOccupied && FieldPositions[1].IsOccupied;
+            }
+            else
+            {
+                return FieldPositions[1].IsOccupied && FieldPositions[2].IsOccupied;
+            }
+        }
     }
 
     protected override bool IsOccupied
