@@ -64,7 +64,6 @@ public static class GameLogic {
         {
             PlayerOnTurn.State.ThrowsRegular(number);
         }
-        PlayerOnTurn.RefreshState();
     }
 
     /// <summary>
@@ -250,9 +249,10 @@ public static class GameLogic {
             GoOneStepOnStair(figure, isLastStep);
         }
 
-        // Figure walks on the Regular Fields and is stepping over the last field index 
+        // Figure walks on the Regular Fields 
         else if(nextPosition <= nofRegularFields)
         {
+            // if it steps over the last regular field index
             nextPosition %= nofRegularFields;
 
             // Next Field is NOT blocked by a barrier
@@ -342,8 +342,7 @@ public static class GameLogic {
     /// <param name="figure">figure, that goes home</param>
     private static void GoHome(GameFigure figure)
     {
-        HomeField homeField = (HomeField)gameFields[figure.Parent.HomeFieldIndex];
-        PlaceFigureOnField(figure, homeField);
+        PlaceFigureOnField(figure, figure.Parent.HomeFieldIndex);
     }
 
     /// <summary>
@@ -363,11 +362,12 @@ public static class GameLogic {
     /// </summary>
     /// <param name="figure">figure, that will be moved</param>
     /// <param name="field">target field</param>
-    private static void PlaceFigureOnField(GameFigure figure, GameFieldBase field)
+    private static void PlaceFigureOnField(GameFigure figure, GameFieldBase nextField)
     {
-        Debug.Log(figure);
-        figure.Field.RemoveGameFigure(figure);
-        field.PlaceGameFigure(figure);
+        Debug.Log(figure + " will be placed on field " + nextField);
+        GameFieldBase actualField = figure.Field;
+        actualField.RemoveGameFigure(figure);
+        nextField.PlaceGameFigure(figure);
     }
 
     /// <summary>
@@ -376,6 +376,7 @@ public static class GameLogic {
     private static void FinishTurn()
     {
         foreach (GameFigure gameFigure in PlayerOnTurn.GameFigures) gameFigure.SetActive(false);
+        foreach (Player player in players) player.RefreshState();
         GameLogic.State = new LogicStateThrowingDice();
     }
 

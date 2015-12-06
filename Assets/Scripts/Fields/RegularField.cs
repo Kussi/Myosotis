@@ -101,10 +101,10 @@ public class RegularField : GameFieldBase
         }
         else
         {
-            if(FieldPositions[1].GameFigure == null && FieldPositions[2].GameFigure == null)
+            if(!FieldPositions[1].IsOccupied && !FieldPositions[2].IsOccupied)
             {
                 // if there is no figure on this field yet
-                if (FieldPositions[0].GameFigure == null)
+                if (!FieldPositions[0].IsOccupied)
                 {
                     FieldPositions[0].GameFigure = figure;
                 }
@@ -128,19 +128,27 @@ public class RegularField : GameFieldBase
     {
         if(IsBend)
         {
-            if (FieldPositions[0] == null && FieldPositions[1] != null)
+            if (!FieldPositions[0].IsOccupied && FieldPositions[1].IsOccupied)
             {
-                FieldPositions[0] = FieldPositions[1];
-                FieldPositions[1] = null;
+                FieldPositions[0].GameFigure = FieldPositions[1].GameFigure;
+                FieldPositions[1].GameFigure = null;
             }
         }
         else
         {
             // it doesn't matter whether FieldPosition[2] is null or not
-            if (FieldPositions[1] == null) FieldPositions[0] = FieldPositions[2];
-            
+            if (!FieldPositions[1].IsOccupied)
+            {
+                FieldPositions[0].GameFigure = FieldPositions[2].GameFigure;
+                FieldPositions[2].GameFigure = null;
+            }
+
             // it doesn't matter whether FieldPosition[1] is null or not
-            else if (FieldPositions[2] == null) FieldPositions[0] = FieldPositions[1];
+            else if (!FieldPositions[2].IsOccupied)
+            {
+                FieldPositions[0].GameFigure = FieldPositions[1].GameFigure;
+                FieldPositions[1].GameFigure = null;
+            }
         }
     }
 }

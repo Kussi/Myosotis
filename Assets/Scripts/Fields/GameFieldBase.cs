@@ -88,14 +88,13 @@ public abstract class GameFieldBase : MonoBehaviour
 
         for (int i = 0; i < FieldPositions.Length; ++i)
         {
-            if (FieldPositions[i].GameFigure != null) {
-                if (FieldPositions[i].GameFigure.Equals(figure))
-                {
-                    FieldPositions[i].GameFigure = null;
-                    figureFound = true;
-                    break;
-                }
+            if (FieldPositions[i].IsOccupied && FieldPositions[i].GameFigure.Equals(figure))
+            {
+                FieldPositions[i].GameFigure = null;
+                figureFound = true;
+                break;
             }
+            
         }
         if (!figureFound) throw new InvalidGameStateException("Figure cannot be removed from this Field (" + gameObject.name + ")");
 
@@ -109,8 +108,7 @@ public abstract class GameFieldBase : MonoBehaviour
     {
         foreach(FieldPosition fieldPosition in fieldPositions)
         {
-            Vector3 figurePosition = fieldPosition.GameFigure.transform.position;
-            if (fieldPosition.IsOccupied && figurePosition != fieldPosition.transform.position)
+            if (fieldPosition.IsOccupied && fieldPosition.GameFigure.transform.position != fieldPosition.transform.position)
             {
                 fieldPosition.GameFigure.Field = this;
                 fieldPosition.GameFigure.transform.position = fieldPosition.transform.position;

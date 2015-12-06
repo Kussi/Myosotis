@@ -2,7 +2,7 @@
 
 public class FieldPosition : MonoBehaviour {
 
-    public GameFigure gameFigure;
+    private GameFigure gameFigure;
 
     public bool IsOccupied
     {
