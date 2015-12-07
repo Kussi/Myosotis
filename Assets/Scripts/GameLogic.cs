@@ -207,7 +207,21 @@ public static class GameLogic {
     public static void NextPlayer()
     {
         PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
-        playerOnTurn = (playerOnTurn + 1) % 4; //MagicNumber => 4 = Number of players
+
+        // if the current player entered the goal field with his last figure 
+        if(PlayerOnTurn.State.GetType() == typeof(PlayerStateStateAllInGoal))
+        {
+            Player[] temp = new Player[players.Length - 1];
+            int index = 0;
+            for (int i = 0; i < players.Length; ++i)
+            {
+                if (i != playerOnTurn) temp[index++] = players[i];
+            }
+            players = temp;
+        }
+        else playerOnTurn += 1;
+
+        playerOnTurn %= players.Length;
 
         GameObject sun = GameObject.Find("Sun");
         sun.GetComponent<Sun>().Angle = PlayerOnTurn.LightAngle;
@@ -250,7 +264,8 @@ public static class GameLogic {
         }
         
         // Figure has entered the stair and is from now on only walking on the stair steps
-        else if (gameFields[actualPosition].GetType() == typeof(StairField)) 
+        else if (gameFields[actualPosition].GetType() == typeof(StairField) 
+            || gameFields[actualPosition].GetType() == typeof(GoalField)) 
         {
             GoOneStepOnStair(figure, isLastStep);
         }
@@ -288,11 +303,10 @@ public static class GameLogic {
         int nextPosition = actualPosition + 1;
 
         if (hasToGoBackwards) GoOneStepBack(figure);
-        else if (nextPosition % 100 == Initializer.NofStairFieldsEachPlayer - 1)
+        else if (nextPosition % 100 == Initializer.NofStairFieldsEachPlayer)
         {
             PlaceFigureOnField(figure, Initializer.GoalFieldIndex);
             if (!isLastStep) hasToGoBackwards = true;
-            Debug.Log(figure + " is on goalfield and has to go backwards!! " + !isLastStep);
         }
         else
         {
@@ -316,8 +330,17 @@ public static class GameLogic {
     public static void GoOneStepBack(GameFigure figure)
     {
         int actualPosition = figure.Field.Index;
-        int nextPosition = actualPosition - 1;
+        int nextPosition;
 
+        if(actualPosition == Initializer.GoalFieldIndex)
+        {
+            nextPosition = figure.Parent.FirstStairStepIndex + 6;
+        }
+        else
+        {
+            nextPosition = actualPosition - 1;
+        }
+        
         PlaceFigureOnField(figure, nextPosition);
     }
 
