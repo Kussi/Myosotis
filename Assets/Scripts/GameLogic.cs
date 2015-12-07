@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public static class GameLogic {
@@ -143,7 +144,7 @@ public static class GameLogic {
     /// </summary>
     /// <param name="figures">Regularly all GameFigures of a Player</param>
     /// <returns>All Figures, which are currently on a RegularField or on a StairField</returns>
-    private static GameFigure[] GetFiguresOnRegularOrStairField(GameFigure[] figures)
+    public static GameFigure[] GetFiguresOnRegularOrStairField(GameFigure[] figures)
     {
         ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
@@ -225,6 +226,7 @@ public static class GameLogic {
         for(int i = 0; i < figure.Parent.Dice.Value; ++i)
         {
             GoOneStep(figure, i == figure.Parent.Dice.Value - 1);
+            Debug.Log("Done one step " + i);
         }
         hasToGoBackwards = false;
         FinishTurn();  
@@ -286,10 +288,11 @@ public static class GameLogic {
         int nextPosition = actualPosition + 1;
 
         if (hasToGoBackwards) GoOneStepBack(figure);
-        else if (nextPosition % 100 == Initializer.NofStairFieldsEachPlayer)
+        else if (nextPosition % 100 == Initializer.NofStairFieldsEachPlayer - 1)
         {
             PlaceFigureOnField(figure, Initializer.GoalFieldIndex);
             if (!isLastStep) hasToGoBackwards = true;
+            Debug.Log(figure + " is on goalfield and has to go backwards!! " + !isLastStep);
         }
         else
         {

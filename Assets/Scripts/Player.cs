@@ -119,12 +119,12 @@ public class Player {
     /// </summary>
     public void RefreshState()
     {
-        int figuresOnGameField = GameLogic.GetFiguresOnRegularField(gameFigures).Length;
+        int figuresOnGameOrStairField = GameLogic.GetFiguresOnRegularOrStairField(gameFigures).Length;
         int figuresOnGoalField = GameLogic.GetFiguresOnGoalField(gameFigures).Length;
         int figuresOnHomeField = GameLogic.GetFiguresOnHomeField(gameFigures).Length;
 
         if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
-        else if (figuresOnGameField == 0) State = new PlayerStateAllAtHome();
+        else if (figuresOnGameOrStairField == 0) State = new PlayerStateAllAtHome();
         else State = new PlayerStateAtLeastOneOut();
     }
 }
