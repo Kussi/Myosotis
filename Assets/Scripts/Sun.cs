@@ -12,7 +12,8 @@ public class Sun : MonoBehaviour {
         get { return currentAngle.y; }
         set
         {
-            while(newAngle.y % 360 > value + 1 || newAngle.y % 360 < value -1) newAngle.y -= 90;
+            // according to calculation inaccuracies of Unity a range has to be catched
+            while ((newAngle.y % 360 + 360) % 360 < value - 1 || (newAngle.y % 360 + 360) % 360 > value + 1) newAngle.y -= 90;
         }
     }
 

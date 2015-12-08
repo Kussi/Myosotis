@@ -23,25 +23,25 @@ public class Initializer : MonoBehaviour
     private const int RedStairBench = 67;
     private const int RedFirstStairStep = 100;
     private const int RedHomeField = 110;
-    private const int RedLightAngle = -135;
+    private const int RedLightAngle = 90;
 
     private const int YellowHomeBench = 21;
     private const int YellowStairBench = 16;
     private const int YellowFirstStairStep = 200;
     private const int YellowHomeField = 210;
-    private const int YellowLightAngle = -225;
+    private const int YellowLightAngle = 0;
 
     private const int BlueHomeBench = 38;
     private const int BlueStairBench = 33;
     private const int BlueFirstStairStep = 300;
     private const int BlueHomeField = 310;
-    private const int BlueLightAngle = -315;
+    private const int BlueLightAngle = 270;
 
     private const int GreenHomeBench = 55;
     private const int GreenStairBench = 50;
     private const int GreenFirstStairStep = 400;
     private const int GreenHomeField = 410;
-    private const int GreenLightAngle = -45;
+    private const int GreenLightAngle = 180;
 
     private static Dictionary<int, GameFieldBase> gameFields;
     private static Player[] players;

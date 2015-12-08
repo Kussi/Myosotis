@@ -16,7 +16,7 @@ public class Player {
     private readonly int homeBenchIndex;
     private readonly int stairBenchIndex;
     private readonly int firstStairStepIndex;
-    private readonly int lightAngle;
+    private readonly int playerAngle;
 
     public string Color
     {
@@ -65,7 +65,7 @@ public class Player {
 
     public int LightAngle
     {
-        get { return lightAngle; }
+        get { return (playerAngle + 180 - 45) % 360; }
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public class Player {
     /// <param name="homeBench">index of the players homebench</param>
     /// <param name="stairBench">index of the the players stairbench</param>
     /// <param name="firstStairStep">index of the players first stair step</param>
-    public Player(string color, int homeField, int homeBench, int stairBench, int firstStairStep, int lightAngle)
+    public Player(string color, int homeField, int homeBench, int stairBench, int firstStairStep, int playerAngle)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
 
@@ -85,7 +85,7 @@ public class Player {
         stairBenchIndex = stairBench;
         firstStairStepIndex = firstStairStep;
 
-        this.lightAngle = lightAngle;
+        this.playerAngle = playerAngle;
 
         // initiate the first Playerstate
         this.state = new PlayerStateAllAtHome();
@@ -109,6 +109,11 @@ public class Player {
         dice.name = (Color + "Dice");
         dice.transform.parent = GameObject.Find(Color + ParentDiceObjectSuffix).transform;
         dice.transform.localPosition = new Vector3(0, 0, 0);
+
+        // rotate the dice towards the player
+        Vector3 diceRotation = dice.transform.eulerAngles;
+        diceRotation = new Vector3(diceRotation.x, playerAngle, diceRotation.z);
+        dice.transform.eulerAngles = diceRotation;
 
         Dice = (Dice)dice.GetComponent<Dice>();
         Dice.Parent = this;

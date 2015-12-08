@@ -58,7 +58,7 @@ public class Dice : MonoBehaviour {
     /// </summary>
     public void ThrowDice()
     {
-        Value = Random.Range(5, 7);
+        Value = Random.Range(1, 7);
         Refresh();
         GameLogic.ExecuteTurn(value);
     }
