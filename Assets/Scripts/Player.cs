@@ -106,7 +106,7 @@ public class Player {
         }
 
         // instantiate the dice
-        GameObject dice = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Dice", typeof(GameObject)));
+        GameObject dice = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/_Dice", typeof(GameObject)));
         dice.name = (Color + "Dice");
         dice.transform.parent = GameObject.Find(Color + ParentDiceObjectSuffix).transform;
         dice.transform.localPosition = new Vector3(0, 0, 0);

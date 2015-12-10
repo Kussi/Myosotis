@@ -77,6 +77,37 @@ public class Dice : MonoBehaviour {
     /// </summary>
     public void Refresh()
     {
-        gameObject.GetComponent<TextMesh>().text = value.ToString();
+        GameObject d = GameObject.Find(gameObject.name + "/default");
+        Material number;
+
+        switch(Value)
+        {
+            case 1:
+                number = Resources.Load("Materials/Dice_Texture1", typeof(Material)) as Material;
+                break;
+            case 2:
+                number = Resources.Load("Materials/Dice_Texture2", typeof(Material)) as Material;
+                break;
+            case 3:
+                number = Resources.Load("Materials/Dice_Texture3", typeof(Material)) as Material;
+                break;
+            case 4:
+                number = Resources.Load("Materials/Dice_Texture4", typeof(Material)) as Material;
+                break;
+            case 5:
+                number = Resources.Load("Materials/Dice_Texture5", typeof(Material)) as Material;
+                break;
+            case 6:
+                number = Resources.Load("Materials/Dice_Texture6", typeof(Material)) as Material;
+                break;
+            default:
+                number = Resources.Load("Materials/Dice_Texture1", typeof(Material)) as Material;
+                break;
+        }
+
+        Material[] mats = new Material[2];
+        mats[0] = d.GetComponent<MeshRenderer>().materials[0];
+        mats[1] = number;
+        d.GetComponent<MeshRenderer>().materials = mats;
     }
 }

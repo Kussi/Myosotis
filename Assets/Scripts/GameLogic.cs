@@ -42,7 +42,13 @@ public static class GameLogic {
         GameLogic.State = new LogicStateThrowingDice();
         GameLogic.PlaceAllFiguresAtHome();
 
-        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+
+        GameObject diceTexture = GameObject.Find(PlayerOnTurn.Dice.gameObject.name + "/default");
+        Material[] mats = new Material[2];
+        mats[0] = Resources.Load("Materials/DiceOnTurn", typeof(Material)) as Material;
+        mats[1] = diceTexture.GetComponent<MeshRenderer>().materials[1];
+        diceTexture.GetComponent<MeshRenderer>().materials = mats;
+
         Debug.Log("[GameLogic] Game has initialized successfully");
     }
 
@@ -206,10 +212,14 @@ public static class GameLogic {
     /// </summary>
     public static void NextPlayer()
     {
-        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(0F,0F,0F,1F);
+        GameObject diceTexture = GameObject.Find(PlayerOnTurn.Dice.gameObject.name + "/default");
+        Material[] mats = new Material[2];
+        mats[0] = Resources.Load("Materials/DiceRegular", typeof(Material)) as Material;
+        mats[1] = diceTexture.GetComponent<MeshRenderer>().materials[1];
+        diceTexture.GetComponent<MeshRenderer>().materials = mats;
 
         // if the current player entered the goal field with his last figure 
-        if(PlayerOnTurn.State.GetType() == typeof(PlayerStateStateAllInGoal))
+        if (PlayerOnTurn.State.GetType() == typeof(PlayerStateStateAllInGoal))
         {
             Player[] temp = new Player[players.Length - 1];
             int index = 0;
@@ -226,7 +236,12 @@ public static class GameLogic {
         GameObject sun = GameObject.Find("Sun");
         sun.GetComponent<Sun>().Angle = PlayerOnTurn.LightAngle;
 
-        PlayerOnTurn.Dice.gameObject.GetComponent<TextMesh>().color = new Color(255F, 0F, 0F, 1F);
+        diceTexture = GameObject.Find(PlayerOnTurn.Dice.gameObject.name + "/default");
+        mats = new Material[2];
+        mats[0] = Resources.Load("Materials/DiceOnTurn", typeof(Material)) as Material;
+        mats[1] = diceTexture.GetComponent<MeshRenderer>().materials[1];
+        diceTexture.GetComponent<MeshRenderer>().materials = mats;
+
         Debug.Log("[GameLogic] PlayerOnTurn: " + PlayerOnTurn.Color);
     }
 
