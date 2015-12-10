@@ -95,6 +95,7 @@ public class Player {
         for (int i = 0; i < gameFigures.Length; ++i)
         {
             GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/GameFigure", typeof(GameObject)));
+            figure.AddComponent<GameFigure>();
             gameFigures[i] = (GameFigure)figure.GetComponent<GameFigure>();
             gameFigures[i].gameObject.name = (Color + "GameFigure" + i);
             gameFigures[i].transform.parent = GameObject.Find(Color + ParentFigureObjectSuffix).transform;
@@ -115,6 +116,7 @@ public class Player {
         diceRotation = new Vector3(diceRotation.x, playerAngle, diceRotation.z);
         dice.transform.eulerAngles = diceRotation;
 
+        dice.AddComponent<Dice>();
         Dice = (Dice)dice.GetComponent<Dice>();
         Dice.Parent = this;
 	}
