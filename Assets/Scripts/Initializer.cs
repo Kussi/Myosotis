@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 public class Initializer : MonoBehaviour
 {
@@ -50,9 +51,26 @@ public class Initializer : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+
+        GameObject.Find("Scene").AddComponent<BackgroundMusic>();
+        
+
         nofPlayers = 4; // TODO Magic Number. Will be replaced with the menu call
         InitializeGameFields();
         InitializePlayers(nofPlayers);
+
+        
+
+        //string path = @"D:\Desktop\test.txt";
+        //// Open the file to read from.
+        //using (StreamReader sr = File.OpenText(path))
+        //{
+        //    string s = "";
+        //    while ((s = sr.ReadLine()) != null)
+        //    {
+        //        Debug.Log(s);
+        //    }
+        //}
 
         GameLogic.Initialize(players, gameFields);
     }
