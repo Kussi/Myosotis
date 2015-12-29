@@ -44,9 +44,7 @@ public class GameFigure : MonoBehaviour
                     if (hit.collider.name == gameObject.name)
                     {
                         SetActive(false);
-
-                        if (this.Field.GetType() == typeof(HomeField)) GameLogic.ReleaseFigure(this);
-                        else GameLogic.MoveFigure(this);
+                        GameCtrl.notify(this);
                     }
                 }
             }

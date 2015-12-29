@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public static class FileManager {
+public static class FileCtrl {
 
     /// <summary>
     /// Checks whether the current RuntimePlatform is a windows/osx editor or not.

@@ -3,7 +3,7 @@
 public class Player {
 
     private const int NofGameFigures = 4;
-    private const string ParentFigureObjectSuffix = "Corner";
+    
     private const string ParentDiceObjectSuffix = "DicePosition";
 
     private Dice dice;
@@ -23,18 +23,9 @@ public class Player {
         get { return color; }
     }
 
-    public Dice Dice
+    public string Name
     {
-        get { return dice; }
-        private set
-        {
-            if (dice == null) dice = value;
-        }
-    }
-
-    public GameFigure[] GameFigures
-    {
-        get { return gameFigures; }
+        get { return Color; }
     }
 
     public PlayerStateBase State
@@ -43,82 +34,23 @@ public class Player {
         set { state = value; }
     }
 
-    public int HomeFieldIndex
-    {
-        get { return homeFieldIndex; }
-    }
+    
 
-    public int HomeBenchIndex
-    {
-        get { return homeBenchIndex; }
-    }
-
-    public int StairBenchIndex
-    {
-        get { return stairBenchIndex; }
-    }
-
-    public int FirstStairStepIndex
-    {
-        get { return firstStairStepIndex; }
-    }
-
-    public int LightAngle
-    {
-        get { return (playerAngle + 180 - 45) % 360; }
-    }
+    //public int LightAngle
+    //{
+    //    get { return (playerAngle + 180 - 45) % 360; }
+    //}
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="color">color of the player</param>
-    /// <param name="homeField">index of the players homefield</param>
-    /// <param name="homeBench">index of the players homebench</param>
-    /// <param name="stairBench">index of the the players stairbench</param>
-    /// <param name="firstStairStep">index of the players first stair step</param>
-    public Player(string color, int homeField, int homeBench, int stairBench, int firstStairStep, int playerAngle)
+    public Player(string color)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
 
-        homeFieldIndex = homeField;
-        homeBenchIndex = homeBench;
-        stairBenchIndex = stairBench;
-        firstStairStepIndex = firstStairStep;
-
-        this.playerAngle = playerAngle;
-
         // initiate the first Playerstate
-        this.state = new PlayerStateAllAtHome();
-
-        // instantiate all gameFigures 
-        gameFigures = new GameFigure[NofGameFigures];
-        for (int i = 0; i < gameFigures.Length; ++i)
-        {
-            GameObject figure = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/GameFigure", typeof(GameObject)));
-            figure.AddComponent<GameFigure>();
-            gameFigures[i] = (GameFigure)figure.GetComponent<GameFigure>();
-            gameFigures[i].gameObject.name = (Color + "GameFigure" + i);
-            gameFigures[i].transform.parent = GameObject.Find(Color + ParentFigureObjectSuffix).transform;
-            gameFigures[i].Parent = this;
-
-            Material material = (Material)Resources.Load("Materials/" + Color + "Player", typeof(Material));
-            gameFigures[i].gameObject.GetComponent<Renderer>().material = material;
-        }
-
-        // instantiate the dice
-        GameObject dice = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/_Dice", typeof(GameObject)));
-        dice.name = (Color + "Dice");
-        dice.transform.parent = GameObject.Find(Color + ParentDiceObjectSuffix).transform;
-        dice.transform.localPosition = new Vector3(0, 0, 0);
-
-        // rotate the dice towards the player
-        Vector3 diceRotation = dice.transform.eulerAngles;
-        diceRotation = new Vector3(diceRotation.x, playerAngle, diceRotation.z);
-        dice.transform.eulerAngles = diceRotation;
-
-        dice.AddComponent<Dice>();
-        Dice = (Dice)dice.GetComponent<Dice>();
-        Dice.Parent = this;
+        this.state = new PlayerStateAllAtHome();       
 	}
 
     /// <summary>
@@ -126,9 +58,9 @@ public class Player {
     /// </summary>
     public void RefreshState()
     {
-        int figuresOnGameOrStairField = GameLogic.GetFiguresOnRegularOrStairField(gameFigures).Length;
-        int figuresOnGoalField = GameLogic.GetFiguresOnGoalField(gameFigures).Length;
-        int figuresOnHomeField = GameLogic.GetFiguresOnHomeField(gameFigures).Length;
+        int figuresOnGameOrStairField = GameCtrl.GetFiguresOnRegularOrStairField(gameFigures).Length;
+        int figuresOnGoalField = GameCtrl.GetFiguresOnGoalField(gameFigures).Length;
+        int figuresOnHomeField = GameCtrl.GetFiguresOnHomeField(gameFigures).Length;
 
         if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
         else if (figuresOnGameOrStairField == 0) State = new PlayerStateAllAtHome();

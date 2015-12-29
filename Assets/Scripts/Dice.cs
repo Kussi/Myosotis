@@ -60,7 +60,7 @@ public class Dice : MonoBehaviour {
     {
         Value = Random.Range(1, 7);
         Refresh();
-        GameLogic.ExecuteTurn(value);
+        GameCtrl.notify(this);
     }
 
     /// <summary>

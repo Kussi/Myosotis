@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class StartMenu : MonoBehaviour {
 
+    private static readonly string DropdownGameObject = "PlayerSelection";
+
     // Colors of selected button
     private static readonly Color32 SelectedNormal = new Color32(120, 120, 255, 255);
     private static readonly Color32 SelectedHighlighted = new Color32(120, 120, 255, 255);
@@ -14,19 +16,24 @@ public class StartMenu : MonoBehaviour {
     private static readonly Color32 DeselectedHighlighted = new Color32(255, 255, 255, 255);
     private static readonly Color32 DeselectedPressed = new Color32(200, 200, 200, 255);
 
-
     private static readonly int MinNofPlayers = 2;
     private static readonly int MaxNofPlayers = 4;
 
+    private static readonly int UnpersonalizedPlayerIndex = 0;
+    private static readonly string UnpersonalizedPlayerName = "Spieler ohne Personalisierung";
+
     private static int NofPlayers = MinNofPlayers;
+
+    private static int PlayerIndex;
+    private static string PlayerName;
 
 
     void Awake()
     {
         UpdateDropdown();
-        SetNofPlayers(NofPlayers);
+        ChangeNofPlayers(NofPlayers);
 
-        FileManager.GetPlayerList();
+        FileCtrl.GetPlayerList();
     }
 
     /// <summary>
@@ -35,15 +42,14 @@ public class StartMenu : MonoBehaviour {
     public void StartGame()
     {
         gameObject.GetComponent<CanvasGroup>().alpha = 0f; // menu disappears
-
-
+        Initializer.SetupGame(PlayerName, NofPlayers);
     }
 
     /// <summary>
-    /// Sets the number of Players, who want to play a game.
+    /// changes the number of players, who want to play a game.
     /// </summary>
-    /// <param name="number"></param>
-    public void SetNofPlayers(int number)
+    /// <param name="number">number of players</param>
+    public void ChangeNofPlayers(int number)
     {
         if (number < MinNofPlayers || number > MaxNofPlayers) throw new InvalidGameStateException();
         NofPlayers = number;
@@ -70,17 +76,41 @@ public class StartMenu : MonoBehaviour {
     }
 
     /// <summary>
+    /// changes the player, whose personaldata shall be loaded
+    /// </summary>
+    /// <param name="value">index of dropdown list</param>
+    public void ChangePlayer(int value)
+    {
+        PlayerIndex = value;
+        PlayerName = GetSelectedPlayerName();
+    }
+
+    private string GetSelectedPlayerName()
+    {
+        Dropdown dropdown = GameObject.Find(DropdownGameObject).GetComponent<Dropdown>();
+        return dropdown.options[PlayerIndex].text;
+    }
+
+    /// <summary>
     /// fills the PlayerSelection dropdown with the player names. Only players will be added, whose playerdata directory is valid.
     /// </summary>
     private void UpdateDropdown()
     {
-        Dropdown dropdown = GameObject.Find("PlayerSelection").GetComponent<Dropdown>();
+        Dropdown dropdown = GameObject.Find(DropdownGameObject).GetComponent<Dropdown>();
         Dropdown.OptionData element;
 
-        foreach(string playerName in FileManager.GetPlayerList())
+        // add unpersonalized player first
+        element = new Dropdown.OptionData(UnpersonalizedPlayerName);
+        dropdown.options.Add(element);
+
+        // add personalized players after unpersonlized one
+        foreach(string playerName in FileCtrl.GetPlayerList())
         {
             element = new Dropdown.OptionData(playerName);
             dropdown.options.Add(element);
         }
+
+        dropdown.value = PlayerIndex;
+        GameObject.Find(DropdownGameObject + "/Label").GetComponent<Text>().text = GetSelectedPlayerName();
     }
 }
