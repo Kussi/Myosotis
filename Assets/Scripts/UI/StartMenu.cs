@@ -23,7 +23,10 @@ public class StartMenu : MonoBehaviour {
 
     void Awake()
     {
+        UpdateDropdown();
         SetNofPlayers(NofPlayers);
+
+        FileManager.GetPlayerList();
     }
 
     /// <summary>
@@ -31,10 +34,8 @@ public class StartMenu : MonoBehaviour {
     /// </summary>
     public void StartGame()
     {
+        gameObject.GetComponent<CanvasGroup>().alpha = 0f; // menu disappears
 
-
-        gameObject.GetComponent<CanvasGroup>().alpha = 0f;
-        //initialisieren
 
     }
 
@@ -69,22 +70,17 @@ public class StartMenu : MonoBehaviour {
     }
 
     /// <summary>
-    /// Makes a color fully transparent. If it is transparent already, it returns the same color.
+    /// fills the PlayerSelection dropdown with the player names. Only players will be added, whose playerdata directory is valid.
     /// </summary>
-    /// <param name="color"></param>
-    /// <returns>return the given color fully transparent</returns>
-    private static Color SetTransparent(Color color)
+    private void UpdateDropdown()
     {
-        return new Color(color.r, color.g, color.b, 0);
-    } 
+        Dropdown dropdown = GameObject.Find("PlayerSelection").GetComponent<Dropdown>();
+        Dropdown.OptionData element;
 
-    /// <summary>
-    /// Makes a color fully opaque. If it is opaque already, it returns the same color.
-    /// </summary>
-    /// <param name="color"></param>
-    /// <returns>return the given color fully opaque</returns>
-    public static Color SetOpaque(Color color)
-    {
-        return new Color(color.r, color.g, color.b, 255);
+        foreach(string playerName in FileManager.GetPlayerList())
+        {
+            element = new Dropdown.OptionData(playerName);
+            dropdown.options.Add(element);
+        }
     }
 }

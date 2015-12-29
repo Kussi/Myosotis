@@ -13,14 +13,14 @@ public class BackgroundMusic : MonoBehaviour {
         audioSource = gameObject.GetComponent<AudioSource>();
         musicFiles = new ArrayList();
 
-        String[] files = Directory.GetFiles(GetMusicDirectoryURL());
-        foreach (String file in files)
-        {
-            if(Path.GetExtension(file).Equals(".ogg"))
-            {
-                musicFiles.Add(file);
-            }
-        }
+        //String[] files = Directory.GetFiles(GetMusicDirectoryURL());
+        //foreach (String file in files)
+        //{
+        //    if(Path.GetExtension(file).Equals(".ogg"))
+        //    {
+        //        musicFiles.Add(file);
+        //    }
+        //}
 
         foreach(String file in musicFiles)
         {
@@ -36,15 +36,15 @@ public class BackgroundMusic : MonoBehaviour {
         }
     }
 	
-    private static string GetMusicDirectoryURL()
-    {
-        if (Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            return Application.dataPath + "/Resources/Music/";
-        }
-        else // (Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            return Application.dataPath + "/../Music/";
-        }
-    }
+    //private static string GetMusicDirectoryURL()
+    //{
+    //    if (Application.platform == RuntimePlatform.WindowsEditor)
+    //    {
+    //        return Application.dataPath + "/Resources/Music/";
+    //    }
+    //    else // (Application.platform == RuntimePlatform.WindowsPlayer)
+    //    {
+    //        return Application.dataPath + "/../Music/";
+    //    }
+    //}
 }
