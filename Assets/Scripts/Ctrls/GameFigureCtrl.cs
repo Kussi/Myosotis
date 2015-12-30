@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class GameFigureCtrl
 {
@@ -11,21 +12,103 @@ public static class GameFigureCtrl
     private static readonly string MaterialSuffix = "Player";
     private static readonly string GameFigureName = "GameFigure";
 
-    public static List<KeyValuePair<Player, GameFigure>> figures = new List<KeyValuePair<Player, GameFigure>>();
+    private static Dictionary<GameFigure, Player> figures = new Dictionary<GameFigure, Player>();
 
-    public static ArrayList GetGameFigures(Player player)
+    private static ArrayList GetGameFigures(Player player)
     {
         ArrayList result = new ArrayList();
+        Player element;
 
-        foreach (KeyValuePair<Player, GameFigure> figure in figures)
+        foreach (GameFigure figure in figures.Keys)
         {
-            if (figure.Key.Equals(player))
+            element = GetPlayer(figure);
+            if (element.Equals(player))
             {
-                result.Add(figure.Value);
+                result.Add(figure);
             }
         }
-        if(figures.Count % result.Count != 0) throw new InvalidGameStateException();
+        if (figures.Count % result.Count != 0) throw new InvalidGameStateException();
         return result;
+    }
+
+    public static Player GetPlayer(GameFigure figure)
+    {
+        Player result;
+
+        if (!figures.TryGetValue(figure, out result))
+            throw new InvalidGameStateException();
+        return result;
+    }
+
+    public static void Notify(GameFigure figure)
+    {
+        GameCtrl.Notify(figure);
+    }
+
+    public static void ActivateReleasedFigures(Player player)
+    {
+        ArrayList figures = GetGameFigures(player);
+        foreach (GameFigure figure in figures)
+        {
+            if (FieldCtrl.IsHomeField(figure.Field))
+                ActivateFigure(figure);
+        }
+    }
+
+    public static void ActivateAllFigures(Player player)
+    {
+        ArrayList figures = GetGameFigures(player);
+        foreach (GameFigure figure in figures)
+            ActivateFigure(figure);
+    }
+
+    public static ArrayList GetFiguresOnGoalField(Player player)
+    {
+        ArrayList figures = GetGameFigures(player);
+        ArrayList result = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (FieldCtrl.IsGoalField(figure.Field))
+                result.Add(figure);
+        }
+        return result;
+    }
+
+    public static ArrayList GetFiguresOnHomeField(Player player)
+    {
+        ArrayList figures = GetGameFigures(player);
+        ArrayList result = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (FieldCtrl.IsHomeField(figure.Field))
+                result.Add(figure);
+        }
+        return result;
+    }
+
+    public static ArrayList GetFiguresOnRegularOrStairField(Player player)
+    {
+        ArrayList figures = GetGameFigures(player);
+        ArrayList result = new ArrayList();
+        foreach (GameFigure figure in figures)
+        {
+            if (!FieldCtrl.IsHomeField(figure.Field) && !FieldCtrl.IsGoalField(figure.Field))
+                result.Add(figure);
+        }
+        return result;
+    }
+
+    private static void ActivateFigure(GameFigure figure)
+    {
+        figure.SetActive(true);
+    }
+
+    public static void PlaceGameFiguresAtHome()
+    {
+        foreach (GameFigure figure in figures.Keys)
+        {
+            FieldCtrl.PlaceFigureOnHomeField(figure);
+        }
     }
 
     public static void InitializeGameFigures(ArrayList players, int nofGameFigures)
@@ -47,7 +130,7 @@ public static class GameFigureCtrl
                 GameFigure figure = (GameFigure)figureObject.GetComponent<GameFigure>();
 
                 // adding figure to the list
-                figures.Add(new KeyValuePair<Player, GameFigure>(player, figure));
+                figures.Add(figure, player);
             }
         }
     }

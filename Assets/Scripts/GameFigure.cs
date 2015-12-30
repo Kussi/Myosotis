@@ -6,7 +6,7 @@ public class GameFigure : MonoBehaviour
     private const float GameFigueScale = 0.6F;
 
     private Player parent;
-    private GameFieldBase field;
+    private int field;
     private bool isActive = false;
 
     public Player Parent
@@ -18,10 +18,9 @@ public class GameFigure : MonoBehaviour
         }
     }
 
-    public GameFieldBase Field
+    public int Field
     {
         get { return field; }
-        set { field = value; }
     }
 
     /// <summary>
@@ -44,7 +43,7 @@ public class GameFigure : MonoBehaviour
                     if (hit.collider.name == gameObject.name)
                     {
                         SetActive(false);
-                        GameCtrl.notify(this);
+                        GameCtrl.Notify(this);
                     }
                 }
             }

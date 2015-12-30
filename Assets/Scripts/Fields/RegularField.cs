@@ -32,11 +32,11 @@ public class RegularField : GameFieldBase
         {
             if (IsBend)
             {
-                return FieldPositions[0].IsOccupied && FieldPositions[1].IsOccupied;
+                return fieldPositions[0].IsOccupied && fieldPositions[1].IsOccupied;
             }
             else
             {
-                return FieldPositions[1].IsOccupied && FieldPositions[2].IsOccupied;
+                return fieldPositions[1].IsOccupied && fieldPositions[2].IsOccupied;
             }
         }
     }
@@ -51,7 +51,7 @@ public class RegularField : GameFieldBase
             }
             else
             {
-                if (FieldPositions[1].GameFigure != null && FieldPositions[2].GameFigure != null) return true;
+                if (fieldPositions[1].GameFigure != null && fieldPositions[2].GameFigure != null) return true;
                 return false;
             }
         }
@@ -76,7 +76,7 @@ public class RegularField : GameFieldBase
             SetFieldPositions(new FieldPosition[figureCapacity + 1]);
         }        
 
-        for (int i = 0; i < FieldPositions.Length; ++i)
+        for (int i = 0; i < fieldPositions.Length; ++i)
         {
             GameObject positionObject = new GameObject();
             positionObject.name = "position" + i;
@@ -86,7 +86,7 @@ public class RegularField : GameFieldBase
             else positionObject.transform.localPosition = regularPositions[i];
 
             positionObject.AddComponent<FieldPosition>();
-            FieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
         }
     }
 
@@ -94,37 +94,37 @@ public class RegularField : GameFieldBase
     /// Removes the GameFigure from its actual field an places it here
     /// </summary>
     /// <param name="figure">Figure that has to be moved</param>
-    public override void PlaceGameFigure(GameFigure figure)
+    public override void PlaceFigure(GameFigure figure)
     {
         if(IsOccupied) throw new InvalidGameStateException("Figure cannot be placed on this Field (" + gameObject.name + ")");
 
         if (IsBend)
         {
-            for (int i = 0; i < FieldPositions.Length; ++i)
+            for (int i = 0; i < fieldPositions.Length; ++i)
             {
-                if (!FieldPositions[i].IsOccupied)
+                if (!fieldPositions[i].IsOccupied)
                 {
-                    FieldPositions[i].GameFigure = figure;
+                    fieldPositions[i].GameFigure = figure;
                     break;
                 }
             }
         }
         else
         {
-            if(!FieldPositions[1].IsOccupied && !FieldPositions[2].IsOccupied)
+            if(!fieldPositions[1].IsOccupied && !fieldPositions[2].IsOccupied)
             {
                 // if there is no figure on this field yet
-                if (!FieldPositions[0].IsOccupied)
+                if (!fieldPositions[0].IsOccupied)
                 {
-                    FieldPositions[0].GameFigure = figure;
+                    fieldPositions[0].GameFigure = figure;
                 }
 
                 // if there is already one figure on this field, it has to be replaced
                 else
                 {
-                    FieldPositions[1].GameFigure = FieldPositions[0].GameFigure;
-                    FieldPositions[0].GameFigure = null;
-                    FieldPositions[2].GameFigure = figure;
+                    fieldPositions[1].GameFigure = fieldPositions[0].GameFigure;
+                    fieldPositions[0].GameFigure = null;
+                    fieldPositions[2].GameFigure = figure;
                 }
             }
         }
@@ -138,27 +138,32 @@ public class RegularField : GameFieldBase
     {
         if(IsBend)
         {
-            if (!FieldPositions[0].IsOccupied && FieldPositions[1].IsOccupied)
+            if (!fieldPositions[0].IsOccupied && fieldPositions[1].IsOccupied)
             {
-                FieldPositions[0].GameFigure = FieldPositions[1].GameFigure;
-                FieldPositions[1].GameFigure = null;
+                fieldPositions[0].GameFigure = fieldPositions[1].GameFigure;
+                fieldPositions[1].GameFigure = null;
             }
         }
         else
         {
             // it doesn't matter whether FieldPosition[2] is null or not
-            if (!FieldPositions[1].IsOccupied)
+            if (!fieldPositions[1].IsOccupied)
             {
-                FieldPositions[0].GameFigure = FieldPositions[2].GameFigure;
-                FieldPositions[2].GameFigure = null;
+                fieldPositions[0].GameFigure = fieldPositions[2].GameFigure;
+                fieldPositions[2].GameFigure = null;
             }
 
             // it doesn't matter whether FieldPosition[1] is null or not
-            else if (!FieldPositions[2].IsOccupied)
+            else if (!fieldPositions[2].IsOccupied)
             {
-                FieldPositions[0].GameFigure = FieldPositions[1].GameFigure;
-                FieldPositions[1].GameFigure = null;
+                fieldPositions[0].GameFigure = fieldPositions[1].GameFigure;
+                fieldPositions[1].GameFigure = null;
             }
         }
+    }
+
+    public GameFigure GetFiguresToSendHome(GameFigure figure)
+    {
+
     }
 }

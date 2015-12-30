@@ -12,9 +12,9 @@ public class StairField : GameFieldBase
     /// Use this for initialization
     /// </summary>
     void OnEnable () {
-        SetFieldPositions(new FieldPosition[figureCapacity]);
+        SetfieldPositions(new FieldPosition[figureCapacity]);
 
-        for (int i = 0; i < FieldPositions.Length; ++i)
+        for (int i = 0; i < fieldPositions.Length; ++i)
         {
             GameObject positionObject = new GameObject();
             positionObject.name = "position" + i;
@@ -23,7 +23,7 @@ public class StairField : GameFieldBase
             positionObject.transform.localPosition = positions[i];
 
             positionObject.AddComponent<FieldPosition>();
-            FieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
         }
     }
 
@@ -33,16 +33,16 @@ public class StairField : GameFieldBase
     protected override void RefreshPositionsAfterRemoval()
     {
         ArrayList gameFigures = new ArrayList();
-        for(int i = 0; i < FieldPositions.Length; ++i)
+        for(int i = 0; i < fieldPositions.Length; ++i)
         {
-            GameFigure gameFigure = FieldPositions[i].GameFigure;
+            GameFigure gameFigure = fieldPositions[i].GameFigure;
             if (gameFigure != null) gameFigures.Add(gameFigure);
-            FieldPositions[i].GameFigure = null;
+            fieldPositions[i].GameFigure = null;
         }
 
         for(int i = 0; i < gameFigures.Count; ++i)
         {
-            FieldPositions[i].GameFigure = (GameFigure)gameFigures[i];
+            fieldPositions[i].GameFigure = (GameFigure)gameFigures[i];
         }
     }
 }

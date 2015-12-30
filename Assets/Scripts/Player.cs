@@ -1,21 +1,14 @@
 ﻿using UnityEngine;
 
-public class Player {
+public class Player
+{
 
-    private const int NofGameFigures = 4;
-    
     private const string ParentDiceObjectSuffix = "DicePosition";
 
-    private Dice dice;
-    private GameFigure[] gameFigures;
-    private PlayerStateBase state;
+    private IPlayerState state;
 
     private readonly string color;
 
-    private readonly int homeFieldIndex;
-    private readonly int homeBenchIndex;
-    private readonly int stairBenchIndex;
-    private readonly int firstStairStepIndex;
     private readonly int playerAngle;
 
     public string Color
@@ -28,18 +21,21 @@ public class Player {
         get { return Color; }
     }
 
-    public PlayerStateBase State
+    public int PlayerAngle
+    {
+        get { return playerAngle; }
+    }
+
+    public IPlayerState State
     {
         get { return state; }
         set { state = value; }
     }
 
-    
-
-    //public int LightAngle
-    //{
-    //    get { return (playerAngle + 180 - 45) % 360; }
-    //}
+    public int LightAngle
+    {
+        get { return (playerAngle + 180 - 45) % 360; }
+    }
 
     /// <summary>
     /// Constructor
@@ -50,17 +46,17 @@ public class Player {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
 
         // initiate the first Playerstate
-        this.state = new PlayerStateAllAtHome();       
-	}
+        this.state = new PlayerStateAllAtHome();
+    }
 
     /// <summary>
     /// adjusts the the players state according to his figures
     /// </summary>
     public void RefreshState()
     {
-        int figuresOnGameOrStairField = GameCtrl.GetFiguresOnRegularOrStairField(gameFigures).Length;
-        int figuresOnGoalField = GameCtrl.GetFiguresOnGoalField(gameFigures).Length;
-        int figuresOnHomeField = GameCtrl.GetFiguresOnHomeField(gameFigures).Length;
+        int figuresOnGameOrStairField = GameFigureCtrl.GetFiguresOnRegularOrStairField(this).Count;
+        int figuresOnGoalField = GameFigureCtrl.GetFiguresOnGoalField(this).Count;
+        int figuresOnHomeField = GameFigureCtrl.GetFiguresOnHomeField(this).Count;
 
         if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
         else if (figuresOnGameOrStairField == 0) State = new PlayerStateAllAtHome();

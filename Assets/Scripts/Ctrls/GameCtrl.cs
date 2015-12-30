@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public static class GameCtrl {
+public static class GameCtrl
+{
 
     private static bool gameIsRunning = false;
 
     private static int playerOnTurn = -1;
+    private static ArrayList activePlayers;
 
-    private static bool diceActivated = false;
-    private static bool figureActivated = false;
+    private static int actualDiceValue;
 
     public static bool GameIsRunning
     {
@@ -21,57 +20,63 @@ public static class GameCtrl {
     {
         get
         {
-            if(GameIsRunning) return (Player)PlayerCtrl.players[playerOnTurn];
-            return null;
+            if (GameIsRunning) return (Player)PlayerCtrl.players[playerOnTurn];
+            throw new InvalidGameStateException();
         }
     }
 
     public static void StartGame()
     {
         gameIsRunning = true;
-
-        PlaceFiguresAtHome();
+        activePlayers = new ArrayList(PlayerCtrl.players);
         StartNextTurn();
     }
 
-    public static void notify(Dice dice)
+    public static void Notify(int value)
     {
-        throw new NotImplementedException();
+        actualDiceValue = value;
+        switch (value)
+        {
+            case 6:
+                PlayerOnTurn.State.ThrowsRegularOrSix();
+                break;
+            case 5:
+                PlayerOnTurn.State.ThrowsFive();
+                break;
+            default:
+                PlayerOnTurn.State.ThrowsRegularOrSix();
+                break;
+        }
+
     }
 
-    public static void notify(GameFigure figure)
+    public static void Notify(GameFigure figure)
     {
-        throw new NotImplementedException();
+        TurnCtrl.Execute(figure, actualDiceValue);
     }
 
-    private static void PlaceFiguresAtHome()
+    public static void ActivateReleasedFigures()
     {
-        throw new NotImplementedException();
+        GameFigureCtrl.ActivateReleasedFigures(PlayerOnTurn);
     }
 
-    private static void ActivateDice()
+    public static void ActivateAllFigures()
     {
-        throw new NotImplementedException();
+
+        GameFigureCtrl.ActivateAllFigures(PlayerOnTurn);
     }
 
-    private static void ActivateFigures()
+    public static void ActivateNoFigure()
     {
-        throw new NotImplementedException();
+        StartNextTurn();
     }
 
-    private static void GoForward(GameFigure figure, int nofSteps)
+    public static void FinishPlayer(Player player)
     {
-        throw new NotImplementedException();
-    }
-
-    private static void GoHome(GameFigure figure)
-    {
-        throw new NotImplementedException();
-    }
-
-    private static void LeaveHome(GameFigure figure)
-    {
-        throw new NotImplementedException();
+        int numberOfPlayersOld = activePlayers.Count;
+        activePlayers.Remove(player);
+        if (numberOfPlayersOld - 1 != activePlayers.Count)
+            throw new InvalidGameStateException();
     }
 
     private static void CreateTurn()
@@ -79,24 +84,25 @@ public static class GameCtrl {
         throw new NotImplementedException();
     }
 
-    private static void ExecuteTurn()
-    {
-        throw new NotImplementedException();
-    }
-
     private static void ChangePlayerOnTurn()
     {
-        throw new NotImplementedException();
+        playerOnTurn = (playerOnTurn + 1) % activePlayers.Count;
     }
 
     private static void StartNextTurn()
     {
-        throw new NotImplementedException();
+        //sun
+        //dice
+        if (actualDiceValue == 6)
+        {
+            ChangePlayerOnTurn();
+        }
+        DiceCtrl.ActivateDice(PlayerOnTurn);
     }
 
     private static void FinishGame()
     {
         gameIsRunning = false;
         throw new NotImplementedException();
-    }   
+    }
 }

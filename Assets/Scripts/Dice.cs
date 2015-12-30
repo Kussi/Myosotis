@@ -2,24 +2,12 @@
 
 public class Dice : MonoBehaviour {
 
-    private Player parent;
     private bool isActive = false;
     private int value = 1;
-
-    public Player Parent
-    {
-        get { return this.parent; }
-        set
-        {
-            if (parent == null) parent = value;
-
-        }
-    }
 
     public int Value
     {
         get { return value; }
-        private set { this.value = value; }
     }
 
     /// <summary>
@@ -58,9 +46,9 @@ public class Dice : MonoBehaviour {
     /// </summary>
     public void ThrowDice()
     {
-        Value = Random.Range(1, 7);
+        value = Random.Range(1, 7);
         Refresh();
-        GameCtrl.notify(this);
+        DiceCtrl.Notify(this);
     }
 
     /// <summary>

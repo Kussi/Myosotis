@@ -12,9 +12,9 @@ public class HomeField : GameFieldBase
     /// </summary>
     void OnEnable ()
     {
-        SetFieldPositions(new FieldPosition[figureCapacity]);
+        SetfieldPositions(new FieldPosition[figureCapacity]);
 
-        for (int i = 0; i < FieldPositions.Length; ++i)
+        for (int i = 0; i < fieldPositions.Length; ++i)
         {
             GameObject positionObject = new GameObject();
             positionObject.name = "position" + i;
@@ -23,7 +23,7 @@ public class HomeField : GameFieldBase
             positionObject.transform.localPosition = positions[i];
 
             positionObject.AddComponent<FieldPosition>();
-            FieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
         }
     }
 

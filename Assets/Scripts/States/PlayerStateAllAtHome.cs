@@ -1,11 +1,16 @@
 ﻿
+using System;
 using UnityEngine;
 
-public class PlayerStateAllAtHome : PlayerStateBase {
+public class PlayerStateAllAtHome : IPlayerState {
 
-    public override void ThrowsFive()
+    public void ThrowsRegularOrSix()
     {
-        GameCtrl.State = new GameStateChoosingFigureFive();
-        Debug.Log("[" + this.GetType().Name + "] 5 has been thrown. A figure can be released.");
+        GameCtrl.ActivateNoFigure();
+    }
+
+    public void ThrowsFive()
+    {
+        GameCtrl.ActivateAllFigures();
     }
 }
