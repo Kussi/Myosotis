@@ -91,7 +91,7 @@ public static class FieldCtrl
         if (actualFieldIndex < 0 || actualFieldIndex >= NofRegularFields)
             throw new ArgumentOutOfRangeException();
         int nextFieldIndex = actualFieldIndex + 1;
-        return nextFieldIndex == NofRegularFields - 1 ? 0 : nextFieldIndex;
+        return nextFieldIndex == NofRegularFields ? 0 : nextFieldIndex;
     }
 
     public static int GetNextStairFieldIndex(Figure figure, int actualIndex, bool hasToGoBackwards)
@@ -202,7 +202,7 @@ public static class FieldCtrl
 
     public static void MoveFigureHome(Figure figure)
     {
-        if (!IsRegularField(figure.Field) || ((RegularField)fields[figure.Field]).IsBarrier)
+        if (!IsRegularField(figure.Field))
             throw new InvalidGameStateException();
         fields[figure.Field].RemoveFigure(figure);
         fields[GetHomeField(figure)].PlaceFigure(figure);

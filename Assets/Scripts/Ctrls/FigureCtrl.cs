@@ -58,7 +58,8 @@ public static class FigureCtrl
     {
         ArrayList figures = GetFigures(player);
         foreach (Figure figure in figures)
-            ActivateFigure(figure);
+            if(!FieldCtrl.IsGoalField(figure.Field))
+                ActivateFigure(figure);
     }
 
     public static void DeactivateAllFigures(Player player)

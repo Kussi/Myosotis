@@ -86,6 +86,7 @@ public static class TurnCtrl
         // figure is on the last StairStep and can enter Goal
         else if (FieldCtrl.IsLastStairStep(actualFieldIndex, figure))
         {
+            if (!isLastStep) hasToGoBackwards = true;
             EnterGoal(figure);
         }
         // figure is on a StairField and has to go forwards
