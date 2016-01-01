@@ -54,9 +54,9 @@ public class Player
     /// </summary>
     public void RefreshState()
     {
-        int figuresOnGameOrStairField = GameFigureCtrl.GetFiguresOnRegularOrStairField(this).Count;
-        int figuresOnGoalField = GameFigureCtrl.GetFiguresOnGoalField(this).Count;
-        int figuresOnHomeField = GameFigureCtrl.GetFiguresOnHomeField(this).Count;
+        int figuresOnGameOrStairField = FigureCtrl.GetFiguresOnRegularOrStairField(this).Count;
+        int figuresOnGoalField = FigureCtrl.GetFiguresOnGoalField(this).Count;
+        int figuresOnHomeField = FigureCtrl.GetFiguresOnHomeField(this).Count;
 
         if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
         else if (figuresOnGameOrStairField == 0) State = new PlayerStateAllAtHome();

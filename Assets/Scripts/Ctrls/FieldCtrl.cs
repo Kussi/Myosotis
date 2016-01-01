@@ -42,9 +42,9 @@ public static class FieldCtrl
         return field.IsBarrier;
     }
 
-    public static bool IsHomeField(int fieldIndex, GameFigure figure)
+    public static bool IsHomeField(int fieldIndex, Figure figure)
     {
-        Player player = GameFigureCtrl.GetPlayer(figure);
+        Player player = FigureCtrl.GetPlayer(figure);
         int[] playerField;
         PlayerFields.TryGetValue(player.Color, out playerField);
         if (playerField == null) throw new InvalidGameStateException();
@@ -65,16 +65,16 @@ public static class FieldCtrl
         return true;
     }
 
-    public static bool IsStairBench(int fieldIndex, GameFigure figure)
+    public static bool IsStairBench(int fieldIndex, Figure figure)
     {
-        Player player = GameFigureCtrl.GetPlayer(figure);
+        Player player = FigureCtrl.GetPlayer(figure);
         int[] playerField;
         PlayerFields.TryGetValue(player.Color, out playerField);
         if (playerField == null) throw new InvalidGameStateException();
         return playerField[1] == fieldIndex;
     }
 
-    public static bool IsLastStairStep(int fieldIndex, GameFigure figure)
+    public static bool IsLastStairStep(int fieldIndex, Figure figure)
     {
         return fieldIndex == GetLastStairStep(figure);
     }
@@ -94,7 +94,7 @@ public static class FieldCtrl
         return nextFieldIndex == NofRegularFields - 1 ? 0 : nextFieldIndex;
     }
 
-    public static int GetNextStairFieldIndex(GameFigure figure, int actualIndex, bool hasToGoBackwards)
+    public static int GetNextStairFieldIndex(Figure figure, int actualIndex, bool hasToGoBackwards)
     {
         int nextFieldIndex;
 
@@ -106,41 +106,41 @@ public static class FieldCtrl
         return nextFieldIndex;
     }
 
-    private static GameFigure GetFigureToSendHome(RegularField field, GameFigure arrivingFigure)
+    private static Figure GetFigureToSendHome(RegularField field, Figure arrivingFigure)
     {
         return field.GetFigureToSendHome(arrivingFigure);
     }
 
-    private static int GetHomeBench(GameFigure figure)
+    private static int GetHomeBench(Figure figure)
     {
         return GetPlayerField(figure, 0);
     }
 
-    private static int GetFirstStairStep(GameFigure figure)
+    private static int GetFirstStairStep(Figure figure)
     {
         return GetPlayerField(figure, 2);
     }
 
-    private static int GetLastStairStep(GameFigure figure)
+    private static int GetLastStairStep(Figure figure)
     {
         return GetFirstStairStep(figure) + NofStairFieldsEachPlayer - 1;
     }
 
-    private static int GetHomeField(GameFigure figure)
+    private static int GetHomeField(Figure figure)
     {
         return GetPlayerField(figure, 3);
     }
 
-    private static int GetPlayerField(GameFigure figure, int index)
+    private static int GetPlayerField(Figure figure, int index)
     {
-        Player player = GameFigureCtrl.GetPlayer(figure);
+        Player player = FigureCtrl.GetPlayer(figure);
         int[] result;
         if (!PlayerFields.TryGetValue(player.Color, out result))
             throw new InvalidGameStateException();
         return result[index];
     }
 
-    public static bool PlaceFigureOnHomeBench(GameFigure figure)
+    public static bool PlaceFigureOnHomeBench(Figure figure)
     {
         if (!IsHomeField(figure.Field, figure))
             throw new InvalidGameStateException();
@@ -150,7 +150,7 @@ public static class FieldCtrl
         return true;
     }
 
-    public static GameFigure PlaceFigureOnNextRegularField(GameFigure figure)
+    public static Figure PlaceFigureOnNextRegularField(Figure figure)
     {
         if (!IsRegularField(figure.Field))
             throw new InvalidGameStateException();
@@ -158,49 +158,49 @@ public static class FieldCtrl
         if (!IsRegularField(newFieldIndex)) throw new InvalidGameStateException();
         if (IsBarrier(newFieldIndex)) throw new InvalidGameStateException();
         MoveFigureRegular(figure, newFieldIndex);
-        return ((RegularField)fields[newFieldIndex]).GetFigureToSendHome(figure);
+        return GetFigureToSendHome((RegularField)fields[newFieldIndex], figure);
     }
 
-    public static void PlaceFigureOnFirstStairStep(GameFigure figure)
+    public static void PlaceFigureOnFirstStairStep(Figure figure)
     {
         if (!IsStairBench(figure.Field, figure))
             throw new InvalidGameStateException();
         MoveFigureRegular(figure, GetFirstStairStep(figure));
     }
 
-    public static void PlaceFigureOnNextRegularStairStep(GameFigure figure, bool hasToGoBackwards)
+    public static void PlaceFigureOnNextRegularStairStep(Figure figure, bool hasToGoBackwards)
     {
         if (!IsStairField(figure.Field))
             throw new InvalidGameStateException();
         MoveFigureRegular(figure, GetNextStairFieldIndex(figure, figure.Field, hasToGoBackwards));
     }
 
-    public static void PlaceFigureInGoal(GameFigure figure)
+    public static void PlaceFigureInGoal(Figure figure)
     {
         if (!IsLastStairStep(figure.Field, figure))
             throw new InvalidGameStateException();
         MoveFigureRegular(figure, GoalFieldIndex);
     }
 
-    public static void PlaceFigureOnLastStairStep(GameFigure figure)
+    public static void PlaceFigureOnLastStairStep(Figure figure)
     {
         if (!IsGoalField(figure.Field))
             throw new InvalidGameStateException();
         MoveFigureRegular(figure, GetLastStairStep(figure));
     }
 
-    public static void PlaceFigureOnHomeField(GameFigure figure)
+    public static void PlaceFigureOnHomeField(Figure figure)
     {
         MoveFigureHome(figure);
     }
 
-    private static void MoveFigureRegular(GameFigure figure, int fieldIndex)
+    private static void MoveFigureRegular(Figure figure, int fieldIndex)
     {
         fields[figure.Field].RemoveFigure(figure);
         fields[fieldIndex].PlaceFigure(figure);
     }
 
-    public static void MoveFigureHome(GameFigure figure)
+    public static void MoveFigureHome(Figure figure)
     {
         if (!IsRegularField(figure.Field) || ((RegularField)fields[figure.Field]).IsBarrier)
             throw new InvalidGameStateException();
@@ -208,7 +208,7 @@ public static class FieldCtrl
         fields[GetHomeField(figure)].PlaceFigure(figure);
     }
 
-    public static void InitiallyPlaceFigure(GameFigure figure)
+    public static void InitiallyPlaceFigure(Figure figure)
     {
         if (GameCtrl.GameIsRunning)
             throw new InvalidGameStateException();

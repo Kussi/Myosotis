@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
-public class StartMenu : MonoBehaviour {
-
+public class StartMenu : MonoBehaviour
+{
     private static readonly string DropdownGameObject = "PlayerSelection";
     private static readonly string PlayerSelectionSuffix = "Players";
     private static readonly string FigureSelectionSuffix = "Figures";
@@ -23,7 +22,6 @@ public class StartMenu : MonoBehaviour {
     private static readonly int MinNofFigures = 1;
     private static readonly int MaxNofFigures = 4;
 
-    private static readonly int UnpersonalizedPlayerIndex = 0;
     private static readonly string UnpersonalizedPlayerName = "Spieler ohne Personalisierung";
 
     private static int NofPlayers = MinNofPlayers;
@@ -31,7 +29,6 @@ public class StartMenu : MonoBehaviour {
 
     private static int PlayerIndex;
     private static string PlayerName;
-
 
     void Awake()
     {
@@ -47,7 +44,7 @@ public class StartMenu : MonoBehaviour {
     /// </summary>
     public void StartGame()
     {
-        gameObject.GetComponent<CanvasGroup>().alpha = 0f; // menu disappears
+        Hide();
         Initializer.SetupGame(PlayerName, NofPlayers, NofFigures);
     }
 
@@ -60,7 +57,7 @@ public class StartMenu : MonoBehaviour {
         if (number < MinNofPlayers || number > MaxNofPlayers) throw new InvalidGameStateException();
         NofPlayers = number;
 
-        for(int i = MinNofPlayers; i <= MaxNofPlayers; ++i)
+        for (int i = MinNofPlayers; i <= MaxNofPlayers; ++i)
         {
             Button button = GameObject.Find(i + PlayerSelectionSuffix).GetComponent<Button>();
             if (i == NofPlayers) ChangeButtonColors(button, true);
@@ -110,7 +107,7 @@ public class StartMenu : MonoBehaviour {
         dropdown.options.Add(element);
 
         // add personalized players after unpersonlized one
-        foreach(string playerName in FileCtrl.GetPlayerList())
+        foreach (string playerName in FileCtrl.GetPlayerList())
         {
             element = new Dropdown.OptionData(playerName);
             dropdown.options.Add(element);
@@ -136,5 +133,17 @@ public class StartMenu : MonoBehaviour {
             result.pressedColor = DeselectedPressed;
         }
         button.colors = result;
+    }
+
+    private void Hide()
+    {
+        gameObject.GetComponent<CanvasGroup>().alpha = 0f;
+        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
+    }
+
+    private void Show()
+    {
+        gameObject.GetComponent<CanvasGroup>().alpha = 1f;
+        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 }

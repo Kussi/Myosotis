@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public static class DiceCtrl
 {
 
-    private static readonly string GameFigureParentalSuffix = "DicePosition";
+    private static readonly string FigureParentalSuffix = "DicePosition";
     private static readonly string DicePrefab = "Prefabs/_Dice";
     private static readonly string DiceName = "Dice";
 
@@ -22,10 +22,18 @@ public static class DiceCtrl
     private static void ActivateDice(Dice dice)
     {
         dice.SetActive(true);
+        Debug.Log(dice.name + " activated");
+    }
+
+    private static void DeactivateDice(Dice dice)
+    {
+        dice.SetActive(false);
+        Debug.Log(dice.name + " deactivated");
     }
 
     public static void Notify(Dice dice)
     {
+        DeactivateDice(dice);
         GameCtrl.Notify(dice.Value);
     }
 
@@ -37,7 +45,7 @@ public static class DiceCtrl
             GameObject diceObject = (GameObject)GameObject.Instantiate(Resources.Load(DicePrefab, typeof(GameObject)));
             diceObject.AddComponent<Dice>();
             diceObject.name = (player.Color + DiceName);
-            diceObject.transform.parent = GameObject.Find(player.Color + GameFigureParentalSuffix).transform;
+            diceObject.transform.parent = GameObject.Find(player.Color + FigureParentalSuffix).transform;
 
             // editing (script) object
             Dice dice = (Dice)diceObject.GetComponent<Dice>();

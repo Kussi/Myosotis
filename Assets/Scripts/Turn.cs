@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class Turn {
 
-    private GameFigure figure;
+    private Figure figure;
     private int startFieldIndex;
     private int diceValue;
 
-    public GameFigure Figure
+    public Figure Figure
     {
         get { return figure; }
     }
@@ -23,7 +23,7 @@ public class Turn {
         get { return diceValue; }
     }
 
-    public Turn(GameFigure figure, int startFieldIndex, int diceValue)
+    public Turn(Figure figure, int startFieldIndex, int diceValue)
     {
         this.figure = figure;
         this.startFieldIndex = startFieldIndex;

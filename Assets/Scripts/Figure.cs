@@ -1,22 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameFigure : MonoBehaviour
+public class Figure : MonoBehaviour
 {
-    private const float GameFigueScale = 0.6F;
+    private static readonly LayerMask CollisionLayer = LayerMask.GetMask("GameBoard", "GameTable");
+    private readonly float GameFigueScale = 0.6F;
 
-    private Player parent;
     private int field;
     private bool isActive = false;
-
-    public Player Parent
-    {
-        get { return this.parent; }
-        set
-        {
-            if(parent == null) parent = value;
-        }
-    }
 
     public int Field
     {
@@ -43,8 +34,7 @@ public class GameFigure : MonoBehaviour
                 {
                     if (hit.collider.name == gameObject.name)
                     {
-                        SetActive(false);
-                        GameCtrl.Notify(this);
+                        FigureCtrl.Notify(this);
                     }
                 }
             }
@@ -71,7 +61,7 @@ public class GameFigure : MonoBehaviour
 
         Debug.DrawRay(transform.position, direction * distance, Color.green);
 
-        if (Physics.Raycast(transform.position, direction, out hit, distance)) {
+        if (Physics.Raycast(transform.position, direction, out hit, distance, CollisionLayer)) {
             Vector3 newPos = new Vector3(gameObject.transform.position.x,
                 hit.point.y + GameFigueScale,
                 gameObject.transform.position.z);

@@ -3,15 +3,17 @@ using System.Collections;
 
 public abstract class GameFieldBase : MonoBehaviour
 {
+    protected static readonly string PositionPrefix = "Position";
+
     private int index;
-    protected FieldPosition[] fieldPositions;
+    public FieldPosition[] fieldPositions;
 
     public int Index
     {
         get { return index; }
         set
         {
-            if (!GameCtrl.GameIsRunning && index == 0 && getIndexFromName() != 0)
+            if (!GameCtrl.GameIsRunning && index == 0 && GetIndexFromName() != 0)
                 index = value;
         }
     }
@@ -21,76 +23,58 @@ public abstract class GameFieldBase : MonoBehaviour
         get
         {
             foreach (FieldPosition fieldPosition in fieldPositions)
-            {
                 if (!fieldPosition.IsOccupied) return false;
-            }
             return true;
         }
-    }
-
-    /// <summary>
-    /// Use this for initialization
-    /// </summary>
-    void Awake()
-    {
-        //index = getIndexFromName();
     }
 
     /// <summary>
     /// Getting all Gamefigures, that are currently staying on this field
     /// </summary>
     /// <returns>returns the Gamefigures of this field</returns>
-    public GameFigure[] GetGameFiguresOnField()
+    protected ArrayList GetFiguresOnField()
     {
-        ArrayList gameFigures = new ArrayList();
+        ArrayList figures = new ArrayList();
         foreach (FieldPosition fieldPosition in fieldPositions)
-        {
-            if (fieldPosition.IsOccupied) gameFigures.Add(fieldPosition.GameFigure);
-        }
-        return (GameFigure[])gameFigures.ToArray(typeof(GameFigure));
+            if (fieldPosition.IsOccupied) figures.Add(fieldPosition.Figure);
+        return figures;
     }
 
     /// <summary>
-    /// Sets the Fieldpositions of this field
-    /// </summary>
-    /// <param name="fieldPositions">possible positions a GameFigure can stand on this field</param>
-    protected void SetFieldPositions(FieldPosition[] fieldPositions)
-    {
-        if (fieldPositions == null) this.fieldPositions = fieldPositions;
-    }
-
-    /// <summary>
-    /// Removes the GameFigure from its actual field an places it here
+    /// Removes the Figure from its actual field an places it here
     /// </summary>
     /// <param name="figure">Figure that has to be moved</param>
-    public virtual void PlaceFigure(GameFigure figure)
+    public virtual void PlaceFigure(Figure figure)
     {
         if (IsOccupied) throw new InvalidGameStateException();
-
         foreach (FieldPosition fieldPosition in fieldPositions)
         {
             if (!fieldPosition.IsOccupied)
             {
-                fieldPosition.GameFigure = figure;
-                RefreshPositionsAfterPlacement();
+                AdjustReferences(fieldPosition, figure);
+
+                // movement
+                MoveFigureObject(fieldPosition, figure);
+
                 break;
             }
         }
     }
 
     /// <summary>
-    /// Removes a GameFigure from this Field and changes the Field attribute of the figure to null
+    /// Removes a Figure from this Field and changes the Field attribute of the figure to null
     /// </summary>
     /// <param name="figure">Figure that has to be removed</param>
-    public virtual void RemoveFigure(GameFigure figure)
+    public virtual void RemoveFigure(Figure figure)
     {
         bool figureFound = false;
-
+        FieldPosition position;
         for (int i = 0; i < fieldPositions.Length; ++i)
         {
-            if (fieldPositions[i].IsOccupied && fieldPositions[i].GameFigure.Equals(figure))
+            position = fieldPositions[i];
+            if (position.IsOccupied && position.Figure.Equals(figure))
             {
-                fieldPositions[i].GameFigure = null;
+                RemoveReferences(position, figure);
                 figureFound = true;
                 break;
             }
@@ -99,29 +83,17 @@ public abstract class GameFieldBase : MonoBehaviour
         if (!figureFound) throw new InvalidGameStateException();
     }
 
-    /// <summary>
-    /// moves the figure objects to their position
-    /// </summary>
-    protected void RefreshPositionsAfterPlacement()
+    protected void RemoveReferences(FieldPosition position, Figure figure)
     {
-        foreach (FieldPosition fieldPosition in fieldPositions)
-        {
-            if (fieldPosition.IsOccupied && fieldPosition.GameFigure.transform.position != fieldPosition.transform.position)
-            {
-                fieldPosition.GameFigure.Field = this.index;
-                fieldPosition.GameFigure.transform.position = fieldPosition.transform.position;
-            }
-        }
+        position.Figure = null;
+        figure.Field = FigureCtrl.EmptyFieldEntry;
     }
 
-    protected virtual void RefreshPositionsAfterRemoval()
+    protected void AdjustReferences(FieldPosition position, Figure figure)
     {
-
-    }
-
-    protected void AdjustReferences(FieldPosition position, GameFigure figure)
-    {
-        position.GameFigure = figure;
+        if (position.Figure != null || figure.Field != FigureCtrl.EmptyFieldEntry)
+            throw new InvalidGameStateException();
+        position.Figure = figure;
         figure.Field = index;
     }
 
@@ -129,9 +101,28 @@ public abstract class GameFieldBase : MonoBehaviour
     ///// gets the indexnumber from the name of the gameobject
     ///// </summary>
     ///// <returns>the index of the gameObject</returns>
-    protected int getIndexFromName()
+    protected int GetIndexFromName()
     {
         int indexLength = 3; // Gamefieldnames have always the form <Prefix><3-digit-index>
         return int.Parse(gameObject.name.Substring(gameObject.name.Length - indexLength));
+    }
+
+    protected void InitializeFieldPositions(Vector3[] positions)
+    {
+        for (int i = 0; i < fieldPositions.Length; ++i)
+        {
+            GameObject positionObject = new GameObject();
+            positionObject.name = PositionPrefix + i;
+            positionObject.transform.parent = gameObject.transform;
+            positionObject.transform.localPosition = positions[i];
+            positionObject.AddComponent<FieldPosition>();
+            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+        }
+    }
+
+    protected virtual void MoveFigureObject(FieldPosition position, Figure figure)
+    {
+        Debug.Log("Move Figure Regular");
+        figure.transform.position = position.transform.position;
     }
 }

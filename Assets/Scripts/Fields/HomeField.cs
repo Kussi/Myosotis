@@ -3,34 +3,28 @@ using UnityEngine;
 
 public class HomeField : GameFieldBase
 {
-    private const int figureCapacity = 4;
+    private readonly int figureCapacity = 4;
     private readonly Vector3[] positions = new Vector3[] { new Vector3(1, 0, 1),
         new Vector3(-1, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) };
 
     /// <summary>
     /// Use this for initialization
     /// </summary>
-    void OnEnable ()
+    void Awake ()
     {
-        SetFieldPositions(new FieldPosition[figureCapacity]);
-
-        for (int i = 0; i < fieldPositions.Length; ++i)
-        {
-            GameObject positionObject = new GameObject();
-            positionObject.name = "position" + i;
-            positionObject.transform.parent = gameObject.transform;
-
-            positionObject.transform.localPosition = positions[i];
-
-            positionObject.AddComponent<FieldPosition>();
-            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
-        }
+        fieldPositions = new FieldPosition[figureCapacity];
+        InitializeFieldPositions(positions);
     }
 
-    public void InitiallyPlaceFigure(GameFigure figure)
+    protected override void MoveFigureObject(FieldPosition position, Figure figure)
+    {
+        Debug.Log("Move Figure Home");
+        figure.transform.position = position.transform.position;
+    }
+
+    public void InitiallyPlaceFigure(Figure figure)
     {
         if (GameCtrl.GameIsRunning) throw new InvalidGameStateException();
-        if (figure.Field != 0) throw new InvalidGameStateException();
         if (IsOccupied) throw new InvalidGameStateException();
 
         foreach (FieldPosition fieldPosition in fieldPositions)
@@ -42,13 +36,5 @@ public class HomeField : GameFieldBase
                 break;
             }
         }
-    }
-
-    /// <summary>
-    /// adjusts the positions of the figures
-    /// </summary>
-    protected override void RefreshPositionsAfterRemoval()
-    {
-        // Nothing to adjust
     }
 }

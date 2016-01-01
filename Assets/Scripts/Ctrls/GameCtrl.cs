@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections;
+using UnityEngine;
 
 public static class GameCtrl
 {
-
     private static bool gameIsRunning = false;
 
     private static int playerOnTurn = -1;
     private static ArrayList activePlayers;
 
     private static int actualDiceValue;
+    private static int turnCounter;
 
     public static bool GameIsRunning
     {
@@ -28,6 +29,7 @@ public static class GameCtrl
     public static void StartGame()
     {
         gameIsRunning = true;
+        turnCounter = 0;
         activePlayers = new ArrayList(PlayerCtrl.players);
         StartNextTurn();
     }
@@ -50,20 +52,25 @@ public static class GameCtrl
 
     }
 
-    public static void Notify(GameFigure figure)
+    public static void Notify(Figure figure)
     {
         TurnCtrl.Execute(figure, actualDiceValue);
     }
 
+    public static void Notify()
+    {
+        StartNextTurn();
+    }
+
     public static void ActivateReleasedFigures()
     {
-        GameFigureCtrl.ActivateReleasedFigures(PlayerOnTurn);
+        FigureCtrl.ActivateReleasedFigures(PlayerOnTurn);
     }
 
     public static void ActivateAllFigures()
     {
 
-        GameFigureCtrl.ActivateAllFigures(PlayerOnTurn);
+        FigureCtrl.ActivateAllFigures(PlayerOnTurn);
     }
 
     public static void ActivateNoFigure()
@@ -93,10 +100,13 @@ public static class GameCtrl
     {
         //sun
         //dice
-        if (actualDiceValue == 6)
-        {
+        if (actualDiceValue != 6)
             ChangePlayerOnTurn();
-        }
+        foreach(Player player in activePlayers)
+            player.RefreshState();
+
+        ++turnCounter;
+        Debug.Log("Turn " + turnCounter + ": " + PlayerOnTurn.Color);
         DiceCtrl.ActivateDice(PlayerOnTurn);
     }
 

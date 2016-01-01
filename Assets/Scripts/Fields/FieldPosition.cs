@@ -2,16 +2,16 @@
 
 public class FieldPosition : MonoBehaviour {
 
-    private GameFigure gameFigure;
+    private Figure figure;
 
     public bool IsOccupied
     {
-        get { return gameFigure != null; }
+        get { return figure != null; }
     }
 
-    public GameFigure GameFigure
+    public Figure Figure
     {
-        get { return gameFigure; }
-        set { gameFigure = value; }
+        get { return figure; }
+        set { figure = value; }
     }
 }

@@ -9,21 +9,21 @@ public static class TurnCtrl
 
     private static ArrayList turns = new ArrayList();
 
-    public static void Execute(GameFigure figure, int steps)
+    public static void Execute(Figure figure, int steps)
     {
         Turn turn = CreateTurn(figure, steps);
         AddTurn(turn);
         ExecuteTurn(turn);
     }
 
-    private static Turn CreateTurn(GameFigure figure, int diceValue)
+    private static Turn CreateTurn(Figure figure, int diceValue)
     {
         return new Turn(figure, figure.Field, diceValue);
     }
 
     private static void ExecuteTurn(Turn turn)
     {
-        GameFigure figure = turn.Figure;
+        Figure figure = turn.Figure;
         int startFieldIndex = turn.Start;
         int steps = turn.DiceValue;
 
@@ -47,14 +47,15 @@ public static class TurnCtrl
                 }
             }
         }
+        GameCtrl.Notify();
     }
 
-    private static bool ReleaseFigureFromHome(GameFigure figure)
+    private static bool ReleaseFigureFromHome(Figure figure)
     {
         return FieldCtrl.PlaceFigureOnHomeBench(figure);
     }
 
-    private static bool MakeOneStep(GameFigure figure, bool isLastStep)
+    private static bool MakeOneStep(Figure figure, bool isLastStep)
     {
         int actualFieldIndex = figure.Field;
         int nextFieldIndex;
@@ -69,7 +70,7 @@ public static class TurnCtrl
         {
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
-            GameFigure figureToSendHome = MakeOneRegularStep(figure);
+            Figure figureToSendHome = MakeOneRegularStep(figure);
             if (figureToSendHome != null) FieldCtrl.MoveFigureHome(figureToSendHome);
         }
         // figure is in Goal and has to go backwards
@@ -96,32 +97,32 @@ public static class TurnCtrl
         return true;
     }
 
-    private static GameFigure MakeOneRegularStep(GameFigure figure)
+    private static Figure MakeOneRegularStep(Figure figure)
     {
         return FieldCtrl.PlaceFigureOnNextRegularField(figure);
     }
 
-    private static void EnterStair(GameFigure figure)
+    private static void EnterStair(Figure figure)
     {
         FieldCtrl.PlaceFigureOnFirstStairStep(figure);
     }
 
-    private static void MakeOneStairStepForward(GameFigure figure)
+    private static void MakeOneStairStepForward(Figure figure)
     {
         FieldCtrl.PlaceFigureOnNextRegularStairStep(figure, false);
     }
 
-    private static void MakeOneStairStepBackward(GameFigure figure)
+    private static void MakeOneStairStepBackward(Figure figure)
     {
         FieldCtrl.PlaceFigureOnNextRegularStairStep(figure, true);
     }
 
-    private static void EnterGoal(GameFigure figure)
+    private static void EnterGoal(Figure figure)
     {
         FieldCtrl.PlaceFigureInGoal(figure);
     }
 
-    private static void LeaveGoal(GameFigure figure)
+    private static void LeaveGoal(Figure figure)
     {
         FieldCtrl.PlaceFigureOnLastStairStep(figure);
     }

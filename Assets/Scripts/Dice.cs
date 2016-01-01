@@ -33,8 +33,8 @@ public class Dice : MonoBehaviour {
                 {
                     if (isActive)
                     {
-						SetActive(false);
                         ThrowDice();
+                        DiceCtrl.Notify(this);
                     }
                 }
             }
@@ -46,9 +46,8 @@ public class Dice : MonoBehaviour {
     /// </summary>
     public void ThrowDice()
     {
-        value = Random.Range(1, 7);
-        Refresh();
-        DiceCtrl.Notify(this);
+        value = Random.Range(5, 7);
+        Refresh();   
     }
 
     /// <summary>

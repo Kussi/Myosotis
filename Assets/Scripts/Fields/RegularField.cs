@@ -1,59 +1,50 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class RegularField : GameFieldBase
 {
 
-    private const int figureCapacity = 2;
-    private const string parentBenchObject = "BenchFields";
-    private const string parentBendObject = "BendFields";
+    private readonly int figureCapacity = 2;
+    private readonly string parentBenchObject = "BenchFields";
+    private readonly string parentBendObject = "BendFields";
 
-    // the first position is for one figure only. If there are two figures on the field, the regular position (0, 0, 0) may not be occupied
-    private readonly Vector3[] regularPositions = new Vector3[] { new Vector3(0, 0, 0), new Vector3(0, 0, 0.5F), new Vector3(0, 0, -0.5F) };
-    private readonly Vector3[] bendPositions = new Vector3[] { new Vector3(0, 0, 0), new Vector3(0.7F, 0, 0) };
+    // the first position is for one figure only. If there are two figures on the 
+    // field, the regular position (0, 0, 0) may not be occupied
+    private readonly Vector3[] regularPositions = new Vector3[]
+    { new Vector3(0, 0, 0), new Vector3(0, 0, 0.5F), new Vector3(0, 0, -0.5F) };
+    private readonly Vector3[] bendPositions = new Vector3[]
+    { new Vector3(0, 0, 0), new Vector3(0.7F, 0, 0) };
 
     private bool isBench = false;
     private bool isBend = false;
 
-    public bool IsBench
-    {
-        get { return isBench; }
-    }
-
-    private bool IsBend
-    {
-        get { return isBend; }
-    }
-
     public bool IsBarrier
     {
-        // if there are two figures present, FieldPosition[0] has to be free
-        get
-        {
-            if (IsBend)
-            {
-                return fieldPositions[0].IsOccupied && fieldPositions[1].IsOccupied;
-            }
-            else
-            {
-                return fieldPositions[1].IsOccupied && fieldPositions[2].IsOccupied;
-            }
-        }
+        get { return IsOccupied; }
     }
 
     protected override bool IsOccupied
     {
         get
         {
-            if(IsBend)
-            {
+            if (isBend)
                 return base.IsOccupied;
-            }
+            else if (fieldPositions[1].IsOccupied && fieldPositions[2].IsOccupied)
+                return true;
+            return false;
+        }
+    }
+
+    private bool IsFullyEmpty
+    {
+        get
+        {
+            if (!isBend)
+                return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied;
             else
-            {
-                if (fieldPositions[1].GameFigure != null && fieldPositions[2].GameFigure != null) return true;
-                return false;
-            }
+                return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied 
+                    && !fieldPositions[2].IsOccupied;
         }
     }
 
@@ -63,113 +54,76 @@ public class RegularField : GameFieldBase
     void Awake()
     {
         if (gameObject.transform.parent.name.Equals(parentBenchObject)) isBench = true;
-        if (gameObject.transform.parent.name.Equals(parentBendObject)) isBend = true;
+        else if (gameObject.transform.parent.name.Equals(parentBendObject)) isBend = true;
 
-        if(IsBend)
+        // a regular field has different positions, if there are one or two figures
+        // present. One in the center and further two left an right of the center
+        if (isBend)
         {
-            SetFieldPositions(new FieldPosition[figureCapacity]);
+            fieldPositions = new FieldPosition[figureCapacity];
+            InitializeFieldPositions(bendPositions);
         }
         else
         {
-            // a regular field has different positions, if there are one or two figures
-            // present. One in the center and further two left an right of the center
-            SetFieldPositions(new FieldPosition[figureCapacity + 1]);
-        }        
-
-        for (int i = 0; i < fieldPositions.Length; ++i)
-        {
-            GameObject positionObject = new GameObject();
-            positionObject.name = "position" + i;
-            positionObject.transform.parent = gameObject.transform;
-
-            if(IsBend) positionObject.transform.localPosition = bendPositions[i];
-            else positionObject.transform.localPosition = regularPositions[i];
-
-            positionObject.AddComponent<FieldPosition>();
-            fieldPositions[i] = positionObject.GetComponent<FieldPosition>();
+            fieldPositions = new FieldPosition[figureCapacity + 1];
+            InitializeFieldPositions(regularPositions);
         }
     }
 
     /// <summary>
-    /// Removes the GameFigure from its actual field an places it here
+    /// Removes the Figure from its actual field an places it here
     /// </summary>
     /// <param name="figure">Figure that has to be moved</param>
-    public override void PlaceFigure(GameFigure figure)
+    public override void PlaceFigure(Figure figure)
     {
-        if(IsOccupied) throw new InvalidGameStateException("Figure cannot be placed on this Field (" + gameObject.name + ")");
-
-        if (IsBend)
+        if (IsOccupied) throw new InvalidGameStateException();
+        FieldPosition fieldPosition = null;
+        if (isBend)
         {
             for (int i = 0; i < fieldPositions.Length; ++i)
             {
                 if (!fieldPositions[i].IsOccupied)
                 {
-                    fieldPositions[i].GameFigure = figure;
+                    fieldPosition = fieldPositions[i];
                     break;
                 }
             }
+            if(fieldPosition == null)
+                throw new InvalidGameStateException();
         }
         else
         {
-            if(!fieldPositions[1].IsOccupied && !fieldPositions[2].IsOccupied)
+            if (IsFullyEmpty)
+                fieldPosition = fieldPositions[0];
+            else if(fieldPositions[0].IsOccupied)
             {
-                // if there is no figure on this field yet
-                if (!fieldPositions[0].IsOccupied)
-                {
-                    fieldPositions[0].GameFigure = figure;
-                }
-
-                // if there is already one figure on this field, it has to be replaced
-                else
-                {
-                    fieldPositions[1].GameFigure = fieldPositions[0].GameFigure;
-                    fieldPositions[0].GameFigure = null;
-                    fieldPositions[2].GameFigure = figure;
-                }
+                ChangePosition(fieldPositions[0], fieldPositions[1]);
+                fieldPosition = fieldPositions[2];
             }
+            else if (fieldPositions[1].IsOccupied)
+                fieldPosition = fieldPositions[2];
+            else fieldPosition = fieldPositions[1];
         }
-        RefreshPositionsAfterPlacement();
+        AdjustReferences(fieldPosition, figure);
+        MoveFigureObject(fieldPosition, figure);
     }
 
-    /// <summary>
-    /// adjusts the positions of the figures
-    /// </summary>
-    protected override void RefreshPositionsAfterRemoval()
+    public Figure GetFigureToSendHome(Figure figure)
     {
-        if(IsBend)
-        {
-            if (!fieldPositions[0].IsOccupied && fieldPositions[1].IsOccupied)
-            {
-                fieldPositions[0].GameFigure = fieldPositions[1].GameFigure;
-                fieldPositions[1].GameFigure = null;
-            }
-        }
-        else
-        {
-            // it doesn't matter whether FieldPosition[2] is null or not
-            if (!fieldPositions[1].IsOccupied)
-            {
-                fieldPositions[0].GameFigure = fieldPositions[2].GameFigure;
-                fieldPositions[2].GameFigure = null;
-            }
-
-            // it doesn't matter whether FieldPosition[1] is null or not
-            else if (!fieldPositions[2].IsOccupied)
-            {
-                fieldPositions[0].GameFigure = fieldPositions[1].GameFigure;
-                fieldPositions[1].GameFigure = null;
-            }
-        }
-    }
-
-    public GameFigure GetFigureToSendHome(GameFigure figure)
-    {
-        if (IsBarrier) throw new InvalidGameStateException();
-        GameFigure[] figuresOnField = GetGameFiguresOnField();
-        if (figuresOnField.Length == 0) return null;
-        GameFigure figureToSendHome = figuresOnField[0];
-        if (GameFigureCtrl.GetPlayer(figureToSendHome).Color.Equals(GameFigureCtrl.GetPlayer(figure).Color))
+        if (isBench) return null;
+        ArrayList figuresOnField = GetFiguresOnField();
+        if (figuresOnField.Count == 0) return null;
+        Figure figureToSendHome = (Figure)figuresOnField[0];
+        if (FigureCtrl.GetPlayer(figureToSendHome).Color.Equals(FigureCtrl.GetPlayer(figure).Color))
             return null;
         return figureToSendHome;
+    }
+
+    private void ChangePosition(FieldPosition from, FieldPosition to)
+    {
+        Figure figure = from.Figure;
+        from.Figure = null;
+        to.Figure = figure;
+        MoveFigureObject(to, figure);
     }
 }
