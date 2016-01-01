@@ -60,7 +60,7 @@ public class RegularField : GameFieldBase
     /// <summary>
     /// Use this for initialization
     /// </summary>
-    void OnEnable()
+    void Awake()
     {
         if (gameObject.transform.parent.name.Equals(parentBenchObject)) isBench = true;
         if (gameObject.transform.parent.name.Equals(parentBendObject)) isBend = true;
@@ -162,8 +162,14 @@ public class RegularField : GameFieldBase
         }
     }
 
-    public GameFigure GetFiguresToSendHome(GameFigure figure)
+    public GameFigure GetFigureToSendHome(GameFigure figure)
     {
-
+        if (IsBarrier) throw new InvalidGameStateException();
+        GameFigure[] figuresOnField = GetGameFiguresOnField();
+        if (figuresOnField.Length == 0) return null;
+        GameFigure figureToSendHome = figuresOnField[0];
+        if (GameFigureCtrl.GetPlayer(figureToSendHome).Color.Equals(GameFigureCtrl.GetPlayer(figure).Color))
+            return null;
+        return figureToSendHome;
     }
 }

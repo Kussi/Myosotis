@@ -103,12 +103,15 @@ public static class GameFigureCtrl
         figure.SetActive(true);
     }
 
-    public static void PlaceGameFiguresAtHome()
+    public static void PlaceFiguresOnStartPosition()
     {
-        foreach (GameFigure figure in figures.Keys)
+        if (!GameCtrl.GameIsRunning)
         {
-            FieldCtrl.PlaceFigureOnHomeField(figure);
-        }
+            foreach(GameFigure figure in figures.Keys)
+            {
+                FieldCtrl.InitiallyPlaceFigure(figure);
+            }
+        }       
     }
 
     public static void InitializeGameFigures(ArrayList players, int nofGameFigures)

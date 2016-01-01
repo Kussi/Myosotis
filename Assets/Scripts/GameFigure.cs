@@ -21,6 +21,7 @@ public class GameFigure : MonoBehaviour
     public int Field
     {
         get { return field; }
+        set { field = value; }
     }
 
     /// <summary>

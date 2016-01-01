@@ -9,7 +9,7 @@
         SunCtrl.InitializeSun();
         //InitializePersonalisation(playerName);
 
-        GameFigureCtrl.PlaceGameFiguresAtHome();
+        GameFigureCtrl.PlaceFiguresOnStartPosition();
         DiceCtrl.PlaceDices();
 
         GameCtrl.StartGame();

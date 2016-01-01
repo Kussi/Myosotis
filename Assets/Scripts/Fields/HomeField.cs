@@ -27,6 +27,23 @@ public class HomeField : GameFieldBase
         }
     }
 
+    public void InitiallyPlaceFigure(GameFigure figure)
+    {
+        if (GameCtrl.GameIsRunning) throw new InvalidGameStateException();
+        if (figure.Field != 0) throw new InvalidGameStateException();
+        if (IsOccupied) throw new InvalidGameStateException();
+
+        foreach (FieldPosition fieldPosition in fieldPositions)
+        {
+            if (!fieldPosition.IsOccupied)
+            {
+                AdjustReferences(fieldPosition, figure);
+                figure.gameObject.transform.position = fieldPosition.gameObject.transform.position;
+                break;
+            }
+        }
+    }
+
     /// <summary>
     /// adjusts the positions of the figures
     /// </summary>

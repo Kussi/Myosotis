@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public static class FieldCtrl
 {
@@ -15,8 +16,6 @@ public static class FieldCtrl
     public static readonly int NofRegularFields = 68;
     public static readonly int NofStairFieldsEachPlayer = 7;
     public static readonly int NofPlayers = 4;
-
-    public static readonly bool SendHomeEnabled = true;
 
     /// <summary>
     /// 0: HomeBench / 1: StairBench / 2: FirstStairStep / 3: HomeField
@@ -38,9 +37,9 @@ public static class FieldCtrl
         return true;
     }
 
-    public static bool IsGoalField(int fieldIndex)
+    public static bool IsRegularField(int fieldIndex)
     {
-        GoalField field = fields[fieldIndex] as GoalField;
+        RegularField field = fields[fieldIndex] as RegularField;
         if (field == null) return false;
         return true;
     }
@@ -54,17 +53,64 @@ public static class FieldCtrl
         return playerField[1] == fieldIndex;
     }
 
-    public static int GetHomeBench(GameFigure figure)
+    public static bool IsLastStairStep(int fieldIndex, GameFigure figure)
+    {
+        return fieldIndex == GetLastStairStep(figure);
+    }
+
+    public static bool IsGoalField(int fieldIndex)
+    {
+        GoalField field = fields[fieldIndex] as GoalField;
+        if (field == null) return false;
+        return true;
+    }
+
+    public static bool IsBarrier(int fieldIndex)
+    {
+        RegularField field = fields[fieldIndex] as RegularField;
+        if (field == null) throw new InvalidGameStateException();
+        return field.IsBarrier;
+    }
+
+    private static bool IsLastRegularFieldIndex(int fieldIndex)
+    {
+        return fieldIndex == NofRegularFields - 1;
+    }
+
+    public static int GetNextRegularFieldIndex(int actualFieldIndex)
+    {
+        int nextFieldIndex = actualFieldIndex + 1;
+        return nextFieldIndex == NofRegularFields - 1 ? 0 : nextFieldIndex;
+    }
+
+    public static int GetNextStairFieldIndex(GameFigure figure, int actualIndex, bool hasToGoBackwards)
+    {
+        int nextFieldIndex;
+
+        if (actualIndex < GetFirstStairStep(figure) || actualIndex > GetLastStairStep(figure))
+            throw new InvalidGameStateException();
+        if (hasToGoBackwards) nextFieldIndex = actualIndex - 1;
+        else nextFieldIndex = actualIndex + 1;
+        
+        return nextFieldIndex;
+    }
+
+    private static int GetHomeBench(GameFigure figure)
     {
         return GetPlayerField(figure, 0);
     }
 
-    public static int GetFirstStairStep(GameFigure figure)
+    private static int GetFirstStairStep(GameFigure figure)
     {
         return GetPlayerField(figure, 2);
     }
 
-    public static int GetHomeField(GameFigure figure)
+    private static int GetLastStairStep(GameFigure figure)
+    {
+        return GetFirstStairStep(figure) + NofStairFieldsEachPlayer - 1;
+    }
+
+    private static int GetHomeField(GameFigure figure)
     {
         return GetPlayerField(figure, 3);
     }
@@ -78,44 +124,81 @@ public static class FieldCtrl
         return result[index];
     }
 
-    public static bool PlaceFigureOnHomeField(GameFigure figure)
+    public static ArrayList GetFiguresOnRegularField(Player player)
     {
-        return PlaceFigure(figure, GetHomeField(figure));
+
     }
+
+    public static ArrayList GetFiguresOnStairField(Player player)
+    {
+
+    }
+
+    public static ArrayList GetFiguresOnHomeField(Player player)
+    {
+
+    }
+
+    public static ArrayList GetFiguresOnGoalField(Player player)
+    {
+
+    }  
 
     public static bool PlaceFigureOnHomeBench(GameFigure figure)
     {
-        return PlaceFigure(figure, GetHomeBench(figure));
+        
     }
 
-    public static bool PlaceFigure(GameFigure figure, int fieldIndex)
+    public static GameFigure PlaceFigureOnNextRegularField(GameFigure figure)
     {
-        GameFieldBase field;
-        fields.TryGetValue(fieldIndex, out field);
-        if (field == null) throw new InvalidGameStateException();
 
-        RegularField regularField = field as RegularField;
-        if(regularField != null)
+    }
+
+    public static void PlaceFigureOnFirstStairStep(GameFigure figure)
+    {
+
+    }
+
+    public static void PlaceFigureOnNextRegularStairStep(GameFigure figure, bool hasToGoBackwards)
+    {
+
+    }
+
+    public static void PlaceFigureInGoal(GameFigure figure)
+    {
+
+    }
+
+    public static void PlaceFigureOnLastStairStep(GameFigure figure)
+    {
+
+    }
+
+    public static void PlaceFigureOnHomeField(GameFigure figure)
+    {
+        // has to jump
+        MoveFigure(figure, GetHomeField(figure));
+    }
+
+    private static void MoveFigure(GameFigure figure, int fieldIndex)
+    {
+        fields[figure.Field].RemoveFigure(figure);
+        fields[fieldIndex].PlaceFigure(figure);
+    }
+
+    public static void SendFigureHome(GameFigure figure)
+    {
+
+    }
+
+    public static void InitiallyPlaceFigure(GameFigure figure)
+    {
+        if(!GameCtrl.GameIsRunning)
         {
-            if(regularField.IsBarrier)
-            {
-                return false;
-            }
-            else
-            {
-                if()
-                regularField.PlaceFigure(figure);
-            }
+            HomeField field = fields[GetHomeField(figure)] as HomeField;
+            if (field == null) throw new InvalidGameStateException();
+            field.InitiallyPlaceFigure(figure);
         }
-
-        // if stairfield -> go
-        // if goalfield -> go
-        // if regularfield -> check barrier -> check others -> bendfield
-
-
-        // check if field is available
-
-        return fields[fieldIndex].PlaceFigure(figure);
     }
 
     public static void InitializeFields()
@@ -129,6 +212,7 @@ public static class FieldCtrl
             GameObject field = GameObject.Find(RegularFieldPrefix + index.ToString("D3"));
             field.AddComponent<RegularField>();
             fields[index] = field.GetComponent<RegularField>();
+            fields[index].Index = index;
         }
 
         // initializing all Stairfields (of all players)
@@ -140,6 +224,7 @@ public static class FieldCtrl
                 GameObject field = GameObject.Find(StairFieldPrefix + index.ToString("D3"));
                 field.AddComponent<StairField>();
                 fields[index] = field.GetComponent<StairField>();
+                fields[index].Index = index;
             }
         }
 
@@ -150,12 +235,14 @@ public static class FieldCtrl
             GameObject field = GameObject.Find(HomeFieldPrefix + index.ToString("D3"));
             field.AddComponent<HomeField>();
             fields[index] = field.GetComponent<HomeField>();
+            fields[index].Index = index;
         }
 
         // initializing GoalField
         GameObject goal = GameObject.Find(GoalFieldPrefix + GoalFieldIndex.ToString("D3"));
         goal.AddComponent<GoalField>();
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
+        fields[GoalFieldIndex].Index = GoalFieldIndex;
     }
 
     //public static RegularField GetHomeBench(Player player)

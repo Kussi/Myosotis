@@ -3,14 +3,18 @@ using System.Collections;
 
 public abstract class GameFieldBase : MonoBehaviour
 {
-    //private int index;
+    private int index;
     protected FieldPosition[] fieldPositions;
 
-    //public int Index
-    //{
-    //    get { return index; }
-    //    private set { index = value; }
-    //}
+    public int Index
+    {
+        get { return index; }
+        set
+        {
+            if (!GameCtrl.GameIsRunning && index == 0 && getIndexFromName() != 0)
+                index = value;
+        }
+    }
 
     protected virtual bool IsOccupied
     {
@@ -29,14 +33,14 @@ public abstract class GameFieldBase : MonoBehaviour
     /// </summary>
     void Awake()
     {
-        //Index = getIndexFromName();
+        //index = getIndexFromName();
     }
 
     /// <summary>
     /// Getting all Gamefigures, that are currently staying on this field
     /// </summary>
     /// <returns>returns the Gamefigures of this field</returns>
-    public GameFigure[] GetGameFigures()
+    public GameFigure[] GetGameFiguresOnField()
     {
         ArrayList gameFigures = new ArrayList();
         foreach (FieldPosition fieldPosition in fieldPositions)
@@ -78,7 +82,7 @@ public abstract class GameFieldBase : MonoBehaviour
     /// Removes a GameFigure from this Field and changes the Field attribute of the figure to null
     /// </summary>
     /// <param name="figure">Figure that has to be removed</param>
-    public virtual void RemoveGameFigure(GameFigure figure)
+    public virtual void RemoveFigure(GameFigure figure)
     {
         bool figureFound = false;
 
@@ -110,13 +114,24 @@ public abstract class GameFieldBase : MonoBehaviour
         }
     }
 
+    protected virtual void RefreshPositionsAfterRemoval()
+    {
+
+    }
+
+    protected void AdjustReferences(FieldPosition position, GameFigure figure)
+    {
+        position.GameFigure = figure;
+        figure.Field = index;
+    }
+
     ///// <summary>
     ///// gets the indexnumber from the name of the gameobject
     ///// </summary>
     ///// <returns>the index of the gameObject</returns>
-    //protected int getIndexFromName()
-    //{
-    //    int indexLength = 3; // Gamefieldnames have always the form <Prefix><3-digit-index>
-    //    return int.Parse(gameObject.name.Substring(gameObject.name.Length - indexLength));
-    //}
+    protected int getIndexFromName()
+    {
+        int indexLength = 3; // Gamefieldnames have always the form <Prefix><3-digit-index>
+        return int.Parse(gameObject.name.Substring(gameObject.name.Length - indexLength));
+    }
 }

@@ -40,10 +40,10 @@ public static class TurnCtrl
         {
             for (int i = 0; i < steps; ++i)
             {
+                // if next field is a barrier
                 if (!MakeOneStep(figure, i == steps - 1))
                 {
-                    // figure cannot walk another step because the
-                    // next Field is not accessible
+                    // isbarrier
                 }
             }
         }
@@ -57,29 +57,73 @@ public static class TurnCtrl
     private static bool MakeOneStep(GameFigure figure, bool isLastStep)
     {
         int actualFieldIndex = figure.Field;
-        int nextFieldIndex = actualFieldIndex + 1;
+        int nextFieldIndex;
 
-        // figure is on StairBench and can enter the stair
+        // figure is on its StairBench and can enter the stair
         if (FieldCtrl.IsStairBench(actualFieldIndex, figure))
         {
-            nextFieldIndex = FieldCtrl.GetFirstStairStep(figure);
+            EnterStair(figure);
         }
+        // figure is on a RegularField and moves to another one
+        else if(FieldCtrl.IsRegularField(actualFieldIndex))
+        {
+            nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
+            if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
+            GameFigure figureToSendHome = MakeOneRegularStep(figure);
+            if (figureToSendHome != null) FieldCtrl.SendFigureHome(figureToSendHome);
+        }
+        // figure is in Goal and has to go backwards
+        else if(hasToGoBackwards && FieldCtrl.IsGoalField(actualFieldIndex))
+        {
+            LeaveGoal(figure);
+        }
+        // figure is on a StairField and has to go backwards
+        else if (hasToGoBackwards)
+        {
+            MakeOneStairStepBackward(figure);
+        }
+        // figure is on the last StairStep and can enter Goal
+        else if (FieldCtrl.IsLastStairStep(actualFieldIndex, figure))
+        {
+            EnterGoal(figure);
+        }
+        // figure is on a StairField and has to go forwards
         else
         {
-            // figure is on RegularField with the highest index
-            if (nextFieldIndex == FieldCtrl.NofRegularFields)
-                nextFieldIndex = 0;
-            // figure is on GoalField
-            else if (nextFieldIndex == FieldCtrl.GoalFieldIndex)
-                hasToGoBackwards = true;
-
-            // figure has to go backwards
-            if (hasToGoBackwards)
-                nextFieldIndex = FieldCtrl.GetFirstStairStep(figure)
-                    + FieldCtrl.NofStairFieldsEachPlayer - 1;
+            MakeOneStairStepForward(figure);
         }
         if (isLastStep) hasToGoBackwards = false;
-        return FieldCtrl.PlaceFigure(figure, nextFieldIndex);
+        return true;
+    }
+
+    private static GameFigure MakeOneRegularStep(GameFigure figure)
+    {
+        return FieldCtrl.PlaceFigureOnNextRegularField(figure);
+    }
+
+    private static void EnterStair(GameFigure figure)
+    {
+        FieldCtrl.PlaceFigureOnFirstStairStep(figure);
+    }
+
+    private static void MakeOneStairStepForward(GameFigure figure)
+    {
+        FieldCtrl.PlaceFigureOnNextRegularStairStep(figure, false);
+    }
+
+    private static void MakeOneStairStepBackward(GameFigure figure)
+    {
+        FieldCtrl.PlaceFigureOnNextRegularStairStep(figure, true);
+    }
+
+    private static void EnterGoal(GameFigure figure)
+    {
+        FieldCtrl.PlaceFigureInGoal(figure);
+    }
+
+    private static void LeaveGoal(GameFigure figure)
+    {
+        FieldCtrl.PlaceFigureOnLastStairStep(figure);
     }
 
     private static void AddTurn(Turn turn)
@@ -87,33 +131,4 @@ public static class TurnCtrl
         turns.Add(turn);
         if (turns.Count > MaxNofTurns) turns.Remove(turns[0]);
     }
-
-    public static bool PlaceFigureOnTheNextField(GameFigure figure, bool isLastStep)
-    {
-        int actualFieldIndex = figure.Field;
-        int nextFieldIndex = actualFieldIndex + 1;
-
-        // figure is on StairBench and can enter the stair
-        if (FieldCtrl.IsStairBench(actualFieldIndex, figure))
-        {
-            nextFieldIndex = FieldCtrl.GetFirstStairStep(figure);
-        }
-        else
-        {
-            // figure is on RegularField with the highest index
-            if (nextFieldIndex == FieldCtrl.NofRegularFields)
-                nextFieldIndex = 0;
-            // figure is on GoalField
-            else if (nextFieldIndex == FieldCtrl.GoalFieldIndex)
-                hasToGoBackwards = true;
-
-            // figure has to go backwards
-            if (hasToGoBackwards)
-                nextFieldIndex = GetFirstStairStep(figure) + NofStairFieldsEachPlayer - 1;
-
-        }
-        if (isLastStep) hasToGoBackwards = false;
-        return PlaceFigure(figure, nextFieldIndex);
-    }
-
 }
