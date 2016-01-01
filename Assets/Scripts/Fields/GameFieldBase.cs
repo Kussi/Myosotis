@@ -54,7 +54,7 @@ public abstract class GameFieldBase : MonoBehaviour
     /// Sets the Fieldpositions of this field
     /// </summary>
     /// <param name="fieldPositions">possible positions a GameFigure can stand on this field</param>
-    protected void SetfieldPositions(FieldPosition[] fieldPositions)
+    protected void SetFieldPositions(FieldPosition[] fieldPositions)
     {
         if (fieldPositions == null) this.fieldPositions = fieldPositions;
     }
@@ -108,7 +108,7 @@ public abstract class GameFieldBase : MonoBehaviour
         {
             if (fieldPosition.IsOccupied && fieldPosition.GameFigure.transform.position != fieldPosition.transform.position)
             {
-                fieldPosition.GameFigure.Field = this;
+                fieldPosition.GameFigure.Field = this.index;
                 fieldPosition.GameFigure.transform.position = fieldPosition.transform.position;
             }
         }

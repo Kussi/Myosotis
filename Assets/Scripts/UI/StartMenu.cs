@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class StartMenu : MonoBehaviour {
 
     private static readonly string DropdownGameObject = "PlayerSelection";
+    private static readonly string PlayerSelectionSuffix = "Players";
+    private static readonly string FigureSelectionSuffix = "Figures";
 
     // Colors of selected button
     private static readonly Color32 SelectedNormal = new Color32(120, 120, 255, 255);
@@ -18,11 +20,14 @@ public class StartMenu : MonoBehaviour {
 
     private static readonly int MinNofPlayers = 2;
     private static readonly int MaxNofPlayers = 4;
+    private static readonly int MinNofFigures = 1;
+    private static readonly int MaxNofFigures = 4;
 
     private static readonly int UnpersonalizedPlayerIndex = 0;
     private static readonly string UnpersonalizedPlayerName = "Spieler ohne Personalisierung";
 
     private static int NofPlayers = MinNofPlayers;
+    private static int NofFigures = MaxNofFigures;
 
     private static int PlayerIndex;
     private static string PlayerName;
@@ -32,6 +37,7 @@ public class StartMenu : MonoBehaviour {
     {
         UpdateDropdown();
         ChangeNofPlayers(NofPlayers);
+        ChangeNofFigures(NofFigures);
 
         FileCtrl.GetPlayerList();
     }
@@ -42,7 +48,7 @@ public class StartMenu : MonoBehaviour {
     public void StartGame()
     {
         gameObject.GetComponent<CanvasGroup>().alpha = 0f; // menu disappears
-        Initializer.SetupGame(PlayerName, NofPlayers);
+        Initializer.SetupGame(PlayerName, NofPlayers, NofFigures);
     }
 
     /// <summary>
@@ -56,23 +62,23 @@ public class StartMenu : MonoBehaviour {
 
         for(int i = MinNofPlayers; i <= MaxNofPlayers; ++i)
         {
-            Button button = GameObject.Find(i + "Players").GetComponent<Button>();
-            ColorBlock colorBlock = button.colors;
-            if (i == NofPlayers)
-            {
-                colorBlock.normalColor = SelectedNormal;
-                colorBlock.highlightedColor = SelectedHighlighted;
-                colorBlock.pressedColor = SelectedPressed;
-            }
-            else
-            {
-                colorBlock.normalColor = DeselectedNormal;
-                colorBlock.highlightedColor = DeselectedHighlighted;
-                colorBlock.pressedColor = DeselectedPressed;
-            }
-            button.colors = colorBlock;
+            Button button = GameObject.Find(i + PlayerSelectionSuffix).GetComponent<Button>();
+            if (i == NofPlayers) ChangeButtonColors(button, true);
+            else ChangeButtonColors(button, false);
         }
+    }
 
+    public void ChangeNofFigures(int number)
+    {
+        if (number < MinNofFigures || number > MaxNofFigures) throw new InvalidGameStateException();
+        NofFigures = number;
+
+        for (int i = MinNofFigures; i <= MaxNofFigures; ++i)
+        {
+            Button button = GameObject.Find(i + FigureSelectionSuffix).GetComponent<Button>();
+            if (i == NofFigures) ChangeButtonColors(button, true);
+            else ChangeButtonColors(button, false);
+        }
     }
 
     /// <summary>
@@ -112,5 +118,23 @@ public class StartMenu : MonoBehaviour {
 
         dropdown.value = PlayerIndex;
         GameObject.Find(DropdownGameObject + "/Label").GetComponent<Text>().text = GetSelectedPlayerName();
+    }
+
+    private void ChangeButtonColors(Button button, bool isSelected)
+    {
+        ColorBlock result = button.colors;
+        if (isSelected)
+        {
+            result.normalColor = SelectedNormal;
+            result.highlightedColor = SelectedHighlighted;
+            result.pressedColor = SelectedPressed;
+        }
+        else
+        {
+            result.normalColor = DeselectedNormal;
+            result.highlightedColor = DeselectedHighlighted;
+            result.pressedColor = DeselectedPressed;
+        }
+        button.colors = result;
     }
 }

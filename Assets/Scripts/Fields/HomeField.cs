@@ -12,7 +12,7 @@ public class HomeField : GameFieldBase
     /// </summary>
     void OnEnable ()
     {
-        SetfieldPositions(new FieldPosition[figureCapacity]);
+        SetFieldPositions(new FieldPosition[figureCapacity]);
 
         for (int i = 0; i < fieldPositions.Length; ++i)
         {

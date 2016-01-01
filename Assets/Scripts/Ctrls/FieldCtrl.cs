@@ -30,16 +30,37 @@ public static class FieldCtrl
 
     private static Dictionary<int, GameFieldBase> fields;
 
-    public static bool IsHomeField(int fieldIndex)
+    private static bool IsLastRegularFieldIndex(int fieldIndex)
     {
-        HomeField field = fields[fieldIndex] as HomeField;
-        if (field == null) return false;
-        return true;
+        return fieldIndex == NofRegularFields - 1;
+    }
+
+    public static bool IsBarrier(int fieldIndex)
+    {
+        RegularField field = fields[fieldIndex] as RegularField;
+        if (field == null) throw new InvalidGameStateException();
+        return field.IsBarrier;
+    }
+
+    public static bool IsHomeField(int fieldIndex, GameFigure figure)
+    {
+        Player player = GameFigureCtrl.GetPlayer(figure);
+        int[] playerField;
+        PlayerFields.TryGetValue(player.Color, out playerField);
+        if (playerField == null) throw new InvalidGameStateException();
+        return playerField[3] == fieldIndex;
     }
 
     public static bool IsRegularField(int fieldIndex)
     {
         RegularField field = fields[fieldIndex] as RegularField;
+        if (field == null) return false;
+        return true;
+    }
+
+    public static bool IsStairField(int fieldIndex)
+    {
+        StairField field = fields[fieldIndex] as StairField;
         if (field == null) return false;
         return true;
     }
@@ -65,20 +86,10 @@ public static class FieldCtrl
         return true;
     }
 
-    public static bool IsBarrier(int fieldIndex)
-    {
-        RegularField field = fields[fieldIndex] as RegularField;
-        if (field == null) throw new InvalidGameStateException();
-        return field.IsBarrier;
-    }
-
-    private static bool IsLastRegularFieldIndex(int fieldIndex)
-    {
-        return fieldIndex == NofRegularFields - 1;
-    }
-
     public static int GetNextRegularFieldIndex(int actualFieldIndex)
     {
+        if (actualFieldIndex < 0 || actualFieldIndex >= NofRegularFields)
+            throw new ArgumentOutOfRangeException();
         int nextFieldIndex = actualFieldIndex + 1;
         return nextFieldIndex == NofRegularFields - 1 ? 0 : nextFieldIndex;
     }
@@ -91,8 +102,13 @@ public static class FieldCtrl
             throw new InvalidGameStateException();
         if (hasToGoBackwards) nextFieldIndex = actualIndex - 1;
         else nextFieldIndex = actualIndex + 1;
-        
+
         return nextFieldIndex;
+    }
+
+    private static GameFigure GetFigureToSendHome(RegularField field, GameFigure arrivingFigure)
+    {
+        return field.GetFigureToSendHome(arrivingFigure);
     }
 
     private static int GetHomeBench(GameFigure figure)
@@ -124,81 +140,81 @@ public static class FieldCtrl
         return result[index];
     }
 
-    public static ArrayList GetFiguresOnRegularField(Player player)
-    {
-
-    }
-
-    public static ArrayList GetFiguresOnStairField(Player player)
-    {
-
-    }
-
-    public static ArrayList GetFiguresOnHomeField(Player player)
-    {
-
-    }
-
-    public static ArrayList GetFiguresOnGoalField(Player player)
-    {
-
-    }  
-
     public static bool PlaceFigureOnHomeBench(GameFigure figure)
     {
-        
+        if (!IsHomeField(figure.Field, figure))
+            throw new InvalidGameStateException();
+        int newFieldIndex = GetHomeBench(figure);
+        if (IsBarrier(newFieldIndex)) return false;
+        MoveFigureRegular(figure, newFieldIndex);
+        return true;
     }
 
     public static GameFigure PlaceFigureOnNextRegularField(GameFigure figure)
     {
-
+        if (!IsRegularField(figure.Field))
+            throw new InvalidGameStateException();
+        int newFieldIndex = GetNextRegularFieldIndex(figure.Field);
+        if (!IsRegularField(newFieldIndex)) throw new InvalidGameStateException();
+        if (IsBarrier(newFieldIndex)) throw new InvalidGameStateException();
+        MoveFigureRegular(figure, newFieldIndex);
+        return ((RegularField)fields[newFieldIndex]).GetFigureToSendHome(figure);
     }
 
     public static void PlaceFigureOnFirstStairStep(GameFigure figure)
     {
-
+        if (!IsStairBench(figure.Field, figure))
+            throw new InvalidGameStateException();
+        MoveFigureRegular(figure, GetFirstStairStep(figure));
     }
 
     public static void PlaceFigureOnNextRegularStairStep(GameFigure figure, bool hasToGoBackwards)
     {
-
+        if (!IsStairField(figure.Field))
+            throw new InvalidGameStateException();
+        MoveFigureRegular(figure, GetNextStairFieldIndex(figure, figure.Field, hasToGoBackwards));
     }
 
     public static void PlaceFigureInGoal(GameFigure figure)
     {
-
+        if (!IsLastStairStep(figure.Field, figure))
+            throw new InvalidGameStateException();
+        MoveFigureRegular(figure, GoalFieldIndex);
     }
 
     public static void PlaceFigureOnLastStairStep(GameFigure figure)
     {
-
+        if (!IsGoalField(figure.Field))
+            throw new InvalidGameStateException();
+        MoveFigureRegular(figure, GetLastStairStep(figure));
     }
 
     public static void PlaceFigureOnHomeField(GameFigure figure)
     {
-        // has to jump
-        MoveFigure(figure, GetHomeField(figure));
+        MoveFigureHome(figure);
     }
 
-    private static void MoveFigure(GameFigure figure, int fieldIndex)
+    private static void MoveFigureRegular(GameFigure figure, int fieldIndex)
     {
         fields[figure.Field].RemoveFigure(figure);
         fields[fieldIndex].PlaceFigure(figure);
     }
 
-    public static void SendFigureHome(GameFigure figure)
+    public static void MoveFigureHome(GameFigure figure)
     {
-
+        if (!IsRegularField(figure.Field) || ((RegularField)fields[figure.Field]).IsBarrier)
+            throw new InvalidGameStateException();
+        fields[figure.Field].RemoveFigure(figure);
+        fields[GetHomeField(figure)].PlaceFigure(figure);
     }
 
     public static void InitiallyPlaceFigure(GameFigure figure)
     {
-        if(!GameCtrl.GameIsRunning)
-        {
-            HomeField field = fields[GetHomeField(figure)] as HomeField;
-            if (field == null) throw new InvalidGameStateException();
-            field.InitiallyPlaceFigure(figure);
-        }
+        if (GameCtrl.GameIsRunning)
+            throw new InvalidGameStateException();
+        HomeField field = fields[GetHomeField(figure)] as HomeField;
+        if (field == null) throw new InvalidGameStateException();
+        field.InitiallyPlaceFigure(figure);
     }
 
     public static void InitializeFields()
@@ -244,43 +260,4 @@ public static class FieldCtrl
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
         fields[GoalFieldIndex].Index = GoalFieldIndex;
     }
-
-    //public static RegularField GetHomeBench(Player player)
-    //{
-    //    RegularField result = GetPlayerField(player, 0) as RegularField;
-    //    if (result == null) throw new InvalidGameStateException();
-    //    return result;
-    //}
-
-    //public static RegularField GetStairBench(Player player)
-    //{
-    //    RegularField result = GetPlayerField(player, 1) as RegularField;
-    //    if (result == null) throw new InvalidGameStateException();
-    //    return result;
-    //}
-
-    //public static StairField GetFirstStairStep(Player player)
-    //{
-    //    StairField result = GetPlayerField(player, 2) as StairField;
-    //    if (result == null) throw new InvalidGameStateException();
-    //    return result;
-    //}
-
-    //public static HomeField GetHomeField(Player player)
-    //{
-    //    HomeField result = GetPlayerField(player, 3) as HomeField;
-    //    if (result == null) throw new InvalidGameStateException();
-    //    return result;
-    //}
-
-    //private static GameFieldBase GetPlayerField(Player player, int index)
-    //{
-    //    GameFieldBase result;
-    //    int[] fieldIndexes;
-    //    if (!PlayerFields.TryGetValue(player.Color, out fieldIndexes))
-    //        throw new InvalidGameStateException();
-    //    if (!fields.TryGetValue(fieldIndexes[index], out result))
-    //        throw new InvalidGameStateException();
-    //    return result;
-    //}
 }

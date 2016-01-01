@@ -28,7 +28,7 @@ public static class TurnCtrl
         int steps = turn.DiceValue;
 
         // figure is at home and may be released
-        if (FieldCtrl.IsHomeField(startFieldIndex))
+        if (FieldCtrl.IsHomeField(startFieldIndex, figure))
         {
             if (!ReleaseFigureFromHome(figure))
             {
@@ -70,7 +70,7 @@ public static class TurnCtrl
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
             GameFigure figureToSendHome = MakeOneRegularStep(figure);
-            if (figureToSendHome != null) FieldCtrl.SendFigureHome(figureToSendHome);
+            if (figureToSendHome != null) FieldCtrl.MoveFigureHome(figureToSendHome);
         }
         // figure is in Goal and has to go backwards
         else if(hasToGoBackwards && FieldCtrl.IsGoalField(actualFieldIndex))

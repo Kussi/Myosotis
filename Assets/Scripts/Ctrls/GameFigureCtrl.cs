@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public static class GameFigureCtrl
 {
@@ -47,12 +46,9 @@ public static class GameFigureCtrl
 
     public static void ActivateReleasedFigures(Player player)
     {
-        ArrayList figures = GetGameFigures(player);
+        ArrayList figures = GetFiguresOnRegularOrStairField(player);
         foreach (GameFigure figure in figures)
-        {
-            if (FieldCtrl.IsHomeField(figure.Field))
-                ActivateFigure(figure);
-        }
+            ActivateFigure(figure);
     }
 
     public static void ActivateAllFigures(Player player)
@@ -62,56 +58,51 @@ public static class GameFigureCtrl
             ActivateFigure(figure);
     }
 
+    private static void ActivateFigure(GameFigure figure)
+    {
+        figure.SetActive(true);
+    }
+
     public static ArrayList GetFiguresOnGoalField(Player player)
     {
+        ArrayList figuresOnGoalField = new ArrayList();
         ArrayList figures = GetGameFigures(player);
-        ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
-        {
             if (FieldCtrl.IsGoalField(figure.Field))
-                result.Add(figure);
-        }
-        return result;
+                figuresOnGoalField.Add(figure);
+        return figuresOnGoalField;
     }
 
     public static ArrayList GetFiguresOnHomeField(Player player)
     {
+        ArrayList figuresOnGoalField = new ArrayList();
         ArrayList figures = GetGameFigures(player);
-        ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
-        {
-            if (FieldCtrl.IsHomeField(figure.Field))
-                result.Add(figure);
-        }
-        return result;
+            if (FieldCtrl.IsHomeField(figure.Field, figure))
+                figuresOnGoalField.Add(figure);
+        return figuresOnGoalField;
     }
 
     public static ArrayList GetFiguresOnRegularOrStairField(Player player)
     {
+        ArrayList figuresOnGoalField = new ArrayList();
         ArrayList figures = GetGameFigures(player);
-        ArrayList result = new ArrayList();
         foreach (GameFigure figure in figures)
-        {
-            if (!FieldCtrl.IsHomeField(figure.Field) && !FieldCtrl.IsGoalField(figure.Field))
-                result.Add(figure);
-        }
-        return result;
-    }
-
-    private static void ActivateFigure(GameFigure figure)
-    {
-        figure.SetActive(true);
+            if (FieldCtrl.IsRegularField(figure.Field)
+                || FieldCtrl.IsStairField(figure.Field))
+                figuresOnGoalField.Add(figure);
+        return figuresOnGoalField;
     }
 
     public static void PlaceFiguresOnStartPosition()
     {
         if (!GameCtrl.GameIsRunning)
         {
-            foreach(GameFigure figure in figures.Keys)
+            foreach (GameFigure figure in figures.Keys)
             {
                 FieldCtrl.InitiallyPlaceFigure(figure);
             }
-        }       
+        }
     }
 
     public static void InitializeGameFigures(ArrayList players, int nofGameFigures)
