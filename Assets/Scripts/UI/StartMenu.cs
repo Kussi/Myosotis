@@ -22,21 +22,19 @@ public class StartMenu : MonoBehaviour
     private static readonly int MinNofFigures = 1;
     private static readonly int MaxNofFigures = 4;
 
-    private static readonly string UnpersonalizedPlayerName = "Spieler ohne Personalisierung";
+    public static readonly string UnpersonalizedPlayerName = "Spieler ohne Personalisierung";
 
-    private static int NofPlayers = MinNofPlayers;
-    private static int NofFigures = MaxNofFigures;
+    private static int nofPlayers = MinNofPlayers;
+    private static int nofFigures = MaxNofFigures;
 
-    private static int PlayerIndex;
-    private static string PlayerName;
+    private static int playerIndex;
+    private static string playerName;
 
     void Awake()
     {
         UpdateDropdown();
-        ChangeNofPlayers(NofPlayers);
-        ChangeNofFigures(NofFigures);
-
-        FileCtrl.GetPlayerList();
+        ChangeNofPlayers(nofPlayers);
+        ChangeNofFigures(nofFigures);
     }
 
     /// <summary>
@@ -44,8 +42,9 @@ public class StartMenu : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        bool hasPersonalization = !playerName.Equals(UnpersonalizedPlayerName);
+        Initializer.SetupGame(playerName, nofPlayers, nofFigures, hasPersonalization);
         Hide();
-        Initializer.SetupGame(PlayerName, NofPlayers, NofFigures);
     }
 
     /// <summary>
@@ -55,12 +54,12 @@ public class StartMenu : MonoBehaviour
     public void ChangeNofPlayers(int number)
     {
         if (number < MinNofPlayers || number > MaxNofPlayers) throw new InvalidGameStateException();
-        NofPlayers = number;
+        nofPlayers = number;
 
         for (int i = MinNofPlayers; i <= MaxNofPlayers; ++i)
         {
             Button button = GameObject.Find(i + PlayerSelectionSuffix).GetComponent<Button>();
-            if (i == NofPlayers) ChangeButtonColors(button, true);
+            if (i == nofPlayers) ChangeButtonColors(button, true);
             else ChangeButtonColors(button, false);
         }
     }
@@ -68,12 +67,12 @@ public class StartMenu : MonoBehaviour
     public void ChangeNofFigures(int number)
     {
         if (number < MinNofFigures || number > MaxNofFigures) throw new InvalidGameStateException();
-        NofFigures = number;
+        nofFigures = number;
 
         for (int i = MinNofFigures; i <= MaxNofFigures; ++i)
         {
             Button button = GameObject.Find(i + FigureSelectionSuffix).GetComponent<Button>();
-            if (i == NofFigures) ChangeButtonColors(button, true);
+            if (i == nofFigures) ChangeButtonColors(button, true);
             else ChangeButtonColors(button, false);
         }
     }
@@ -84,14 +83,14 @@ public class StartMenu : MonoBehaviour
     /// <param name="value">index of dropdown list</param>
     public void ChangePlayer(int value)
     {
-        PlayerIndex = value;
-        PlayerName = GetSelectedPlayerName();
+        playerIndex = value;
+        playerName = GetSelectedPlayerName();
     }
 
     private string GetSelectedPlayerName()
     {
         Dropdown dropdown = GameObject.Find(DropdownGameObject).GetComponent<Dropdown>();
-        return dropdown.options[PlayerIndex].text;
+        return dropdown.options[playerIndex].text;
     }
 
     /// <summary>
@@ -113,7 +112,8 @@ public class StartMenu : MonoBehaviour
             dropdown.options.Add(element);
         }
 
-        dropdown.value = PlayerIndex;
+        dropdown.value = playerIndex;
+        ChangePlayer(dropdown.value);
         GameObject.Find(DropdownGameObject + "/Label").GetComponent<Text>().text = GetSelectedPlayerName();
     }
 
@@ -135,15 +135,15 @@ public class StartMenu : MonoBehaviour
         button.colors = result;
     }
 
-    private void Hide()
-    {
-        gameObject.GetComponent<CanvasGroup>().alpha = 0f;
-        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
-    }
-
-    private void Show()
+    public void Show()
     {
         gameObject.GetComponent<CanvasGroup>().alpha = 1f;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
+    }
+
+    public void Hide()
+    {
+        gameObject.GetComponent<CanvasGroup>().alpha = 0f;
+        gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 }

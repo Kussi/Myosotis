@@ -10,7 +10,6 @@ public static class PlayerCtrl {
 
     public static ArrayList players = new ArrayList();
 
-
     public static ArrayList GetPlayers()
     {
         return players;
@@ -55,7 +54,7 @@ public static class PlayerCtrl {
         object last = players[players.Count - 1];
         foreach (Player player in players)
         {
-            result.Append(player.Name);
+            result.Append(player.Color);
             if (!player.Equals(last)) result.Append(", ");
         }
 

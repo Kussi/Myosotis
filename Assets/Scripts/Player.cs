@@ -8,17 +8,11 @@ public class Player
     private IPlayerState state;
 
     private readonly string color;
-
     private readonly int playerAngle;
 
     public string Color
     {
         get { return color; }
-    }
-
-    public string Name
-    {
-        get { return Color; }
     }
 
     public int PlayerAngle
@@ -44,8 +38,6 @@ public class Player
     public Player(string color)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
-
-        // initiate the first Playerstate
         this.state = new PlayerStateAllAtHome();
     }
 
