@@ -117,6 +117,7 @@ public static class FileCtrl {
 
     private static bool IsValidFileType(string fileName, ArrayList validExtensions)
     {
-        return validExtensions.Contains(Path.GetExtension(fileName));
+        string extension = Path.GetExtension(fileName).ToLower();
+        return validExtensions.Contains(extension);
     }
 }
