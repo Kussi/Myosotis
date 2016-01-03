@@ -48,6 +48,16 @@ public class RegularField : GameFieldBase
         }
     }
 
+    public bool IsBend
+    {
+        get { return isBend; }
+    }
+
+    public bool IsBench
+    {
+        get { return isBench; }
+    }
+
     /// <summary>
     /// Use this for initialization
     /// </summary>

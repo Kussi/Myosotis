@@ -93,7 +93,10 @@ public static class GameCtrl
 
     private static void ChangePlayerOnTurn()
     {
+        if (playerOnTurn >= 0)
+            BulpCtrl.Deactivate(PlayerOnTurn);
         playerOnTurn = (playerOnTurn + 1) % activePlayers.Count;
+        BulpCtrl.Activate(PlayerOnTurn);
     }
 
     private static void StartNextTurn()

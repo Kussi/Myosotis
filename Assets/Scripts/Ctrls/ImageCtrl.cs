@@ -23,6 +23,7 @@ public class ImageCtrl
     private static bool isAligned = false;
 
     private static Dictionary<Player, Image> images = new Dictionary<Player, Image>();
+    private static ArrayList alreadyDisplayedImages = new ArrayList();
     private static ImageDownloader imageSystem;
     private static ArrayList textures;
 
@@ -56,6 +57,7 @@ public class ImageCtrl
             SetupInitialAppearance(player);
         }
         isAvailable = true;
+        PersonalizationCtrl.Notify();
     }
 
     public static void SetImage(Player player, Texture newImage)
@@ -130,5 +132,18 @@ public class ImageCtrl
         bool result;
         PlayerHasWidePictureFrame.TryGetValue(player.Color, out result);
         return result;
+    }
+
+    public static void ChangeImageRandomly(Player player)
+    {
+        if (IsAvailable)
+        {
+            if (alreadyDisplayedImages.Count == 0)
+                alreadyDisplayedImages.AddRange(textures);
+            int randomIndex = Random.Range(0, alreadyDisplayedImages.Count);
+            Texture image = (Texture)alreadyDisplayedImages[randomIndex];
+            SetImage(player, image);
+            alreadyDisplayedImages.Remove(image);
+        }
     }
 }

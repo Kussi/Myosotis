@@ -11,6 +11,12 @@ public static class PlayerCtrl {
         { "Red", 180 }, { "Yellow", 270 }, { "Blue", 0 }, { "Green", 90 }
     };
 
+    private static readonly Dictionary<string, Color> PlayerColors = new Dictionary<string, Color>
+    {
+        //{ "Red", new Color(255, 0, 0) }, { "Yellow", new Color(220, 200, 0) }, { "Blue", new Color(15, 15, 255) }, { "Green", new Color(0, 153, 0) }
+        { "Red", new Color(1, 0, 0) }, { "Yellow", new Color(220, 200, 0) }, { "Blue", new Color(15/255, 15/255, 1) }, { "Green", new Color(0, 153, 0) }
+    };
+
     private static readonly int MinNofPlayers = 2;
     private static readonly int MaxNofPlayers = 4;
 
@@ -19,6 +25,14 @@ public static class PlayerCtrl {
     public static ArrayList GetPlayers()
     {
         return players;
+    }
+
+    public static Color GetColor(Player player)
+    {
+        Color color;
+        PlayerColors.TryGetValue(player.Color, out color);
+        if (color == null) throw new InvalidGameStateException();
+        return color;
     }
 
     /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Text;
 
 public static class FieldCtrl
 {
@@ -10,7 +11,18 @@ public static class FieldCtrl
     private static readonly string HomeFieldPrefix = "HomeField";
     private static readonly string GoalFieldPrefix = "GoalField";
 
-    private static readonly ArrayList EventTriggeredFields = new ArrayList() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private static readonly string TexturesDirectory = "Materials/";
+    private static readonly string RedTriggerRegularMaterial = "RedTriggerRegular";
+    private static readonly string RedTriggerBendMaterial = "RedTriggerBend";
+    private static readonly string YellowTriggerRegularMaterial = "YellowTriggerRegular";
+    private static readonly string YellowTriggerBendMaterial = "YellowTriggerBend";
+    private static readonly string BlueTriggerRegularMaterial = "BlueTriggerRegular";
+    private static readonly string BlueTriggerBendMaterial = "BlueTriggerBend";
+    private static readonly string GreenTriggerRegularMaterial = "GreenTriggerRegular";
+    private static readonly string GreenTriggerBendMaterial = "GreenTriggerBend";
+
+
+    private static readonly ArrayList EventTriggeredFields = new ArrayList() { 2, 13, 19, 30, 36, 47, 53, 64 };
 
     public static readonly int GoalFieldIndex = 999;
 
@@ -18,11 +30,19 @@ public static class FieldCtrl
     public static readonly int NofStairFieldsEachPlayer = 7;
     public static readonly int NofPlayers = 4;
 
+    public static readonly int FirstRedFieldIndex = 0;
+    public static readonly int LastRedFieldIndex = 16;
+    public static readonly int FirstYellowFieldIndex = 17;
+    public static readonly int LastYellowFieldIndex = 33;
+    public static readonly int FirstBlueFieldIndex = 34;
+    public static readonly int LastBlueFieldIndex = 50;
+    public static readonly int FirstGreenFieldIndex = 51;
+    public static readonly int LastGreenFieldIndex = 67;
 
     /// <summary>
     /// 0: HomeBench / 1: StairBench / 2: FirstStairStep / 3: HomeField
     /// </summary>
-    private static readonly Dictionary<string, int[]> PlayerFields = new Dictionary<string, int[]>
+    private static readonly Dictionary<string, int[]> ImportantPlayerFields = new Dictionary<string, int[]>
     {
         { "Red", new int[] { 4, 67, 100, 110 } },
         { "Yellow", new int[] { 21, 16, 200, 210 } },
@@ -55,7 +75,7 @@ public static class FieldCtrl
     {
         Player player = FigureCtrl.GetPlayer(figure);
         int[] playerField;
-        PlayerFields.TryGetValue(player.Color, out playerField);
+        ImportantPlayerFields.TryGetValue(player.Color, out playerField);
         if (playerField == null) throw new InvalidGameStateException();
         return playerField[3] == fieldIndex;
     }
@@ -78,7 +98,7 @@ public static class FieldCtrl
     {
         Player player = FigureCtrl.GetPlayer(figure);
         int[] playerField;
-        PlayerFields.TryGetValue(player.Color, out playerField);
+        ImportantPlayerFields.TryGetValue(player.Color, out playerField);
         if (playerField == null) throw new InvalidGameStateException();
         return playerField[1] == fieldIndex;
     }
@@ -144,7 +164,7 @@ public static class FieldCtrl
     {
         Player player = FigureCtrl.GetPlayer(figure);
         int[] result;
-        if (!PlayerFields.TryGetValue(player.Color, out result))
+        if (!ImportantPlayerFields.TryGetValue(player.Color, out result))
             throw new InvalidGameStateException();
         return result[index];
     }
@@ -232,13 +252,53 @@ public static class FieldCtrl
     private static void SetAsEventTrigger(GameFieldBase field, bool value)
     {
         field.IsEventTrigger = value;
+        RegularField regularField = field as RegularField;
+
+        if(regularField != null && !regularField.IsBench)
+        {
+            StringBuilder materialSource = new StringBuilder(TexturesDirectory);
+            if (field.Index >= FirstRedFieldIndex && field.Index <= LastRedFieldIndex)
+            {
+                if (regularField.IsBend)
+                    materialSource.Append(RedTriggerBendMaterial);
+                else
+                    materialSource.Append(RedTriggerRegularMaterial);
+            }
+            else if (field.Index >= FirstYellowFieldIndex && field.Index <= LastYellowFieldIndex)
+            {
+                if (regularField.IsBend)
+                    materialSource.Append(YellowTriggerBendMaterial);                
+                else
+                    materialSource.Append(YellowTriggerRegularMaterial);
+            }
+            else if (field.Index >= FirstBlueFieldIndex && field.Index <= LastBlueFieldIndex)
+            {
+                if (regularField.IsBend)
+                    materialSource.Append(BlueTriggerBendMaterial);
+                else
+                materialSource.Append(BlueTriggerRegularMaterial);
+            }
+            else if (field.Index >= FirstGreenFieldIndex && field.Index <= LastGreenFieldIndex)
+            {
+                if (regularField.IsBend)
+                    materialSource.Append(GreenTriggerBendMaterial);
+                else
+                materialSource.Append(GreenTriggerRegularMaterial);
+            }
+            Material material = Resources.Load(materialSource.ToString(), typeof(Material)) as Material;
+            if (material != null)
+                GameObject.Find(regularField.gameObject.name + "/" + "default").GetComponent<MeshRenderer>().material = material;
+        }
     }
 
-    private static void SetEventTriggers()
+    public static void SetEventTriggers()
     {
-        foreach (GameFieldBase field in fields.Values)
-            if (EventTriggeredFields.Contains(field.Index))
-                SetAsEventTrigger(field, true);
+        if (ImageCtrl.IsAvailable)
+        {
+            foreach (GameFieldBase field in fields.Values)
+                if (EventTriggeredFields.Contains(field.Index))
+                    SetAsEventTrigger(field, true);
+        }
     }
 
     public static void InitializeFields()
@@ -283,8 +343,5 @@ public static class FieldCtrl
         goal.AddComponent<GoalField>();
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
         fields[GoalFieldIndex].Index = GoalFieldIndex;
-
-        // set Event triggers
-        SetEventTriggers();
     }
 }

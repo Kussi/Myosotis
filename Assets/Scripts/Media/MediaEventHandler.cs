@@ -16,10 +16,14 @@ public static class MediaEventHandler
         events.Add(mediaEvent);
     }
 
-    public static void Notify()
+    public static void Notify(Player player)
     {
         foreach (MediaEvent me in events)
-            Debug.LogError(me);
+            if (me == MediaEvent.FigureStepsOnTriggeredField)
+            {
+                ImageCtrl.ChangeImageRandomly(player);
+            }
+                
         events.Clear();
     }
 }

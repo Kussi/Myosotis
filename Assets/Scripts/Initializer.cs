@@ -7,6 +7,7 @@
         DiceCtrl.InitializeDices(PlayerCtrl.players);
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();
+        BulpCtrl.InitializeBulps(PlayerCtrl.players);
 
         if(hasPersonalization)
             PersonalizationCtrl.InitializePersonalization(playerName);

@@ -6,7 +6,7 @@ public abstract class GameFieldBase : MonoBehaviour
     protected static readonly string PositionPrefix = "Position";
 
     private int index;
-    private bool isEventTrigger = false;
+    public bool isEventTrigger = false;
     public FieldPosition[] fieldPositions;
 
     public int Index
@@ -129,7 +129,6 @@ public abstract class GameFieldBase : MonoBehaviour
 
     protected virtual void MoveFigureObject(FieldPosition position, Figure figure)
     {
-        Debug.Log("Move Figure Regular");
         figure.transform.position = position.transform.position;
     }
 }

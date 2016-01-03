@@ -17,5 +17,11 @@ public static class PersonalizationCtrl {
         ImageCtrl.InitializeImages(PlayerCtrl.players);
         MusicCtrl.InitializeMusic();
         //TextCtrl.InitializeTexts();
+            
+    }
+
+    public static void Notify()
+    {
+        FieldCtrl.SetEventTriggers();
     }
 }

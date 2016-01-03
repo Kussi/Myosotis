@@ -52,8 +52,11 @@ public static class TurnCtrl
     private static bool ReleaseFigureFromHome(Figure figure)
     {
         MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureReleasedFromHome);
-        MediaEventHandler.Notify();
-        return FieldCtrl.PlaceFigureOnHomeBench(figure);
+        bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
+        if (FieldCtrl.IsEventTrigger(figure.Field))
+            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnTriggeredField);
+        MediaEventHandler.Notify(FigureCtrl.GetPlayer(figure));
+        return couldBePlaced;
     }
 
     private static bool MakeOneStep(Figure figure, bool isLastStep)
@@ -104,7 +107,7 @@ public static class TurnCtrl
             MakeOneStairStepForward(figure);
         }
         if (isLastStep) hasToGoBackwards = false;
-        MediaEventHandler.Notify();
+        MediaEventHandler.Notify(FigureCtrl.GetPlayer(figure));
         return true;
     }
 
