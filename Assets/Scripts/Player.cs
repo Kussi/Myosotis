@@ -35,9 +35,10 @@ public class Player
     /// Constructor
     /// </summary>
     /// <param name="color">color of the player</param>
-    public Player(string color)
+    public Player(string color, int angle)
     {
         this.color = char.ToUpper(color[0]) + color.Substring(1);
+        this.playerAngle = angle;
         this.state = new PlayerStateAllAtHome();
     }
 

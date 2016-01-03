@@ -2,8 +2,14 @@
 using System.Collections;
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 public static class PlayerCtrl {
+
+    private static readonly Dictionary<string, int> PlayerAngles = new Dictionary<string, int>
+    {
+        { "Red", 180 }, { "Yellow", 270 }, { "Blue", 0 }, { "Green", 90 }
+    };
 
     private static readonly int MinNofPlayers = 2;
     private static readonly int MaxNofPlayers = 4;
@@ -24,19 +30,19 @@ public static class PlayerCtrl {
         switch (nofPlayers)
         {
             case 2:
-                players.Add(new Player("red"));
-                players.Add(new Player("blue"));
+                players.Add(new Player("Red", GetPlayerAngle("Red")));
+                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
                 break;
             case 3:
-                players.Add(new Player("red"));
-                players.Add(new Player("yellow"));
-                players.Add(new Player("blue"));
+                players.Add(new Player("Red", GetPlayerAngle("Red")));
+                players.Add(new Player("Yellow", GetPlayerAngle("Yellow")));
+                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
                 break;
             case 4:
-                players.Add(new Player("red"));
-                players.Add(new Player("yellow"));
-                players.Add(new Player("blue"));
-                players.Add(new Player("green"));
+                players.Add(new Player("Red", GetPlayerAngle("Red")));
+                players.Add(new Player("Yellow", GetPlayerAngle("Yellow")));
+                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
+                players.Add(new Player("Green", GetPlayerAngle("Green")));
                 break;
             default:
                 throw new ArgumentException("game can only be played with "
@@ -44,6 +50,13 @@ public static class PlayerCtrl {
         }
 
         Debug.Log(ToString());
+    }
+
+    private static int GetPlayerAngle(string color)
+    {
+        int angle;
+        PlayerAngles.TryGetValue(color, out angle);
+        return angle;
     }
 
     private static new string ToString()
