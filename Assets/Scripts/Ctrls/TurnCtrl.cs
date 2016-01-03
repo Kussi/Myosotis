@@ -2,7 +2,6 @@
 
 public static class TurnCtrl
 {
-
     private static readonly int MaxNofTurns = 5;
 
     private static bool hasToGoBackwards = false;
@@ -52,6 +51,8 @@ public static class TurnCtrl
 
     private static bool ReleaseFigureFromHome(Figure figure)
     {
+        MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureReleasedFromHome);
+        MediaEventHandler.Notify();
         return FieldCtrl.PlaceFigureOnHomeBench(figure);
     }
 
@@ -63,6 +64,7 @@ public static class TurnCtrl
         // figure is on its StairBench and can enter the stair
         if (FieldCtrl.IsStairBench(actualFieldIndex, figure))
         {
+            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureEnteresStair);
             EnterStair(figure);
         }
         // figure is on a RegularField and moves to another one
@@ -70,8 +72,14 @@ public static class TurnCtrl
         {
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
+            if(FieldCtrl.IsEventTrigger(nextFieldIndex))
+                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnTriggeredField);
             Figure figureToSendHome = MakeOneRegularStep(figure);
-            if (figureToSendHome != null) FieldCtrl.MoveFigureHome(figureToSendHome);
+            if (figureToSendHome != null)
+            {
+                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureHasToGoHome);
+                FieldCtrl.MoveFigureHome(figureToSendHome);
+            }
         }
         // figure is in Goal and has to go backwards
         else if(hasToGoBackwards && FieldCtrl.IsGoalField(actualFieldIndex))
@@ -87,6 +95,7 @@ public static class TurnCtrl
         else if (FieldCtrl.IsLastStairStep(actualFieldIndex, figure))
         {
             if (!isLastStep) hasToGoBackwards = true;
+            else MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureFinishesGame);
             EnterGoal(figure);
         }
         // figure is on a StairField and has to go forwards
@@ -95,6 +104,7 @@ public static class TurnCtrl
             MakeOneStairStepForward(figure);
         }
         if (isLastStep) hasToGoBackwards = false;
+        MediaEventHandler.Notify();
         return true;
     }
 

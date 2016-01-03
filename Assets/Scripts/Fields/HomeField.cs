@@ -4,8 +4,8 @@ using UnityEngine;
 public class HomeField : GameFieldBase
 {
     private readonly int figureCapacity = 4;
-    private readonly Vector3[] positions = new Vector3[] { new Vector3(1, 0, 1),
-        new Vector3(-1, 0, 1), new Vector3(1, 0, -1), new Vector3(-1, 0, -1) };
+    private readonly Vector3[] positions = new Vector3[] { new Vector3(0.9f, 0, 0.9f),
+        new Vector3(-0.9f, 0, 0.9f), new Vector3(0.9f, 0, -0.9f), new Vector3(-0.9f, 0, -0.9f) };
 
     /// <summary>
     /// Use this for initialization

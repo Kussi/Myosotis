@@ -6,6 +6,7 @@ public abstract class GameFieldBase : MonoBehaviour
     protected static readonly string PositionPrefix = "Position";
 
     private int index;
+    private bool isEventTrigger = false;
     public FieldPosition[] fieldPositions;
 
     public int Index
@@ -26,6 +27,12 @@ public abstract class GameFieldBase : MonoBehaviour
                 if (!fieldPosition.IsOccupied) return false;
             return true;
         }
+    }
+
+    public bool IsEventTrigger
+    {
+        get { return isEventTrigger; }
+        set { isEventTrigger = value; }
     }
 
     /// <summary>

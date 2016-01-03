@@ -5,17 +5,19 @@ using System.Collections;
 
 public static class FieldCtrl
 {
-
     private static readonly string RegularFieldPrefix = "Field";
     private static readonly string StairFieldPrefix = "StairField";
     private static readonly string HomeFieldPrefix = "HomeField";
     private static readonly string GoalFieldPrefix = "GoalField";
+
+    private static readonly ArrayList EventTriggeredFields = new ArrayList() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
     public static readonly int GoalFieldIndex = 999;
 
     public static readonly int NofRegularFields = 68;
     public static readonly int NofStairFieldsEachPlayer = 7;
     public static readonly int NofPlayers = 4;
+
 
     /// <summary>
     /// 0: HomeBench / 1: StairBench / 2: FirstStairStep / 3: HomeField
@@ -33,6 +35,13 @@ public static class FieldCtrl
     private static bool IsLastRegularFieldIndex(int fieldIndex)
     {
         return fieldIndex == NofRegularFields - 1;
+    }
+
+    public static bool IsEventTrigger(int fieldIndex)
+    {
+        GameFieldBase field = fields[fieldIndex] as GameFieldBase;
+        if (field == null) throw new InvalidGameStateException();
+        return field.IsEventTrigger;
     }
 
     public static bool IsBarrier(int fieldIndex)
@@ -158,7 +167,10 @@ public static class FieldCtrl
         if (!IsRegularField(newFieldIndex)) throw new InvalidGameStateException();
         if (IsBarrier(newFieldIndex)) throw new InvalidGameStateException();
         MoveFigureRegular(figure, newFieldIndex);
-        return GetFigureToSendHome((RegularField)fields[newFieldIndex], figure);
+        Figure figureToSendHome = GetFigureToSendHome((RegularField)fields[newFieldIndex], figure);
+        if (figure == null && IsBarrier(newFieldIndex))
+            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureRaisesBarrier);
+        return figureToSendHome;
     }
 
     public static void PlaceFigureOnFirstStairStep(Figure figure)
@@ -217,6 +229,18 @@ public static class FieldCtrl
         field.InitiallyPlaceFigure(figure);
     }
 
+    private static void SetAsEventTrigger(GameFieldBase field, bool value)
+    {
+        field.IsEventTrigger = value;
+    }
+
+    private static void SetEventTriggers()
+    {
+        foreach (GameFieldBase field in fields.Values)
+            if (EventTriggeredFields.Contains(field.Index))
+                SetAsEventTrigger(field, true);
+    }
+
     public static void InitializeFields()
     {
         fields = new Dictionary<int, GameFieldBase>();
@@ -259,5 +283,8 @@ public static class FieldCtrl
         goal.AddComponent<GoalField>();
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
         fields[GoalFieldIndex].Index = GoalFieldIndex;
+
+        // set Event triggers
+        SetEventTriggers();
     }
 }
