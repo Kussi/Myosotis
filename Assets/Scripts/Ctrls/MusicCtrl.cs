@@ -4,7 +4,6 @@ using System.IO;
 
 public class MusicCtrl
 {
-
     private static readonly string MusicObject = "Scene";
     private static readonly ArrayList ValidExtensions = new ArrayList { ".ogg", ".wav" };
 
@@ -17,9 +16,10 @@ public class MusicCtrl
         get { return isAvailable; }
     }
 
-    public static void InitializeMusic(string player)
+    public static void InitializeMusic()
     {
-        FileInfo[] musicFiles = FileCtrl.GetCheckedMusicFileInfos(player, ValidExtensions);
+        string playerName = PersonalizationCtrl.PlayerName;
+        FileInfo[] musicFiles = FileCtrl.GetCheckedMusicFileInfos(playerName, ValidExtensions);
         if (musicFiles != null)
         {
             GameObject musicObject = GameObject.Find(MusicObject);

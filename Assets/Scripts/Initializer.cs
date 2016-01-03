@@ -8,7 +8,8 @@
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();
 
-        if(hasPersonalization) InitializePersonalisation(playerName);
+        if(hasPersonalization)
+            PersonalizationCtrl.InitializePersonalization(playerName);
 
         FigureCtrl.PlaceFiguresOnStartPosition();
         DiceCtrl.PlaceDices();
@@ -19,12 +20,5 @@
     public static void ExitGame()
     {
 
-    }
-
-    private static void InitializePersonalisation(string playerName)
-    {
-        //ImageCtrl.InitializeImages(playerName);
-        MusicCtrl.InitializeMusic(playerName);
-        //TextCtrl.InitializeTexts(playerName);
-    }   
+    } 
 }

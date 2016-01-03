@@ -34,34 +34,34 @@ public static class FileCtrl {
 	public static ArrayList GetPlayerList()
     {
         String[] dirs = null;
-        ArrayList players = new ArrayList();
+        ArrayList playerNames = new ArrayList();
         string playerdataDir = GetPlayerdataDir();
         if(playerdataDir != null)
             dirs = Directory.GetDirectories(playerdataDir); 
 
         foreach (String dir in dirs)
-            players.Add(new DirectoryInfo(dir).Name);
-        return players;
+            playerNames.Add(new DirectoryInfo(dir).Name);
+        return playerNames;
     }
 
-    public static FileInfo[] GetChekedImageFileInfos(string player, ArrayList validExtensions)
+    public static FileInfo[] GetChekedImageFileInfos(string playerName, ArrayList validExtensions)
     {
-        return GetCheckedFileInfos(player, MediaType.Images, validExtensions);
+        return GetCheckedFileInfos(playerName, MediaType.Images, validExtensions);
     }
 
-    public static FileInfo[] GetCheckedMusicFileInfos(string player, ArrayList validExtensions)
+    public static FileInfo[] GetCheckedMusicFileInfos(string playerName, ArrayList validExtensions)
     {
-        return GetCheckedFileInfos(player, MediaType.Music, validExtensions);
+        return GetCheckedFileInfos(playerName, MediaType.Music, validExtensions);
     }
 
-    public static FileInfo[] GetChekedTextFileInfos(string player, ArrayList validExtensions)
+    public static FileInfo[] GetChekedTextFileInfos(string playerName, ArrayList validExtensions)
     {
-        return GetCheckedFileInfos(player, MediaType.Texts, validExtensions);
+        return GetCheckedFileInfos(playerName, MediaType.Texts, validExtensions);
     }
 
-    private static FileInfo[] GetCheckedFileInfos(string player, MediaType type, ArrayList validExtensions)
+    private static FileInfo[] GetCheckedFileInfos(string playerName, MediaType type, ArrayList validExtensions)
     {
-        string personalMediaDir = GetPersonalMediaDir(player, type);
+        string personalMediaDir = GetPersonalMediaDir(playerName, type);
         if(personalMediaDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(personalMediaDir);
@@ -85,24 +85,24 @@ public static class FileCtrl {
         return null;
     }
 
-    private static string GetPersonalPlayerdataDir(string player)
+    private static string GetPersonalPlayerdataDir(string playerName)
     {
         string PlayerdataDir = GetPlayerdataDir();
         if(PlayerdataDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(PlayerdataDir);
             bool containsPersonalPlayerdataDir = directoryInfo.GetDirectories()
-            .Any(d => d.Name.Equals(player));
+            .Any(d => d.Name.Equals(playerName));
             if (containsPersonalPlayerdataDir)
-                return PlayerdataDir + player + "/";   
+                return PlayerdataDir + playerName + "/";   
             return null;
         }
         return null;
     }
 
-    private static string GetPersonalMediaDir(string player, MediaType type)
+    private static string GetPersonalMediaDir(string playerName, MediaType type)
     {
-        string personalPlayerdataDir = GetPersonalPlayerdataDir(player);
+        string personalPlayerdataDir = GetPersonalPlayerdataDir(playerName);
         if(personalPlayerdataDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(personalPlayerdataDir);

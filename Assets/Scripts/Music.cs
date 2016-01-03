@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 public class Music : MonoBehaviour
 {
@@ -68,16 +67,15 @@ public class Music : MonoBehaviour
         AudioListener.volume = volume;
     }
 
-    public void LoadMusic(FileInfo[] musicFiles)
+    private void LoadMusic(FileInfo[] musicFiles)
     {
         clips.Clear();
-        if(musicFiles != null)
+        if (musicFiles != null)
         {
             foreach (FileInfo musicFile in musicFiles)
                 StartCoroutine(LoadFile(musicFile.FullName));
         }
     }
-
 
     private IEnumerator LoadFile(string path)
     {
