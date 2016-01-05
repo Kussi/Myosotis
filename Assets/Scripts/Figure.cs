@@ -5,9 +5,12 @@ public class Figure : MonoBehaviour
 {
     private static readonly LayerMask CollisionLayer = LayerMask.GetMask("GameBoard", "GameTable");
     private readonly float GameFigueScale = 0.6F;
+    private readonly int Speed = 5;
 
     private int field;
     private bool isActive = false;
+    private bool isWalking = false;
+    private Transform targetToWalk;
 
     public int Field
     {
@@ -21,6 +24,7 @@ public class Figure : MonoBehaviour
     void Update ()
     {
         SetOnGround();
+        Walk();
 
         // Getting Touch/Mouse Inputs if the game figure is activated
         if (isActive)
@@ -48,6 +52,28 @@ public class Figure : MonoBehaviour
     public void SetActive (bool isActive)
     {
         this.isActive = isActive;
+    }
+
+    public void StartWalking(Transform target)
+    {
+        FigureCtrl.FigureStartsWalking(this);
+        targetToWalk = target;
+        isWalking = true;
+    }
+
+    private void StopWalking()
+    {
+        isWalking = false;
+        targetToWalk = null;
+        FigureCtrl.FigureStopsWalking(this);  
+    }
+
+    private void Walk()
+    {
+        if(isWalking)
+            transform.position = Vector3.MoveTowards(transform.position, targetToWalk.position, Speed * Time.deltaTime);
+        if (targetToWalk != null && transform.position == targetToWalk.position)
+            StopWalking();
     }
 
     /// <summary>

@@ -21,7 +21,6 @@ public static class FieldCtrl
     private static readonly string GreenTriggerRegularMaterial = "GreenTriggerRegular";
     private static readonly string GreenTriggerBendMaterial = "GreenTriggerBend";
 
-
     private static readonly ArrayList EventTriggeredFields = new ArrayList() { 2, 13, 19, 30, 36, 47, 53, 64 };
 
     public static readonly int GoalFieldIndex = 999;

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public static class FigureCtrl
 {
-
     private static readonly string FigureParentalSuffix = "Corner";
     private static readonly string FigurePrefab = "Prefabs/GameFigure";
     private static readonly string MaterialDirectory = "Materials/";
@@ -13,7 +12,15 @@ public static class FigureCtrl
 
     public static readonly int EmptyFieldEntry = -1;
 
+    private static bool figuresAreWalking = false;
+    private static ArrayList walkingFigures = new ArrayList();
+
     private static Dictionary<Figure, Player> figures = new Dictionary<Figure, Player>();
+
+    public static bool FiguresAreWalking
+    {
+        get { return figuresAreWalking; }
+    }
 
     private static ArrayList GetFigures(Player player)
     {
@@ -121,6 +128,23 @@ public static class FigureCtrl
                 FieldCtrl.InitiallyPlaceFigure(figure);
             }
         }
+    }
+
+    public static void FigureStartsWalking(Figure figure)
+    {
+        Debug.Log("figuren am laufen: " + walkingFigures.Count);
+        if (walkingFigures.Count == 0)
+            figuresAreWalking = true;
+        walkingFigures.Add(figure);
+    }
+
+    public static void FigureStopsWalking(Figure figure)
+    {
+        if (!walkingFigures.Contains(figure))
+            throw new InvalidGameStateException();
+        walkingFigures.Remove(figure);
+        if (walkingFigures.Count == 0)
+            figuresAreWalking = false;
     }
 
     public static void InitializeFigures(ArrayList players, int nofFigures)

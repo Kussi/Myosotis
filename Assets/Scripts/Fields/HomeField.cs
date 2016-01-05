@@ -19,7 +19,8 @@ public class HomeField : GameFieldBase
     protected override void MoveFigureObject(FieldPosition position, Figure figure)
     {
         Debug.Log("Move Figure Home");
-        figure.transform.position = position.transform.position;
+        //figure.transform.position = position.transform.position;
+        figure.StartWalking(position.transform);
     }
 
     public void InitiallyPlaceFigure(Figure figure)

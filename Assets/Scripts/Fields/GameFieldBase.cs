@@ -59,10 +59,7 @@ public abstract class GameFieldBase : MonoBehaviour
             if (!fieldPosition.IsOccupied)
             {
                 AdjustReferences(fieldPosition, figure);
-
-                // movement
                 MoveFigureObject(fieldPosition, figure);
-
                 break;
             }
         }
@@ -129,6 +126,7 @@ public abstract class GameFieldBase : MonoBehaviour
 
     protected virtual void MoveFigureObject(FieldPosition position, Figure figure)
     {
-        figure.transform.position = position.transform.position;
+        //figure.transform.position = position.transform.position;
+        figure.StartWalking(position.transform);
     }
 }
