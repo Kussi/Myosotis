@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
@@ -68,9 +67,6 @@ public class SettingsMenu : MonoBehaviour
 
     public void NewGame()
     {
-        //SceneManager.UnloadScene(0);
-        //SceneManager.LoadScene("GameBoard", LoadSceneMode.Single);
-        //SceneManagement.SceneManager.LoadScene("Menu_Level");
         foreach (GameObject go in FindGameObjectsOnLayer("MusicSettings"))
             Debug.Log(go.name);
     }
