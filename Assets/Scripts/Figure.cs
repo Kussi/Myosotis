@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Figure : MonoBehaviour
 {
     private static readonly LayerMask CollisionLayer = LayerMask.GetMask("GameBoard", "GameTable");
     private readonly float GameFigueScale = 0.6F;
+    private readonly float MovementAccuracy = 0.01f;
     private readonly int Speed = 5;
 
     private int field;
@@ -72,8 +74,16 @@ public class Figure : MonoBehaviour
     {
         if(isWalking)
             transform.position = Vector3.MoveTowards(transform.position, targetToWalk.position, Speed * Time.deltaTime);
-        if (targetToWalk != null && transform.position == targetToWalk.position)
+        if (targetToWalk != null && HasReachedTarget(transform.position,targetToWalk.position))
             StopWalking();
+    }
+
+    private bool HasReachedTarget(Vector3 actualPosition, Vector3 targetPosition)
+    {
+        if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy
+            && Math.Abs(actualPosition.z - targetPosition.z) < MovementAccuracy)
+            return true;
+        return false;
     }
 
     /// <summary>
