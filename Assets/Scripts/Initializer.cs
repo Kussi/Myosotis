@@ -1,9 +1,11 @@
-﻿public static class Initializer
+﻿using System.Collections;
+
+public static class Initializer
 {
-    public static void SetupGame(string playerName, int nofPlayers, int nofFigures, bool hasPersonalization)
+    public static void SetupGame(string playerName, ArrayList playerColors, int nofFigures, bool hasPersonalization)
     {
         FieldCtrl.InitializeFields();
-        PlayerCtrl.InitializePlayers(nofPlayers);
+        PlayerCtrl.InitializePlayers(playerColors);
         DiceCtrl.InitializeDices(PlayerCtrl.players);
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();

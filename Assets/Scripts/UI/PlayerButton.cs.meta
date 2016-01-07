@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e1eeba7e139882c4791be19ff9231aad
+timeCreated: 1452198873
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - buttonObject: {instanceID: 0}
+  - icon: {instanceID: 0}
+  - selectedIcon: {fileID: 21300000, guid: 9dc41383c69568f4eaaab0e3b4c51db5, type: 3}
+  - deselectedIcon: {fileID: 21300000, guid: 0d5d07e0ea4ac62498f71f9eb31f64f8, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

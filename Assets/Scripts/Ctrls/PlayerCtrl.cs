@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 using System.Text;
 using System.Collections.Generic;
 
@@ -39,30 +38,10 @@ public static class PlayerCtrl {
     /// Initializing the given number of Players
     /// </summary>
     /// <param name="nofPlayers">number of players, that will participate the game</param>
-    public static void InitializePlayers(int nofPlayers)
+    public static void InitializePlayers(ArrayList playerColors)
     {
-        switch (nofPlayers)
-        {
-            case 2:
-                players.Add(new Player("Red", GetPlayerAngle("Red")));
-                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
-                break;
-            case 3:
-                players.Add(new Player("Red", GetPlayerAngle("Red")));
-                players.Add(new Player("Yellow", GetPlayerAngle("Yellow")));
-                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
-                break;
-            case 4:
-                players.Add(new Player("Red", GetPlayerAngle("Red")));
-                players.Add(new Player("Yellow", GetPlayerAngle("Yellow")));
-                players.Add(new Player("Blue", GetPlayerAngle("Blue")));
-                players.Add(new Player("Green", GetPlayerAngle("Green")));
-                break;
-            default:
-                throw new ArgumentException("game can only be played with "
-                + MinNofPlayers + " to " + MaxNofPlayers + " players.");
-        }
-
+        foreach(string playerColor in playerColors)
+            players.Add(new Player(playerColor, GetPlayerAngle(playerColor)));
         Debug.Log(ToString());
     }
 
