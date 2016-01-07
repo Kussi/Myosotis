@@ -20,8 +20,11 @@ public static class FieldCtrl
     private static readonly string BlueTriggerBendMaterial = "BlueTriggerBend";
     private static readonly string GreenTriggerRegularMaterial = "GreenTriggerRegular";
     private static readonly string GreenTriggerBendMaterial = "GreenTriggerBend";
+    private static readonly string RainbowTriggerRegularMaterial = "RainbowTriggerRegular";
+    private static readonly string RainbowTriggerBendMaterial = "RainbowTriggerBend";
 
-    private static readonly ArrayList EventTriggeredFields = new ArrayList() { 2, 13, 19, 30, 36, 47, 53, 64 };
+    private static readonly ArrayList SingleEventTriggeredFields = new ArrayList() { 2, 13, 19, 30, 36, 47, 53, 64 };
+    private static readonly ArrayList MultiEventTriggeredFields = new ArrayList() { 7, 24, 41, 58 };
 
     public static readonly int GoalFieldIndex = 999;
 
@@ -56,11 +59,18 @@ public static class FieldCtrl
         return fieldIndex == NofRegularFields - 1;
     }
 
-    public static bool IsEventTrigger(int fieldIndex)
+    public static bool IsSingleEventTrigger(int fieldIndex)
     {
         GameFieldBase field = fields[fieldIndex] as GameFieldBase;
         if (field == null) throw new InvalidGameStateException();
-        return field.IsEventTrigger;
+        return field.IsSingleEventTrigger;
+    }
+
+    public static bool IsMultiEventTrigger(int fieldIndex)
+    {
+        GameFieldBase field = fields[fieldIndex] as GameFieldBase;
+        if (field == null) throw new InvalidGameStateException();
+        return field.IsMultiEventTrigger;
     }
 
     public static bool IsBarrier(int fieldIndex)
@@ -248,36 +258,36 @@ public static class FieldCtrl
         field.InitiallyPlaceFigure(figure);
     }
 
-    private static void SetAsEventTrigger(GameFieldBase field, bool value)
+    private static void SetAsSingleEventTrigger(GameFieldBase field, bool value)
     {
-        field.IsEventTrigger = value;
+        field.IsSingleEventTrigger = value;
         RegularField regularField = field as RegularField;
 
         if(regularField != null && !regularField.IsBench)
         {
             StringBuilder materialSource = new StringBuilder(TexturesDirectory);
-            if (field.Index >= FirstRedFieldIndex && field.Index <= LastRedFieldIndex)
+            if (regularField.Index >= FirstRedFieldIndex && regularField.Index <= LastRedFieldIndex)
             {
                 if (regularField.IsBend)
                     materialSource.Append(RedTriggerBendMaterial);
                 else
                     materialSource.Append(RedTriggerRegularMaterial);
             }
-            else if (field.Index >= FirstYellowFieldIndex && field.Index <= LastYellowFieldIndex)
+            else if (regularField.Index >= FirstYellowFieldIndex && regularField.Index <= LastYellowFieldIndex)
             {
                 if (regularField.IsBend)
                     materialSource.Append(YellowTriggerBendMaterial);                
                 else
                     materialSource.Append(YellowTriggerRegularMaterial);
             }
-            else if (field.Index >= FirstBlueFieldIndex && field.Index <= LastBlueFieldIndex)
+            else if (regularField.Index >= FirstBlueFieldIndex && regularField.Index <= LastBlueFieldIndex)
             {
                 if (regularField.IsBend)
                     materialSource.Append(BlueTriggerBendMaterial);
                 else
                 materialSource.Append(BlueTriggerRegularMaterial);
             }
-            else if (field.Index >= FirstGreenFieldIndex && field.Index <= LastGreenFieldIndex)
+            else if (regularField.Index >= FirstGreenFieldIndex && regularField.Index <= LastGreenFieldIndex)
             {
                 if (regularField.IsBend)
                     materialSource.Append(GreenTriggerBendMaterial);
@@ -290,13 +300,39 @@ public static class FieldCtrl
         }
     }
 
+    private static void SetAsMultiEventTrigger(GameFieldBase field, bool value)
+    {
+        field.IsMultiEventTrigger = value;
+        RegularField regularField = field as RegularField;
+
+        if (regularField != null && !regularField.IsBench)
+        {
+            StringBuilder materialSource = new StringBuilder(TexturesDirectory);
+            if(regularField.IsBend)
+            {
+                materialSource.Append(RainbowTriggerBendMaterial);
+            }
+            else
+            {
+                materialSource.Append(RainbowTriggerRegularMaterial);
+            }
+
+            Material material = Resources.Load(materialSource.ToString(), typeof(Material)) as Material;
+            if (material != null)
+                GameObject.Find(regularField.gameObject.name + "/" + "default").GetComponent<MeshRenderer>().material = material;
+        }
+    }
+
     public static void SetEventTriggers()
     {
         if (ImageCtrl.IsAvailable)
         {
             foreach (GameFieldBase field in fields.Values)
-                if (EventTriggeredFields.Contains(field.Index))
-                    SetAsEventTrigger(field, true);
+                if (SingleEventTriggeredFields.Contains(field.Index))
+                    SetAsSingleEventTrigger(field, true);
+                else if (MultiEventTriggeredFields.Contains(field.Index)
+                    && !field.IsSingleEventTrigger)
+                    SetAsMultiEventTrigger(field, true);
         }
     }
 

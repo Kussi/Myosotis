@@ -6,7 +6,8 @@ public abstract class GameFieldBase : MonoBehaviour
     protected static readonly string PositionPrefix = "Position";
 
     private int index;
-    public bool isEventTrigger = false;
+    public bool isSingleEventTrigger = false;
+    public bool isMultiEventTrigger = false;
     public FieldPosition[] fieldPositions;
 
     public int Index
@@ -29,10 +30,16 @@ public abstract class GameFieldBase : MonoBehaviour
         }
     }
 
-    public bool IsEventTrigger
+    public bool IsSingleEventTrigger
     {
-        get { return isEventTrigger; }
-        set { isEventTrigger = value; }
+        get { return isSingleEventTrigger; }
+        set { isSingleEventTrigger = value; }
+    }
+
+    public bool IsMultiEventTrigger
+    {
+        get { return isMultiEventTrigger; }
+        set { isMultiEventTrigger = value; }
     }
 
     /// <summary>

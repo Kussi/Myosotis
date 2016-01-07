@@ -7,8 +7,8 @@ public static class MediaEventHandler
 
     public enum MediaEvent
     {
-        FigureReleasedFromHome, FigureHasToGoHome, FigureStepsOnTriggeredField,
-        FigureRaisesBarrier, FigureFinishesGame, FigureEnteresStair
+        FigureReleasedFromHome, FigureHasToGoHome, FigureStepsOnSingleTriggeredField,
+        FigureStepsOnMultiTriggeredField, FigureRaisesBarrier, FigureFinishesGame, FigureEnteresStair
     };
 
     public static void AddEvent(MediaEvent mediaEvent)
@@ -19,11 +19,12 @@ public static class MediaEventHandler
     public static void Notify(Player player)
     {
         foreach (MediaEvent me in events)
-            if (me == MediaEvent.FigureStepsOnTriggeredField)
+            if (me == MediaEvent.FigureStepsOnSingleTriggeredField)
             {
                 ImageCtrl.ChangeImageRandomly(player);
             }
-                
+            else if (me == MediaEvent.FigureStepsOnMultiTriggeredField)
+                ImageCtrl.ChangeAllImages();
         events.Clear();
     }
 }

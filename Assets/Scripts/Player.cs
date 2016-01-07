@@ -51,7 +51,7 @@ public class Player
         int figuresOnGoalField = FigureCtrl.GetFiguresOnGoalField(this).Count;
         int figuresOnHomeField = FigureCtrl.GetFiguresOnHomeField(this).Count;
 
-        if (figuresOnGoalField == 4) State = new PlayerStateStateAllInGoal();
+        if (figuresOnGoalField == FigureCtrl.NofFigures) State = new PlayerStateStateAllInGoal();
         else if (figuresOnGameOrStairField == 0) State = new PlayerStateAllAtHome();
         else State = new PlayerStateAtLeastOneOut();
     }

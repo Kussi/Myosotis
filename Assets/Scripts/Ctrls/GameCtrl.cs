@@ -84,11 +84,8 @@ public static class GameCtrl
         activePlayers.Remove(player);
         if (numberOfPlayersOld - 1 != activePlayers.Count)
             throw new InvalidGameStateException();
-    }
-
-    private static void CreateTurn()
-    {
-        throw new NotImplementedException();
+        if (activePlayers.Count == 0)
+            FinishGame();
     }
 
     private static void ChangePlayerOnTurn()
@@ -101,21 +98,25 @@ public static class GameCtrl
 
     private static void StartNextTurn()
     {
-        //sun
-        //dice
-        if (actualDiceValue != 6)
-            ChangePlayerOnTurn();
         foreach(Player player in activePlayers)
             player.RefreshState();
+        if (playerOnTurn >= 0)
+            if(PlayerOnTurn.State.GetType().Equals(typeof(PlayerStateStateAllInGoal)))
+                FinishPlayer(PlayerOnTurn);
+        if(gameIsRunning)
+        {
+            if (actualDiceValue != 6)
+                ChangePlayerOnTurn();
 
-        ++turnCounter;
-        Debug.Log("Turn " + turnCounter + ": " + PlayerOnTurn.Color);
-        DiceCtrl.ActivateDice(PlayerOnTurn);
+            ++turnCounter;
+            Debug.Log("Turn " + turnCounter + ": " + PlayerOnTurn.Color);
+            DiceCtrl.ActivateDice(PlayerOnTurn);
+        }   
     }
 
     private static void FinishGame()
     {
         gameIsRunning = false;
-        throw new NotImplementedException();
+        Debug.Log("Game Finished");
     }
 }

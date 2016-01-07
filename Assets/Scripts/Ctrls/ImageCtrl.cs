@@ -146,4 +146,15 @@ public class ImageCtrl
             alreadyDisplayedImages.Remove(image);
         }
     }
+
+    public static void ChangeAllImages()
+    {
+        if (alreadyDisplayedImages.Count == 0)
+            alreadyDisplayedImages.AddRange(textures);
+        int randomIndex = Random.Range(0, alreadyDisplayedImages.Count);
+        Texture image = (Texture)alreadyDisplayedImages[randomIndex];
+        foreach(Player player in PlayerCtrl.players)
+            SetImage(player, image);
+        alreadyDisplayedImages.Remove(image);
+    }
 }

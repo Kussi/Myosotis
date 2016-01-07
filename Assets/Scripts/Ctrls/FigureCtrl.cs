@@ -14,8 +14,14 @@ public static class FigureCtrl
 
     private static bool figuresAreWalking = false;
     private static ArrayList walkingFigures = new ArrayList();
+    private static int nofFigures;
 
     private static Dictionary<Figure, Player> figures = new Dictionary<Figure, Player>();
+
+    public static int NofFigures
+    {
+        get { return nofFigures; }
+    }
 
     public static bool FiguresAreWalking
     {
@@ -131,8 +137,7 @@ public static class FigureCtrl
     }
 
     public static void FigureStartsWalking(Figure figure)
-    {
-        Debug.Log("figuren am laufen: " + walkingFigures.Count);
+    {   
         if (walkingFigures.Count == 0)
             figuresAreWalking = true;
         walkingFigures.Add(figure);
@@ -149,6 +154,7 @@ public static class FigureCtrl
 
     public static void InitializeFigures(ArrayList players, int nofFigures)
     {
+        FigureCtrl.nofFigures = nofFigures;
         foreach (Player player in players)
         {
             for (int j = 0; j < nofFigures; ++j)

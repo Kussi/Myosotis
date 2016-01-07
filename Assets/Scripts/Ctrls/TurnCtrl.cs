@@ -53,8 +53,10 @@ public static class TurnCtrl
     {
         MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureReleasedFromHome);
         bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
-        if (FieldCtrl.IsEventTrigger(figure.Field))
-            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnTriggeredField);
+        if (FieldCtrl.IsSingleEventTrigger(figure.Field))
+            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField);
+        else if(FieldCtrl.IsMultiEventTrigger(figure.Field))
+            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField);
         MediaEventHandler.Notify(FigureCtrl.GetPlayer(figure));
         return couldBePlaced;
     }
@@ -75,8 +77,10 @@ public static class TurnCtrl
         {
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
-            if(FieldCtrl.IsEventTrigger(nextFieldIndex))
-                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnTriggeredField);
+            if(FieldCtrl.IsSingleEventTrigger(nextFieldIndex))
+                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField);
+            else if(FieldCtrl.IsMultiEventTrigger(nextFieldIndex))
+                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField);
             Figure figureToSendHome = MakeOneRegularStep(figure);
             if (figureToSendHome != null)
             {
