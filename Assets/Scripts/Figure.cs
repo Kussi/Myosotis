@@ -4,6 +4,8 @@ using System;
 
 public class Figure : MonoBehaviour
 {
+    public bool drawRays = true;
+
     private static readonly LayerMask CollisionLayer = LayerMask.GetMask("GameBoard", "GameTable");
     private readonly float GameFigueScale = 0.6F;
     private readonly float MovementAccuracy = 0.01f;
@@ -95,7 +97,8 @@ public class Figure : MonoBehaviour
         Vector3 direction = new Vector3(0, -1, 0);
         RaycastHit hit;
 
-        Debug.DrawRay(transform.position, direction * distance, Color.green);
+        if(drawRays)
+            Debug.DrawRay(transform.position, direction * distance, Color.green);
 
         if (Physics.Raycast(transform.position, direction, out hit, distance, CollisionLayer)) {
             Vector3 newPos = new Vector3(gameObject.transform.position.x,
