@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
+    public Button playPause;
+
     private static readonly string MusicSettingsLayer = "MusicSettings";
     private static readonly string NoMusicSettingsLayer = "NoMusicSettings";
     private static readonly string MusicTitle = "MusicTitle";
@@ -29,6 +31,7 @@ public class SettingsMenu : MonoBehaviour
             SetInteractable(musicSettingsObjects, false);
             SetInteractable(noMusicSettingsObjects, true);
         }
+        SetTrackTitle(MusicCtrl.GetTrackName());
         SetInteractable(gameObject, true);
     }
 
@@ -40,6 +43,7 @@ public class SettingsMenu : MonoBehaviour
     public void PlayPause()
     {
         MusicCtrl.PlayPause();
+        playPause.GetComponent<UnityEngine.UI.Image>().sprite = MusicCtrl.GetPlayPauseIcon();
         SetTrackTitle(MusicCtrl.GetTrackName());
     }
 
@@ -60,7 +64,7 @@ public class SettingsMenu : MonoBehaviour
         MusicCtrl.ChangeVolume(volume);
     }
 
-    private void SetTrackTitle(string title)
+    public void SetTrackTitle(string title)
     {
         GameObject.Find(MusicTitle).GetComponent<Text>().text = title;
     }

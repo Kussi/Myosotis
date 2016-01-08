@@ -5,6 +5,9 @@ using System.IO;
 
 public class Music : MonoBehaviour
 {
+    public Sprite pauseIcon;
+    public Sprite playIcon;
+
     private static readonly string FileIndicator = "file://";
 
     public enum ChangeDirection { Next, Previous }
@@ -57,6 +60,12 @@ public class Music : MonoBehaviour
         if (isPaused) isPaused = false;
         else source.Play();
         isPlaying = true;
+    }
+
+    public Sprite GetPlayPauseIcon()
+    {
+        if (isPaused) return playIcon;
+        return pauseIcon;
     }
 
     public void Previous()
@@ -117,7 +126,7 @@ public class Music : MonoBehaviour
         clips.Add(clip);
 
         if (!isPlaying)
-            Play();
+            Play(); 
     }
 
     public string GetTrackName()

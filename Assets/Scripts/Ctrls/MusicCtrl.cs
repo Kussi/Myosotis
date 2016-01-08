@@ -23,11 +23,15 @@ public class MusicCtrl
         if (musicFiles != null)
         {
             GameObject musicObject = GameObject.Find(MusicObject);
-            musicObject.AddComponent<Music>();
             music = musicObject.GetComponent<Music>();
             music.SetupMusic(musicFiles);
             isAvailable = true;
         }
+    }
+
+    public static Sprite GetPlayPauseIcon()
+    {
+        return music.GetPlayPauseIcon();
     }
 
     public static void PlayPause()
