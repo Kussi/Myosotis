@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 public static class Initializer
 {
-    public static void SetupGame(string playerName, ArrayList playerColors, int nofFigures, bool hasPersonalization)
+    public static void SetupGame(string playerName, Dictionary<string, int> playerColors, int nofFigures, bool hasPersonalization)
     {
         FieldCtrl.InitializeFields();
         PlayerCtrl.InitializePlayers(playerColors);

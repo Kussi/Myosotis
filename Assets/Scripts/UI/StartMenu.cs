@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,18 +48,17 @@ public class StartMenu : MonoBehaviour
         if (tooFewPlayers) nofPlayersDisplay.color = alertColor;
         else
         {
-
             Initializer.SetupGame(playerName, GetSelectedPlayers(), nofFigures, hasPersonalization);
             Hide();
         }
     }
 
-    private ArrayList GetSelectedPlayers()
+    private Dictionary<string, int> GetSelectedPlayers()
     {
-        ArrayList players = new ArrayList();
+        Dictionary<string, int> players = new Dictionary<string, int>();
         foreach (PlayerButton button in playerButtons)
             if (button.IsSelected)
-                players.Add(button.color);
+                players.Add(button.color, button.GetSelectedChair());
         return players;
     }
 
