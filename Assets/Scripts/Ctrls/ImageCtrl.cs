@@ -9,11 +9,6 @@ public class ImageCtrl
     private static readonly string ImageObjectSuffix = "Image";
     private static readonly string ImageDownloaderObject = "ImageSystem";
 
-    private static readonly Dictionary<string, bool> PlayerHasWidePictureFrame = new Dictionary<string, bool>
-    {
-        { "Red", false }, { "Yellow", true }, { "Blue", false }, { "Green", true }
-    };
-
     private static readonly Color ImageMaskInitialColor = new Color(1, 1, 1, 0.004f);
     private static readonly Color ImageMaskActiveColor = new Color(1, 1, 1, 0.004f);
     private static readonly Color ImageInitialColor = new Color(0, 0, 0, 0.4f);
@@ -99,7 +94,7 @@ public class ImageCtrl
         float pictureRatio = pictureWidth / pictureHeight;
         float newPictureWidth, newPictureHeight;
 
-        if(HasWidePictureFrame(player))
+        if(IsWidePictureFrame(player))
         {
             float temp = maskWidth;
             maskWidth = maskHeight;
@@ -110,11 +105,21 @@ public class ImageCtrl
         {
             newPictureWidth = maskWidth;
             newPictureHeight = newPictureWidth / pictureRatio;
+            if (newPictureHeight > maskHeight)
+            {
+                newPictureHeight = maskHeight;
+                newPictureWidth = newPictureHeight * pictureRatio;
+            }
         }
         else
         {
             newPictureHeight = maskHeight;
             newPictureWidth = newPictureHeight * pictureRatio;
+            if (newPictureWidth > maskWidth)
+            {
+                newPictureWidth = maskWidth;
+                newPictureHeight = newPictureWidth / pictureRatio;
+            }
         }
         image.GetComponent<RectTransform>().sizeDelta = new Vector2(newPictureWidth, newPictureHeight);
     }
@@ -127,11 +132,9 @@ public class ImageCtrl
         image.GetComponent<RectTransform>().eulerAngles = rotation;
     }
 
-    private static bool HasWidePictureFrame(Player player)
+    private static bool IsWidePictureFrame(Player player)
     {
-        bool result;
-        PlayerHasWidePictureFrame.TryGetValue(player.Color, out result);
-        return result;
+        return player.PlayerAngle % 180 != 0;
     }
 
     public static void ChangeImageRandomly(Player player)
