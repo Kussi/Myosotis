@@ -43,12 +43,11 @@ public class StartMenu : MonoBehaviour
     public void StartGame()
     {
         bool tooFewPlayers = nofPlayers == 0;
-        bool hasPersonalization = !playerName.Equals(UnpersonalizedPlayerName);
 
         if (tooFewPlayers) nofPlayersDisplay.color = alertColor;
         else
         {
-            Initializer.SetupGame(playerName, GetSelectedPlayers(), nofFigures, hasPersonalization);
+            Initializer.SetupGame(playerName, GetSelectedPlayers(), nofFigures);
             Hide();
         }
     }

@@ -4,6 +4,8 @@ using System.IO;
 
 public class ImageDownloader : MonoBehaviour {
 
+    public static Texture startImage;
+
     private static readonly string FileIndicator = "file://";
     private static readonly ArrayList ValidExtensions = new ArrayList { ".png", ".jpg", ".bmp", ".tif", ".tga", ".psd", ".jpeg" };
 
@@ -26,7 +28,7 @@ public class ImageDownloader : MonoBehaviour {
                 texture.name = Path.GetFileName(path);
                 textures.Add(texture);
             }
-            ImageCtrl.SetupImages(textures);
+            ImageCtrl.SetAvailable(textures);
         }  
     }
 }

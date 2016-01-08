@@ -20,6 +20,7 @@ public class MusicCtrl
     {
         string playerName = PersonalizationCtrl.PlayerName;
         FileInfo[] musicFiles = FileCtrl.GetCheckedMusicFileInfos(playerName, ValidExtensions);
+
         if (musicFiles != null)
         {
             GameObject musicObject = GameObject.Find(MusicObject);

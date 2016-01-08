@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class Initializer
 {
-    public static void SetupGame(string playerName, Dictionary<string, int> playerColors, int nofFigures, bool hasPersonalization)
+    public static void SetupGame(string playerName, Dictionary<string, int> playerColors, int nofFigures)
     {
         FieldCtrl.InitializeFields();
         PlayerCtrl.InitializePlayers(playerColors);
@@ -10,9 +11,7 @@ public static class Initializer
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();
         BulpCtrl.InitializeBulps(PlayerCtrl.players);
-
-        if(hasPersonalization)
-            PersonalizationCtrl.InitializePersonalization(playerName);
+        PersonalizationCtrl.InitializePersonalization(playerName);
 
         FigureCtrl.PlaceFiguresOnStartPosition();
         DiceCtrl.PlaceDices();

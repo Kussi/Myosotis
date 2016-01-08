@@ -15,23 +15,23 @@ public class SettingsMenu : MonoBehaviour
         Hide();
     }
 
-    public void Show(bool musicIsAvailable)
+    public void Show()
     {
 
         GameObject[] musicSettingsObjects = FindGameObjectsOnLayer(MusicSettingsLayer);
         GameObject[] noMusicSettingsObjects = FindGameObjectsOnLayer(NoMusicSettingsLayer);
 
-        if (musicIsAvailable)
+        if (MusicCtrl.IsAvailable)
         {
             SetInteractable(musicSettingsObjects, true);
             SetInteractable(noMusicSettingsObjects, false);
+            SetTrackTitle(MusicCtrl.GetTrackName());
         }
         else
         {
             SetInteractable(musicSettingsObjects, false);
             SetInteractable(noMusicSettingsObjects, true);
         }
-        SetTrackTitle(MusicCtrl.GetTrackName());
         SetInteractable(gameObject, true);
     }
 
