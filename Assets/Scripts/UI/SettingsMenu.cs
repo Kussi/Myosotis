@@ -109,12 +109,4 @@ public class SettingsMenu : MonoBehaviour
         }
         return list.ToArray();
     }
-
-    void OnGUI()
-    {
-        if (GUILayout.Button("settings"))
-        {
-            GameObject.Find("SettingsMenu").GetComponent<SettingsMenu>().Show(MusicCtrl.IsAvailable);
-        }
-    }
 }

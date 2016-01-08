@@ -375,7 +375,7 @@ public static class FieldCtrl
 
         // initializing GoalField
         GameObject goal = GameObject.Find(GoalFieldPrefix + GoalFieldIndex.ToString("D3"));
-        goal.AddComponent<GoalField>();
+        //goal.AddComponent<GoalField>();
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
         fields[GoalFieldIndex].Index = GoalFieldIndex;
     }
