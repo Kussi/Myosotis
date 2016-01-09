@@ -6,6 +6,7 @@ using System;
 
 public static class TextCtrl
 {
+    private static string ParentObject = "TextSystem";
     private static readonly string TextPrefab = "Prefabs/TextElement";
     private static readonly ArrayList ValidExtensions = new ArrayList { ".txt" };
 
@@ -36,13 +37,16 @@ public static class TextCtrl
     {
         GameObject textObject = (GameObject)GameObject.Instantiate(Resources.Load(TextPrefab, typeof(GameObject)));
         textObject.GetComponentInChildren<UnityEngine.UI.Text>().text = text;
-        textObject.transform.localPosition = GetPosition(figure);  
+        textObject.GetComponentInChildren<Text>().SetFigure(figure);
+        //textObject.GetComponent<RectTransform>().anchoredPosition = GetPosition(figure);  
     }
 
-    private static Vector3 GetPosition(Figure figure)
+    private static Vector2 GetPosition(Figure figure)
     {
-        Vector3 position = figure.transform.position;
-
+        Vector3 position = Camera.main.WorldToViewportPoint(figure.transform.position);
+        float width = GameObject.Find(ParentObject).GetComponent<RectTransform>().rect.width;
+        float height = GameObject.Find(ParentObject).GetComponent<RectTransform>().rect.height;
+        position = new Vector2(position.x * width, position.y * height);
         return position;
     }
 
