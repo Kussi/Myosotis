@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class Text : MonoBehaviour
 {
-    private static int VerticalDistanceToBubble = 0;
-    private static int HorizontalDistanceToBubble = 0;
     private static string ParentObject = "TextSystem";
     private enum Quadrant { RightTop, LeftTop, LeftBottom, RightBottom, Default = 0 };
 
@@ -47,26 +45,26 @@ public class Text : MonoBehaviour
                 case Quadrant.RightTop:
                     bubble = bubbleFrames[0];
                     gameObject.transform.parent.GetComponent<LayoutGroup>().padding.top = 50;
-                    verticalOffset = -(GetHeight() / 2 + VerticalDistanceToBubble);
-                    horizontalOffset = -(GetWidth() / 2 + HorizontalDistanceToBubble);
+                    verticalOffset = -(GetHeight() / 2);
+                    horizontalOffset = -(GetWidth() / 2);
                     break;
                 case Quadrant.LeftTop:
                     bubble = bubbleFrames[1];
                     gameObject.transform.parent.GetComponent<LayoutGroup>().padding.top = 50;
-                    verticalOffset = -(GetHeight() / 2 + VerticalDistanceToBubble);
-                    horizontalOffset = (GetWidth() / 2 + HorizontalDistanceToBubble);
+                    verticalOffset = -(GetHeight() / 2);
+                    horizontalOffset = (GetWidth() / 2);
                     break;
                 case Quadrant.LeftBottom:
                     bubble = bubbleFrames[2];
                     gameObject.transform.parent.GetComponent<LayoutGroup>().padding.bottom = 50;
-                    verticalOffset = (GetHeight() / 2 + VerticalDistanceToBubble);
-                    horizontalOffset = (GetWidth() / 2 + HorizontalDistanceToBubble);
+                    verticalOffset = (GetHeight() / 2);
+                    horizontalOffset = (GetWidth() / 2);
                     break;
                 case Quadrant.RightBottom:
                     bubble = bubbleFrames[3];
                     gameObject.transform.parent.GetComponent<LayoutGroup>().padding.bottom = 50;
-                    verticalOffset = (GetHeight() / 2 + VerticalDistanceToBubble);
-                    horizontalOffset = -(GetWidth() / 2 + HorizontalDistanceToBubble);
+                    verticalOffset = (GetHeight() / 2);
+                    horizontalOffset = -(GetWidth() / 2);
                     break;
                 default:
                     throw new InvalidGameStateException();
@@ -74,6 +72,8 @@ public class Text : MonoBehaviour
             gameObject.transform.parent.GetComponent<UnityEngine.UI.Image>().sprite = bubble;
             gameObject.transform.parent.GetComponent<RectTransform>().anchoredPosition = GetViewportPosition(figure);
         }
+
+        SetVisible();
     }
 
     public void SetFigure(Figure figure)
@@ -125,7 +125,6 @@ public class Text : MonoBehaviour
     {
         LayoutGroup group = gameObject.transform.parent.GetComponent<LayoutGroup>();
         float width = GetMinWidth();
-        Debug.Log("width: " + width);
         width += group.padding.left;
         width += group.padding.right;
         return width;
@@ -135,7 +134,6 @@ public class Text : MonoBehaviour
     {
         LayoutGroup group = gameObject.transform.parent.GetComponent<LayoutGroup>();
         float height = GetPreferredHeight();
-        Debug.Log("height: " + height);
         height += group.padding.top;
         height += group.padding.bottom;
         return height;
@@ -155,5 +153,11 @@ public class Text : MonoBehaviour
     {
         LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
         layoutElement.minWidth += difference;
+    }
+
+    private void SetVisible()
+    {
+        gameObject.GetComponent<UnityEngine.UI.Text>().color = new Color32(0, 0, 0, 255);
+        gameObject.transform.parent.GetComponent<UnityEngine.UI.Image>().color = new Color32(255, 255, 255, 255);
     }
 }

@@ -14,7 +14,6 @@ public class ImageCtrl
 
     private static Dictionary<Player, Image> images = new Dictionary<Player, Image>();
     private static ArrayList notYetDisplayedImages = new ArrayList();
-    private static ImageDownloader imageSystem;
     private static ArrayList textures;
 
     private static ArrayList players;
@@ -31,7 +30,6 @@ public class ImageCtrl
         SetupImages();
         GameObject imageDownloaderObject = GameObject.Find(ImageDownloaderObject);
         imageDownloaderObject.AddComponent<ImageDownloader>();
-        imageSystem = imageDownloaderObject.GetComponent<ImageDownloader>();
     }
 
     public static void SetupImages()

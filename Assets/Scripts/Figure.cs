@@ -16,6 +16,8 @@ public class Figure : MonoBehaviour
     private bool isWalking = false;
     private Transform targetToWalk;
 
+    private bool isMainTurnFigure = false;
+
     public int Field
     {
         get { return field; }
@@ -42,6 +44,7 @@ public class Figure : MonoBehaviour
                 {
                     if (hit.collider.name == gameObject.name)
                     {
+                        isMainTurnFigure = true;
                         FigureCtrl.Notify(this);
                     }
                 }
@@ -69,6 +72,10 @@ public class Figure : MonoBehaviour
     {
         isWalking = false;
         targetToWalk = null;
+        if (isMainTurnFigure && FieldCtrl.IsBarrier(this.Field))
+            MediaEventHandler.Notify(this, MediaEventHandler.MediaEvent.FigureRaisesBarrier, true);
+
+        isMainTurnFigure = false;
         FigureCtrl.FigureStopsWalking(this);  
     }
 

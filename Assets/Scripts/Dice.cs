@@ -46,7 +46,8 @@ public class Dice : MonoBehaviour {
     /// </summary>
     public void ThrowDice()
     {
-        value = Random.Range(5, 7);
+        //value = Random.Range(1, 7);
+        value = Random.Range(5, 6);
         Refresh();   
     }
 

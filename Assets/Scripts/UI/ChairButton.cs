@@ -9,7 +9,6 @@ public class ChairButton : MonoBehaviour {
     public Sprite selectedIcon;
     public Sprite deselectedIcon;
 
-    private bool isActive = false;
     private bool isSelected = false;
 
     public bool IsSelected

@@ -7,11 +7,13 @@ using System;
 public static class TextCtrl
 {
     private static string ParentObject = "TextSystem";
-    private static readonly string TextPrefab = "Prefabs/TextElement";
+    private static readonly string TextPrefab = "Prefabs/TextBubble";
     private static readonly ArrayList ValidExtensions = new ArrayList { ".txt" };
 
     private static ArrayList texts = new ArrayList();
     private static ArrayList notYetDisplayedTexts = new ArrayList();
+
+    private static bool isActive = false;
 
     public static void InitializeTexts(string playerName)
     {
@@ -20,17 +22,21 @@ public static class TextCtrl
         if (textFiles != null)
         {
             AddTexts(textFiles);
+            isActive = true;
         }
     }
 
     public static void ShowRandomText(Figure figure)
     {
-        if (notYetDisplayedTexts.Count == 0)
-            notYetDisplayedTexts.AddRange(texts);
-        int randomIndex = UnityEngine.Random.Range(0, notYetDisplayedTexts.Count);
-        string text = (string)notYetDisplayedTexts[randomIndex];
-        ShowText(figure, text);
-        notYetDisplayedTexts.Remove(text);
+        if(isActive)
+        {
+            if (notYetDisplayedTexts.Count == 0)
+                notYetDisplayedTexts.AddRange(texts);
+            int randomIndex = UnityEngine.Random.Range(0, notYetDisplayedTexts.Count);
+            string text = (string)notYetDisplayedTexts[randomIndex];
+            ShowText(figure, text);
+            notYetDisplayedTexts.Remove(text);
+        }
     }
 
     private static void ShowText(Figure figure, string text)
@@ -38,7 +44,6 @@ public static class TextCtrl
         GameObject textObject = (GameObject)GameObject.Instantiate(Resources.Load(TextPrefab, typeof(GameObject)));
         textObject.GetComponentInChildren<UnityEngine.UI.Text>().text = text;
         textObject.GetComponentInChildren<Text>().SetFigure(figure);
-        //textObject.GetComponent<RectTransform>().anchoredPosition = GetPosition(figure);  
     }
 
     private static Vector2 GetPosition(Figure figure)
