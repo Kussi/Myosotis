@@ -51,13 +51,8 @@ public static class TurnCtrl
 
     private static bool ReleaseFigureFromHome(Figure figure)
     {
-        MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureReleasedFromHome);
+        MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureReleasedFromHome, true);
         bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
-        if (FieldCtrl.IsSingleEventTrigger(figure.Field))
-            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField);
-        else if(FieldCtrl.IsMultiEventTrigger(figure.Field))
-            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField);
-        MediaEventHandler.Notify(FigureCtrl.GetPlayer(figure));
         return couldBePlaced;
     }
 
@@ -69,7 +64,7 @@ public static class TurnCtrl
         // figure is on its StairBench and can enter the stair
         if (FieldCtrl.IsStairBench(actualFieldIndex, figure))
         {
-            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureEnteresStair);
+            MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureEnteresStair, isLastStep);
             EnterStair(figure);
         }
         // figure is on a RegularField and moves to another one
@@ -78,13 +73,13 @@ public static class TurnCtrl
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
             if(FieldCtrl.IsSingleEventTrigger(nextFieldIndex))
-                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField);
+                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField, isLastStep);
             else if(FieldCtrl.IsMultiEventTrigger(nextFieldIndex))
-                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField);
-            Figure figureToSendHome = MakeOneRegularStep(figure);
+                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField, isLastStep);
+            Figure figureToSendHome = MakeOneRegularStep(figure, isLastStep);
             if (figureToSendHome != null)
             {
-                MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureHasToGoHome);
+                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureHasToGoHome, isLastStep);
                 FieldCtrl.MoveFigureHome(figureToSendHome);
             }
         }
@@ -102,7 +97,7 @@ public static class TurnCtrl
         else if (FieldCtrl.IsLastStairStep(actualFieldIndex, figure))
         {
             if (!isLastStep) hasToGoBackwards = true;
-            else MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureFinishesGame);
+            else MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureFinishesGame, isLastStep);
             EnterGoal(figure);
         }
         // figure is on a StairField and has to go forwards
@@ -111,13 +106,12 @@ public static class TurnCtrl
             MakeOneStairStepForward(figure);
         }
         if (isLastStep) hasToGoBackwards = false;
-        MediaEventHandler.Notify(FigureCtrl.GetPlayer(figure));
         return true;
     }
 
-    private static Figure MakeOneRegularStep(Figure figure)
+    private static Figure MakeOneRegularStep(Figure figure, bool isLastStep)
     {
-        return FieldCtrl.PlaceFigureOnNextRegularField(figure);
+        return FieldCtrl.PlaceFigureOnNextRegularField(figure, isLastStep);
     }
 
     private static void EnterStair(Figure figure)

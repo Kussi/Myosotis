@@ -10,6 +10,7 @@ public static class TextCtrl
     private static readonly ArrayList ValidExtensions = new ArrayList { ".txt" };
 
     private static ArrayList texts = new ArrayList();
+    private static ArrayList notYetDisplayedTexts = new ArrayList();
 
     public static void InitializeTexts(string playerName)
     {
@@ -18,11 +19,20 @@ public static class TextCtrl
         if (textFiles != null)
         {
             AddTexts(textFiles);
-            ShowText((string)texts[0]);
         }
     }
 
-    public static void ShowText(Figure figure, string text)
+    public static void ShowRandomText(Figure figure)
+    {
+        if (notYetDisplayedTexts.Count == 0)
+            notYetDisplayedTexts.AddRange(texts);
+        int randomIndex = UnityEngine.Random.Range(0, notYetDisplayedTexts.Count);
+        string text = (string)notYetDisplayedTexts[randomIndex];
+        ShowText(figure, text);
+        notYetDisplayedTexts.Remove(text);
+    }
+
+    private static void ShowText(Figure figure, string text)
     {
         GameObject textObject = (GameObject)GameObject.Instantiate(Resources.Load(TextPrefab, typeof(GameObject)));
         textObject.GetComponentInChildren<UnityEngine.UI.Text>().text = text;

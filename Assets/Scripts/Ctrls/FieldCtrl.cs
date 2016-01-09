@@ -185,10 +185,12 @@ public static class FieldCtrl
         int newFieldIndex = GetHomeBench(figure);
         if (IsBarrier(newFieldIndex)) return false;
         MoveFigureRegular(figure, newFieldIndex);
+        if (IsBarrier(newFieldIndex))
+            MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureRaisesBarrier, true);
         return true;
     }
 
-    public static Figure PlaceFigureOnNextRegularField(Figure figure)
+    public static Figure PlaceFigureOnNextRegularField(Figure figure, bool isLastStep)
     {
         if (!IsRegularField(figure.Field))
             throw new InvalidGameStateException();
@@ -197,8 +199,8 @@ public static class FieldCtrl
         if (IsBarrier(newFieldIndex)) throw new InvalidGameStateException();
         MoveFigureRegular(figure, newFieldIndex);
         Figure figureToSendHome = GetFigureToSendHome((RegularField)fields[newFieldIndex], figure);
-        if (figure == null && IsBarrier(newFieldIndex))
-            MediaEventHandler.AddEvent(MediaEventHandler.MediaEvent.FigureRaisesBarrier);
+        if (IsBarrier(newFieldIndex))
+            MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureRaisesBarrier, isLastStep);
         return figureToSendHome;
     }
 

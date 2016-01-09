@@ -3,28 +3,30 @@ using UnityEngine;
 
 public static class MediaEventHandler
 {
-    private static ArrayList events = new ArrayList();
-
     public enum MediaEvent
     {
         FigureReleasedFromHome, FigureHasToGoHome, FigureStepsOnSingleTriggeredField,
         FigureStepsOnMultiTriggeredField, FigureRaisesBarrier, FigureFinishesGame, FigureEnteresStair
     };
 
-    public static void AddEvent(MediaEvent mediaEvent)
+    public static void Notify(Figure figure, MediaEvent mediaEvent, bool isLastStep)
     {
-        events.Add(mediaEvent);
-    }
+        Player player = FigureCtrl.GetPlayer(figure);
 
-    public static void Notify(Player player)
-    {
-        foreach (MediaEvent me in events)
-            if (me == MediaEvent.FigureStepsOnSingleTriggeredField)
-            {
-                ImageCtrl.ChangeImageRandomly(player);
-            }
-            else if (me == MediaEvent.FigureStepsOnMultiTriggeredField)
-                ImageCtrl.ChangeAllImages();
-        events.Clear();
+        switch(mediaEvent)
+        {
+            case MediaEvent.FigureStepsOnSingleTriggeredField:
+                if(isLastStep) ImageCtrl.ChangeImageRandomly(player);
+                break;
+            case MediaEvent.FigureStepsOnMultiTriggeredField:
+                if(isLastStep) ImageCtrl.ChangeAllImages();
+                break;
+            case MediaEvent.FigureRaisesBarrier:
+                Debug.LogWarning("Barrier");
+                if(isLastStep) TextCtrl.ShowRandomText(figure);
+                break;
+            default:
+                break;
+        }
     }
 }

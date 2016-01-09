@@ -13,7 +13,7 @@ public class ImageCtrl
     private static bool isAvailable = false;
 
     private static Dictionary<Player, Image> images = new Dictionary<Player, Image>();
-    private static ArrayList alreadyDisplayedImages = new ArrayList();
+    private static ArrayList notYetDisplayedImages = new ArrayList();
     private static ImageDownloader imageSystem;
     private static ArrayList textures;
 
@@ -140,23 +140,23 @@ public class ImageCtrl
     {
         if (IsAvailable)
         {
-            if (alreadyDisplayedImages.Count == 0)
-                alreadyDisplayedImages.AddRange(textures);
-            int randomIndex = Random.Range(0, alreadyDisplayedImages.Count);
-            Texture image = (Texture)alreadyDisplayedImages[randomIndex];
+            if (notYetDisplayedImages.Count == 0)
+                notYetDisplayedImages.AddRange(textures);
+            int randomIndex = Random.Range(0, notYetDisplayedImages.Count);
+            Texture image = (Texture)notYetDisplayedImages[randomIndex];
             SetImage(player, image);
-            alreadyDisplayedImages.Remove(image);
+            notYetDisplayedImages.Remove(image);
         }
     }
 
     public static void ChangeAllImages()
     {
-        if (alreadyDisplayedImages.Count == 0)
-            alreadyDisplayedImages.AddRange(textures);
-        int randomIndex = Random.Range(0, alreadyDisplayedImages.Count);
-        Texture image = (Texture)alreadyDisplayedImages[randomIndex];
+        if (notYetDisplayedImages.Count == 0)
+            notYetDisplayedImages.AddRange(textures);
+        int randomIndex = Random.Range(0, notYetDisplayedImages.Count);
+        Texture image = (Texture)notYetDisplayedImages[randomIndex];
         foreach(Player player in PlayerCtrl.players)
             SetImage(player, image);
-        alreadyDisplayedImages.Remove(image);
+        notYetDisplayedImages.Remove(image);
     }
 }
