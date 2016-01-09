@@ -14,10 +14,9 @@ public static class PersonalizationCtrl {
     {
         PersonalizationCtrl.playerName = playerName;
 
-        MusicCtrl.InitializeMusic();
+        MusicCtrl.InitializeMusic(playerName);
         ImageCtrl.InitializeImages(PlayerCtrl.players);
-        //TextCtrl.InitializeTexts();
-            
+        TextCtrl.InitializeTexts(playerName);    
     }
 
     public static void Notify()

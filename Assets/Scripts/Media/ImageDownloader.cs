@@ -13,7 +13,7 @@ public class ImageDownloader : MonoBehaviour {
     {
         string playerName = PersonalizationCtrl.PlayerName;
         ArrayList textures = null;
-        FileInfo[] imageFiles = FileCtrl.GetChekedImageFileInfos(playerName, ValidExtensions); 
+        FileInfo[] imageFiles = FileCtrl.GetCheckedImageFileInfos(playerName, ValidExtensions); 
 
         if (imageFiles != null)
         {

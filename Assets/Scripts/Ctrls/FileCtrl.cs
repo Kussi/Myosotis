@@ -44,7 +44,7 @@ public static class FileCtrl {
         return playerNames;
     }
 
-    public static FileInfo[] GetChekedImageFileInfos(string playerName, ArrayList validExtensions)
+    public static FileInfo[] GetCheckedImageFileInfos(string playerName, ArrayList validExtensions)
     {
         return GetCheckedFileInfos(playerName, MediaType.Images, validExtensions);
     }
@@ -54,7 +54,7 @@ public static class FileCtrl {
         return GetCheckedFileInfos(playerName, MediaType.Music, validExtensions);
     }
 
-    public static FileInfo[] GetChekedTextFileInfos(string playerName, ArrayList validExtensions)
+    public static FileInfo[] GetCheckedTextFileInfos(string playerName, ArrayList validExtensions)
     {
         return GetCheckedFileInfos(playerName, MediaType.Texts, validExtensions);
     }

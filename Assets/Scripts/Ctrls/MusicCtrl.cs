@@ -16,9 +16,8 @@ public class MusicCtrl
         get { return isAvailable; }
     }
 
-    public static void InitializeMusic()
+    public static void InitializeMusic(string playerName)
     {
-        string playerName = PersonalizationCtrl.PlayerName;
         FileInfo[] musicFiles = FileCtrl.GetCheckedMusicFileInfos(playerName, ValidExtensions);
 
         if (musicFiles != null)
