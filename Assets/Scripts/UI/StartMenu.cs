@@ -7,7 +7,7 @@ public class StartMenu : MonoBehaviour
 {
     public PlayerButton[] playerButtons;
     public FigureButton[] figureButtons;
-    public Text nofPlayersDisplay;
+    public UnityEngine.UI.Text nofPlayersDisplay;
     public Color32 alertColor;
 
     private static readonly string DropdownGameObject = "PlayerSelection";
@@ -98,7 +98,7 @@ public class StartMenu : MonoBehaviour
 
         dropdown.value = playerIndex;
         ChangePlayer(dropdown.value);
-        GameObject.Find(DropdownGameObject + "/Label").GetComponent<Text>().text = GetSelectedPlayerName();
+        GameObject.Find(DropdownGameObject + "/Label").GetComponent<UnityEngine.UI.Text>().text = GetSelectedPlayerName();
     }
 
     public void SelectFigures(int value)

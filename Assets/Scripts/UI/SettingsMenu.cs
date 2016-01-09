@@ -66,7 +66,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void SetTrackTitle(string title)
     {
-        GameObject.Find(MusicTitle).GetComponent<Text>().text = title;
+        GameObject.Find(MusicTitle).GetComponent<UnityEngine.UI.Text>().text = title;
     }
 
     public void NewGame()
