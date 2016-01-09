@@ -6,8 +6,8 @@ using System;
 
 public static class TextCtrl
 {
-    private static readonly string TextPrefab = "Prefabs/Text";
-    private static readonly ArrayList ValidExtensions = new ArrayList { ".txt"/*, ".doc", ".docx", ".odt"*/ };
+    private static readonly string TextPrefab = "Prefabs/TextElement";
+    private static readonly ArrayList ValidExtensions = new ArrayList { ".txt" };
 
     private static ArrayList texts = new ArrayList();
 
@@ -18,17 +18,27 @@ public static class TextCtrl
         if (textFiles != null)
         {
             AddTexts(textFiles);
+            ShowText((string)texts[0]);
         }
     }
 
     public static void ShowText(Figure figure, string text)
     {
         GameObject textObject = (GameObject)GameObject.Instantiate(Resources.Load(TextPrefab, typeof(GameObject)));
+        textObject.GetComponentInChildren<UnityEngine.UI.Text>().text = text;
+        textObject.transform.localPosition = GetPosition(figure);  
+    }
+
+    private static Vector3 GetPosition(Figure figure)
+    {
+        Vector3 position = figure.transform.position;
+
+        return position;
     }
 
     private static void AddTexts(FileInfo[] textFiles)
     {
-        foreach(FileInfo textFile in textFiles)
+        foreach (FileInfo textFile in textFiles)
         {
             StringBuilder text = new StringBuilder();
             try
@@ -36,7 +46,7 @@ public static class TextCtrl
                 using (StreamReader sr = new StreamReader(textFile.FullName))
                 {
                     // Read the stream to a string, and write the string to the console.
-                   text.Append(sr.ReadToEnd());
+                    text.Append(sr.ReadToEnd());
                 }
                 Debug.Log(text.ToString());
             }

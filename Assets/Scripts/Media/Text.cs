@@ -4,14 +4,17 @@ using UnityEngine.UI;
 
 public class Text : MonoBehaviour {
 
+    private static string ParentObject = "TextSystem";
+
     public float minAspectRatio;
     public float maxAspectRatio;
     public int step;
 
     // Use this for initialization
-    void Start () {
-	
-	}
+    void Awake () {
+        gameObject.transform.parent.gameObject.transform.SetParent(GameObject.Find(ParentObject).transform);
+        gameObject.transform.parent.transform.localScale = new Vector3(1, 1, 1);
+    }
 	
 	// Update is called once per frame
 	void Update () {
