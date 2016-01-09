@@ -5,68 +5,55 @@ using System.Collections.Generic;
 public static class DiceCtrl
 {
 
-    private static readonly string FigureParentalSuffix = "DicePosition";
+    private static readonly string DicePositionSuffix = "DicePosition";
+    private static readonly string DiceParentObject = "GameTable";
     private static readonly string DicePrefab = "Prefabs/_Dice";
     private static readonly string DiceName = "Dice";
 
-    private static Dictionary<Player, Dice> dices = new Dictionary<Player, Dice>();
+    private static Dice dice;
 
-    public static void ActivateDice(Player player)
-    {
-        Dice dice;
-        if (!dices.TryGetValue(player, out dice))
-            throw new InvalidGameStateException();
-        ActivateDice(dice);
-    }
-
-    private static void ActivateDice(Dice dice)
+    private static void ActivateDice()
     {
         dice.SetActive(true);
-        Debug.Log(dice.name + " activated");
+        Debug.Log("dice activated");
     }
 
-    private static void DeactivateDice(Dice dice)
+    private static void DeactivateDice()
     {
         dice.SetActive(false);
-        Debug.Log(dice.name + " deactivated");
+        Debug.Log("dice activated");
     }
 
-    public static void Notify(Dice dice)
+    public static void ThrowDice(string playerColor)
     {
-        DeactivateDice(dice);
+        Debug.Log("dice starts moving");
+        dice.StartMoving(GetDicePosition(playerColor));
+    }
+
+    public static void DiceStopsMoving()
+    {
+        ActivateDice();
+    }
+
+    public static void Notify()
+    {
+        DeactivateDice();
         GameCtrl.Notify(dice.Value);
     }
 
-    public static void InitializeDices(ArrayList players)
+    public static void InitializeDices(string firstPlayerColor)
     {
-        foreach (Player player in players)
-        {
-            // editing GameObject
-            GameObject diceObject = (GameObject)GameObject.Instantiate(Resources.Load(DicePrefab, typeof(GameObject)));
-            diceObject.AddComponent<Dice>();
-            diceObject.name = (player.Color + DiceName);
-            diceObject.transform.parent = GameObject.Find(player.Color + FigureParentalSuffix).transform;
+        GameObject diceObject = (GameObject)GameObject.Instantiate(Resources.Load(DicePrefab, typeof(GameObject)));
+        diceObject.name = (DiceName);
+        diceObject.transform.parent = GameObject.Find(DiceParentObject).transform;
+        diceObject.transform.position = GetDicePosition(firstPlayerColor).position;
 
-            // editing (script) object
-            Dice dice = (Dice)diceObject.GetComponent<Dice>();
-
-            // adding figure to the list
-            dices.Add(player, dice);
-        }
+        diceObject.AddComponent<Dice>();
+        dice = (Dice)diceObject.GetComponent<Dice>();
     }
 
-    public static void PlaceDices()
+    private static Transform GetDicePosition(string playerColor)
     {
-        foreach (Player player in dices.Keys)
-        {
-            Dice dice;
-            if (!dices.TryGetValue(player, out dice))
-                throw new InvalidGameStateException();
-            dice.gameObject.transform.localPosition = new Vector3(0, 0, 0);
-
-            Vector3 diceRotation = dice.transform.eulerAngles;
-            diceRotation = new Vector3(diceRotation.x, player.PlayerAngle, diceRotation.z);
-            dice.transform.eulerAngles = diceRotation;
-        }
+        return GameObject.Find(playerColor + DicePositionSuffix).transform;
     }
 }

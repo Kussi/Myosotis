@@ -17,9 +17,6 @@ public static class PlayerCtrl
         { "red", new Color(1, 0, 0) }, { "yellow", new Color(220, 200, 0) }, { "blue", new Color(15/255, 15/255, 1) }, { "green", new Color(0, 153, 0) }
     };
 
-    private static readonly int MinNofPlayers = 2;
-    private static readonly int MaxNofPlayers = 4;
-
     public static ArrayList players = new ArrayList();
 
     public static ArrayList GetPlayers()

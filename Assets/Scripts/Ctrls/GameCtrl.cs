@@ -110,7 +110,7 @@ public static class GameCtrl
 
             ++turnCounter;
             Debug.Log("Turn " + turnCounter + ": " + PlayerOnTurn.Color);
-            DiceCtrl.ActivateDice(PlayerOnTurn);
+            DiceCtrl.ThrowDice(PlayerOnTurn.Color);
         }   
     }
 

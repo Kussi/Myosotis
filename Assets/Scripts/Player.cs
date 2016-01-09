@@ -2,9 +2,6 @@
 
 public class Player
 {
-
-    private const string ParentDiceObjectSuffix = "DicePosition";
-
     private IPlayerState state;
 
     private readonly string color;
