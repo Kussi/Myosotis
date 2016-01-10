@@ -16,6 +16,12 @@ public class MusicCtrl
         get { return isAvailable; }
     }
 
+    public static void Reset()
+    {
+        isAvailable = false;
+        music.Reset();
+    }
+
     public static void InitializeMusic(string playerName)
     {
         FileInfo[] musicFiles = FileCtrl.GetCheckedMusicFileInfos(playerName, ValidExtensions);

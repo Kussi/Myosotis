@@ -70,4 +70,12 @@ public static class PlayerCtrl
 
         return result.ToString();
     }
+
+    public static void Reset()
+    {
+        foreach(Player player in players)
+        {
+            players = new ArrayList();
+        }
+    }
 }

@@ -18,6 +18,15 @@ public class Music : MonoBehaviour
 
     private int index = 0;
 
+    public void Reset()
+    {
+        GameObject.Destroy(source.gameObject.GetComponent<AudioSource>());
+        source = gameObject.AddComponent<AudioSource>();
+        clips = new List<AudioClip>();
+        isPlaying = false;
+        isPaused = false;
+    }
+
     void Awake()
     {
         source = gameObject.AddComponent<AudioSource>();

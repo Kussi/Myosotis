@@ -6,7 +6,7 @@ public static class GameCtrl
 {
     private static bool gameIsRunning = false;
 
-    private static int playerOnTurn = -1;
+    private static int playerOnTurn;
     private static ArrayList activePlayers;
 
     private static int actualDiceValue;
@@ -24,6 +24,15 @@ public static class GameCtrl
             if (GameIsRunning) return (Player)PlayerCtrl.players[playerOnTurn];
             throw new InvalidGameStateException();
         }
+    }
+
+    public static void Reset()
+    {
+        playerOnTurn = -1;
+        activePlayers = null;
+        actualDiceValue = 0;
+        turnCounter = 0;
+        gameIsRunning = false;
     }
 
     public static void StartGame()

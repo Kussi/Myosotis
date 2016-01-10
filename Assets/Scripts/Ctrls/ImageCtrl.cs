@@ -23,6 +23,26 @@ public class ImageCtrl
         get { return isAvailable; }
     }
 
+    public static void Reset()
+    {
+        isAvailable = false;
+        foreach(Player player in images.Keys)
+        {
+            RawImage playerImage = GetPlayerImage(player).GetComponent<RawImage>();
+            Color color = playerImage.color;
+            playerImage.color = new Color(color.r, color.g, color.b, 0);
+            RemoveImage(player);
+        }
+
+        foreach (Image image in images.Values)
+        {
+            GameObject.Destroy(image.gameObject.GetComponent<Image>());
+        }
+        images = new Dictionary<Player, Image>();
+        notYetDisplayedImages = new ArrayList();
+        textures = null;
+    }
+
     public static void InitializeImages(ArrayList players)
     {
         ImageCtrl.players = players;
@@ -58,6 +78,12 @@ public class ImageCtrl
         image.SetImage(newImage);
         RotateImage(player, image.gameObject);
         FitImageIntoFrame(player, image.gameObject);
+    }
+
+    private static void RemoveImage(Player player)
+    {
+        Image image = GetPlayerImage(player);
+        image.SetImage(null);
     }
 
     private static void SetupInitialAppearance(Player player)

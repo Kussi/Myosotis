@@ -29,4 +29,10 @@ public static class SoundCtrl
     {
         if (isAvailable) sound.PlayDice();
     }
+
+    public static void Reset()
+    {
+        sound = null;
+        isAvailable = false;
+    }
 }

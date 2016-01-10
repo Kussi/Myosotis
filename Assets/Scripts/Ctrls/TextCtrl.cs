@@ -15,6 +15,18 @@ public static class TextCtrl
 
     private static bool isActive = false;
 
+    public static void Reset()
+    {
+        texts = new ArrayList();
+        notYetDisplayedTexts = new ArrayList();
+        isActive = false;
+        GameObject system = GameObject.Find(ParentObject);
+        foreach (Transform child in system.transform)
+        {
+            GameObject.Destroy(child);
+        }
+    }
+
     public static void InitializeTexts(string playerName)
     {
         FileInfo[] textFiles = FileCtrl.GetCheckedTextFileInfos(playerName, ValidExtensions);

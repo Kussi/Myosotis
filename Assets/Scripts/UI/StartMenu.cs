@@ -61,6 +61,11 @@ public class StartMenu : MonoBehaviour
         return players;
     }
 
+    private void HideSplashScreen()
+    {
+        SplashScreen.SetActive(false);
+    }
+
     private void ShowSplashScreen()
     {
         SplashScreen.SetActive(true);
@@ -118,6 +123,7 @@ public class StartMenu : MonoBehaviour
 
     public void Show()
     {
+        HideSplashScreen();
         gameObject.GetComponent<CanvasGroup>().alpha = 1f;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }

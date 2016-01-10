@@ -42,7 +42,6 @@ public class Figure : MonoBehaviour
             isMainTurnFigure = true;
             FigureCtrl.Notify(this);
         }
-        Debug.LogWarning("figure touched");
     }
 
     /// <summary>

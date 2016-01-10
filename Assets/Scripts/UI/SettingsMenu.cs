@@ -9,6 +9,7 @@ public class SettingsMenu : MonoBehaviour
     private static readonly string MusicSettingsLayer = "MusicSettings";
     private static readonly string NoMusicSettingsLayer = "NoMusicSettings";
     private static readonly string MusicTitle = "MusicTitle";
+    private static readonly string StartMenu = "StartMenu";
 
     void Awake()
     {
@@ -71,8 +72,9 @@ public class SettingsMenu : MonoBehaviour
 
     public void NewGame()
     {
-        foreach (GameObject go in FindGameObjectsOnLayer("MusicSettings"))
-            Debug.Log(go.name);
+        GameObject.Find(StartMenu).GetComponent<StartMenu>().Show();
+        Hide();
+        Initializer.DestroyGame();
     }
 
     public void ExitGame()

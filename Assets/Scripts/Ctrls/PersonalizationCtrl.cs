@@ -12,6 +12,14 @@ public static class PersonalizationCtrl {
         get { return playerName; }
     }
 
+    public static void Reset()
+    {
+        MusicCtrl.Reset();
+        ImageCtrl.Reset();
+        TextCtrl.Reset();
+        SoundCtrl.Reset();
+    }
+
     public static void InitializePersonalization(string playerName)
     {
         PersonalizationCtrl.playerName = playerName;

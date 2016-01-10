@@ -24,7 +24,7 @@ public static class DiceCtrl
         GameCtrl.Notify(dice.Value);
     }
 
-    public static void InitializeDices(string firstPlayerColor)
+    public static void InitializeDice(string firstPlayerColor)
     {
         GameObject diceObject = (GameObject)GameObject.Instantiate(Resources.Load(DicePrefab, typeof(GameObject)));
         diceObject.name = (DiceName);
@@ -32,11 +32,16 @@ public static class DiceCtrl
         diceObject.transform.position = GetDicePosition(firstPlayerColor).position;
 
         diceObject.AddComponent<Dice>();
-        dice = (Dice)diceObject.GetComponent<Dice>();
+        dice = diceObject.GetComponent<Dice>();
     }
 
     private static Transform GetDicePosition(string playerColor)
     {
         return GameObject.Find(playerColor + DicePositionSuffix).transform;
+    }
+
+    public static void DestroyDice()
+    {
+        GameObject.Destroy(dice.gameObject);
     }
 }

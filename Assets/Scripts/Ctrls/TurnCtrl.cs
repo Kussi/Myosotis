@@ -10,25 +10,18 @@ public static class TurnCtrl
     private static int currentStep;
     private static int lastStep;
 
-    private static ArrayList turns = new ArrayList();
+    public static void Reset()
+    {
+        hasToGoBackwards = false;
+        turnIsRunning = false;
+        currentFigure = null;
+        currentStep = 0;
+        lastStep = 0;
+    }
 
     public static void Execute(Figure figure, int steps)
     {
-        Turn turn = CreateTurn(figure, steps);
-        AddTurn(turn);
-        ExecuteTurn(turn);
-    }
-
-    private static Turn CreateTurn(Figure figure, int diceValue)
-    {
-        return new Turn(figure, figure.Field, diceValue);
-    }
-
-    private static void ExecuteTurn(Turn turn)
-    {
-        Figure figure = turn.Figure;
-        int startFieldIndex = turn.Start;
-        int steps = turn.DiceValue;
+        int startFieldIndex = figure.Field;
 
         // figure is at home and may be released
         if (FieldCtrl.IsHomeField(startFieldIndex, figure))
@@ -48,6 +41,16 @@ public static class TurnCtrl
             MakeNextStep();
 
         }
+    }
+
+    private static Turn CreateTurn(Figure figure, int diceValue)
+    {
+        return new Turn(figure, figure.Field, diceValue);
+    }
+
+    private static void ExecuteTurn(Turn turn)
+    {
+        
     }
 
     public static void MakeNextStep()
@@ -151,11 +154,5 @@ public static class TurnCtrl
     private static void LeaveGoal(Figure figure)
     {
         FieldCtrl.PlaceFigureOnLastStairStep(figure);
-    }
-
-    private static void AddTurn(Turn turn)
-    {
-        turns.Add(turn);
-        if (turns.Count > MaxNofTurns) turns.Remove(turns[0]);
     }
 }

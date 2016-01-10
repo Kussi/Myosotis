@@ -180,4 +180,13 @@ public static class FigureCtrl
             }
         }
     }
+
+    public static void DestroyFigures()
+    {
+        foreach(Figure figure in figures.Keys)
+        {
+            GameObject.Destroy(figure.gameObject);
+        }
+        figures = new Dictionary<Figure, Player>();
+    }
 }

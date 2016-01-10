@@ -7,17 +7,23 @@ public static class Initializer
     {
         FieldCtrl.InitializeFields();
         PlayerCtrl.InitializePlayers(playerColors);
-        DiceCtrl.InitializeDices(((Player)PlayerCtrl.players[0]).Color);
+        DiceCtrl.InitializeDice(((Player)PlayerCtrl.players[0]).Color);
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
-        SunCtrl.InitializeSun();
         PersonalizationCtrl.InitializePersonalization(playerName);
         FigureCtrl.PlaceFiguresOnStartPosition();
 
         GameCtrl.StartGame();
     }
 
-    public static void ExitGame()
+    public static void DestroyGame()
     {
+        DiceCtrl.DestroyDice();
+        FieldCtrl.DestroyFields();
+        FigureCtrl.DestroyFigures();
+        PlayerCtrl.Reset();
+        GameCtrl.Reset();
+        TurnCtrl.Reset();
 
+        PersonalizationCtrl.Reset();
     } 
 }

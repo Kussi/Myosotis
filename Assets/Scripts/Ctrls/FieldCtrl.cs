@@ -22,9 +22,12 @@ public static class FieldCtrl
     private static readonly string GreenTriggerBendMaterial = "GreenTriggerBend";
     private static readonly string RainbowTriggerRegularMaterial = "RainbowTriggerRegular";
     private static readonly string RainbowTriggerBendMaterial = "RainbowTriggerBend";
+    private static readonly string BendMaterial = "BendField";
+    private static readonly string BenchMaterial = "BenchField";
+    private static readonly string RegularMaterial = "regularField";
 
     private static readonly ArrayList SingleEventTriggeredFields = new ArrayList() { 2, 13, 19, 30, 36, 47, 53, 64 };
-    private static readonly ArrayList MultiEventTriggeredFields = new ArrayList() { 7, 24, 41, 58 };
+    private static readonly ArrayList MultiEventTriggeredFields = new ArrayList() { 6, 9, 23, 26, 40, 43, 57, 60 };
 
     public static readonly int GoalFieldIndex = 999;
 
@@ -261,7 +264,7 @@ public static class FieldCtrl
         field.IsSingleEventTrigger = value;
         RegularField regularField = field as RegularField;
 
-        if(regularField != null && !regularField.IsBench)
+        if (regularField != null && !regularField.IsBench)
         {
             StringBuilder materialSource = new StringBuilder(TexturesDirectory);
             if (regularField.Index >= FirstRedFieldIndex && regularField.Index <= LastRedFieldIndex)
@@ -274,7 +277,7 @@ public static class FieldCtrl
             else if (regularField.Index >= FirstYellowFieldIndex && regularField.Index <= LastYellowFieldIndex)
             {
                 if (regularField.IsBend)
-                    materialSource.Append(YellowTriggerBendMaterial);                
+                    materialSource.Append(YellowTriggerBendMaterial);
                 else
                     materialSource.Append(YellowTriggerRegularMaterial);
             }
@@ -283,14 +286,14 @@ public static class FieldCtrl
                 if (regularField.IsBend)
                     materialSource.Append(BlueTriggerBendMaterial);
                 else
-                materialSource.Append(BlueTriggerRegularMaterial);
+                    materialSource.Append(BlueTriggerRegularMaterial);
             }
             else if (regularField.Index >= FirstGreenFieldIndex && regularField.Index <= LastGreenFieldIndex)
             {
                 if (regularField.IsBend)
                     materialSource.Append(GreenTriggerBendMaterial);
                 else
-                materialSource.Append(GreenTriggerRegularMaterial);
+                    materialSource.Append(GreenTriggerRegularMaterial);
             }
             Material material = Resources.Load(materialSource.ToString(), typeof(Material)) as Material;
             if (material != null)
@@ -306,7 +309,7 @@ public static class FieldCtrl
         if (regularField != null && !regularField.IsBench)
         {
             StringBuilder materialSource = new StringBuilder(TexturesDirectory);
-            if(regularField.IsBend)
+            if (regularField.IsBend)
             {
                 materialSource.Append(RainbowTriggerBendMaterial);
             }
@@ -373,8 +376,39 @@ public static class FieldCtrl
 
         // initializing GoalField
         GameObject goal = GameObject.Find(GoalFieldPrefix + GoalFieldIndex.ToString("D3"));
-        //goal.AddComponent<GoalField>();
+        goal.AddComponent<GoalField>();
         fields[GoalFieldIndex] = goal.GetComponent<GoalField>();
         fields[GoalFieldIndex].Index = GoalFieldIndex;
+    }
+
+    public static void DestroyFields()
+    {
+        foreach (GameFieldBase field in fields.Values)
+        {
+            RegularField regularField = field as RegularField;
+            HomeField homeField = field as HomeField;
+            GoalField goalField = field as GoalField;
+            StairField stairField = field as StairField;
+            if (regularField != null)
+            {
+                StringBuilder material = new StringBuilder(TexturesDirectory);
+                if (regularField.IsBend)
+                    material.Append(BendMaterial);
+                else if (regularField.IsBench)
+                    material.Append(BenchMaterial);
+                else material.Append(RegularMaterial);
+                regularField.gameObject.GetComponentInChildren<MeshRenderer>().material = 
+                    Resources.Load(material.ToString(), typeof(Material)) as Material;
+                Debug.Log(material.ToString());
+                GameObject.Destroy(field.gameObject.GetComponent<RegularField>());
+            }   
+            else if (homeField != null)
+                GameObject.Destroy(field.gameObject.GetComponent<HomeField>());
+            else if (goalField != null)
+                GameObject.Destroy(field.gameObject.GetComponent<GoalField>());
+            else if (stairField != null)
+                GameObject.Destroy(field.gameObject.GetComponent<StairField>());
+        }
+        fields = null;
     }
 }
