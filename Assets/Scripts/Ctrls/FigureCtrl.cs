@@ -71,7 +71,7 @@ public static class FigureCtrl
     {
         ArrayList figures = GetFigures(player);
         foreach (Figure figure in figures)
-            if(!FieldCtrl.IsGoalField(figure.Field))
+            if (!FieldCtrl.IsGoalField(figure.Field))
                 ActivateFigure(figure);
     }
 
@@ -137,7 +137,7 @@ public static class FigureCtrl
     }
 
     public static void FigureStartsWalking(Figure figure)
-    {   
+    {
         if (walkingFigures.Count == 0)
             figuresAreWalking = true;
         walkingFigures.Add(figure);
@@ -149,7 +149,10 @@ public static class FigureCtrl
             throw new InvalidGameStateException();
         walkingFigures.Remove(figure);
         if (walkingFigures.Count == 0)
+        {
             figuresAreWalking = false;
+            TurnCtrl.MakeNextStep();
+        }
     }
 
     public static void InitializeFigures(ArrayList players, int nofFigures)

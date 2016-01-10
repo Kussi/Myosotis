@@ -37,16 +37,40 @@ public static class TurnCtrl
         }
         else // figure is not at home
         {
-            for (int i = 0; i < steps; ++i)
-            {
-                // if next field is a barrier
-                if (!MakeOneStep(figure, i == steps - 1))
-                {
-                    // isbarrier
-                }
-            }
+            turnIsRunning = true;
+            currentStep = 0;
+            currentFigure = figure;
+            lastStep = steps;
+            MakeNextStep();
+
         }
-        GameCtrl.Notify();
+        //    for (int i = 0; i < steps; ++i)
+        //    {
+        //        // if next field is a barrier
+        //        if (!MakeOneStep(figure, i == steps - 1))
+        //        {
+        //            // isbarrier
+        //        }
+        //    }
+        //}
+        //GameCtrl.Notify();
+    }
+
+    private static bool turnIsRunning = false;
+    private static Figure currentFigure;
+    private static int currentStep;
+    private static int lastStep;
+    public static void MakeNextStep()
+    {
+        if(turnIsRunning && ++currentStep <= lastStep)
+        {
+            MakeOneStep(currentFigure, currentStep == lastStep);
+        }
+        else
+        {
+            turnIsRunning = false;
+            GameCtrl.Notify();
+        }
     }
 
     private static bool ReleaseFigureFromHome(Figure figure)
