@@ -67,7 +67,6 @@ public static class TextCtrl
                     // Read the stream to a string, and write the string to the console.
                     text.Append(sr.ReadToEnd());
                 }
-                Debug.Log(text.ToString());
             }
             catch (Exception e)
             {

@@ -3,27 +3,50 @@ using UnityEngine;
 
 public static class MediaEventHandler
 {
-    public enum MediaEvent
+    public enum GameEvent
     {
         FigureReleasedFromHome, FigureHasToGoHome, FigureStepsOnSingleTriggeredField,
-        FigureStepsOnMultiTriggeredField, FigureRaisesBarrier, FigureFinishesGame, FigureEnteresStair
+        FigureStepsOnMultiTriggeredField, FigureRaisesBarrier, FigureEnteresGoal, FigureEnteresStair,
+        
     };
 
-    public static void Notify(Figure figure, MediaEvent mediaEvent, bool isLastStep)
+    public enum SoundEvent
+    {
+        FigureMakesStep, DiceFallsOnGround
+    };
+
+    public static void Notify(Figure figure, GameEvent gameEvent, bool isLastStep)
     {
         Player player = FigureCtrl.GetPlayer(figure);
-
-        switch(mediaEvent)
+        switch (gameEvent)
         {
-            case MediaEvent.FigureStepsOnSingleTriggeredField:
+            
+            case GameEvent.FigureStepsOnSingleTriggeredField:
                 if(isLastStep) ImageCtrl.ChangeImageRandomly(player);
                 break;
-            case MediaEvent.FigureStepsOnMultiTriggeredField:
+            case GameEvent.FigureStepsOnMultiTriggeredField:
                 if(isLastStep) ImageCtrl.ChangeAllImages();
                 break;
-            case MediaEvent.FigureRaisesBarrier:
-                Debug.LogWarning("Barrier");
+            case GameEvent.FigureRaisesBarrier:
                 if(isLastStep) TextCtrl.ShowRandomText(figure);
+                break;
+            case GameEvent.FigureEnteresGoal:
+                if (isLastStep) SoundCtrl.PlayApplaus();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void Notify(SoundEvent soundEvent)
+    {
+        switch(soundEvent)
+        {
+            case SoundEvent.DiceFallsOnGround:
+                SoundCtrl.PlayDice();
+                break;
+            case SoundEvent.FigureMakesStep:
+                SoundCtrl.PlayStep();
                 break;
             default:
                 break;

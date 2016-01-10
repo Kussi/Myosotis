@@ -61,6 +61,7 @@ public class Dice : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
+        MediaEventHandler.Notify(MediaEventHandler.SoundEvent.DiceFallsOnGround);
         if (actualState.Equals(State.Throwing))
             actualState = State.ReadyToPassOn;
     }
@@ -73,8 +74,8 @@ public class Dice : MonoBehaviour
         isActive = false;
         actualState = State.Throwing;
         GetComponent<Rigidbody>().isKinematic = false;
-        value = UnityEngine.Random.Range(1, 7);
-        //value = UnityEngine.Random.Range(5, 6);
+        //value = UnityEngine.Random.Range(1, 7);
+        value = UnityEngine.Random.Range(5, 7);
         Refresh();
         FinishThrow();
     }

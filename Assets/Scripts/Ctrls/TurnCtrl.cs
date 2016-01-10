@@ -5,6 +5,10 @@ public static class TurnCtrl
     private static readonly int MaxNofTurns = 5;
 
     private static bool hasToGoBackwards = false;
+    private static bool turnIsRunning = false;
+    private static Figure currentFigure;
+    private static int currentStep;
+    private static int lastStep;
 
     private static ArrayList turns = new ArrayList();
 
@@ -44,22 +48,8 @@ public static class TurnCtrl
             MakeNextStep();
 
         }
-        //    for (int i = 0; i < steps; ++i)
-        //    {
-        //        // if next field is a barrier
-        //        if (!MakeOneStep(figure, i == steps - 1))
-        //        {
-        //            // isbarrier
-        //        }
-        //    }
-        //}
-        //GameCtrl.Notify();
     }
 
-    private static bool turnIsRunning = false;
-    private static Figure currentFigure;
-    private static int currentStep;
-    private static int lastStep;
     public static void MakeNextStep()
     {
         if(turnIsRunning && ++currentStep <= lastStep)
@@ -75,7 +65,7 @@ public static class TurnCtrl
 
     private static bool ReleaseFigureFromHome(Figure figure)
     {
-        MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureReleasedFromHome, true);
+        MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureReleasedFromHome, true);
         bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
         return couldBePlaced;
     }
@@ -88,7 +78,7 @@ public static class TurnCtrl
         // figure is on its StairBench and can enter the stair
         if (FieldCtrl.IsStairBench(actualFieldIndex, figure))
         {
-            MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureEnteresStair, isLastStep);
+            MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureEnteresStair, isLastStep);
             EnterStair(figure);
         }
         // figure is on a RegularField and moves to another one
@@ -97,13 +87,13 @@ public static class TurnCtrl
             nextFieldIndex = FieldCtrl.GetNextRegularFieldIndex(actualFieldIndex);
             if (FieldCtrl.IsBarrier(nextFieldIndex)) return false;
             if(FieldCtrl.IsSingleEventTrigger(nextFieldIndex))
-                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureStepsOnSingleTriggeredField, isLastStep);
+                MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureStepsOnSingleTriggeredField, isLastStep);
             else if(FieldCtrl.IsMultiEventTrigger(nextFieldIndex))
-                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureStepsOnMultiTriggeredField, isLastStep);
+                MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureStepsOnMultiTriggeredField, isLastStep);
             Figure figureToSendHome = MakeOneRegularStep(figure, isLastStep);
             if (figureToSendHome != null)
             {
-                MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureHasToGoHome, isLastStep);
+                MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureHasToGoHome, isLastStep);
                 FieldCtrl.MoveFigureHome(figureToSendHome);
             }
         }
@@ -121,7 +111,7 @@ public static class TurnCtrl
         else if (FieldCtrl.IsLastStairStep(actualFieldIndex, figure))
         {
             if (!isLastStep) hasToGoBackwards = true;
-            else MediaEventHandler.Notify(figure, MediaEventHandler.MediaEvent.FigureFinishesGame, isLastStep);
+            MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureEnteresGoal, isLastStep);
             EnterGoal(figure);
         }
         // figure is on a StairField and has to go forwards
