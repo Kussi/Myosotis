@@ -6,7 +6,7 @@ public class Dice : MonoBehaviour
 {
     private enum State { ReadyToThrow, Throwing, ReadyToPassOn, PassingOn }
 
-    private readonly float Speed = 15;
+    private readonly float Speed = 20;
     private readonly float MovementAccuracy = 0.01f;
     private readonly float ThrowingHeight = 3;
     
@@ -51,7 +51,6 @@ public class Dice : MonoBehaviour
                         ThrowDice();
                     else if (actualState.Equals(State.ReadyToPassOn) && isActive)
                     {
-                        Debug.Log("PassingOn");
                         actualState = State.PassingOn;
                         GetComponent<Rigidbody>().isKinematic = true;
                     }
@@ -63,10 +62,7 @@ public class Dice : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         if (actualState.Equals(State.Throwing))
-        {
-            Debug.Log("ReadyToPassOn");
             actualState = State.ReadyToPassOn;
-        }
     }
 
     /// <summary>
@@ -75,7 +71,6 @@ public class Dice : MonoBehaviour
     public void ThrowDice()
     {
         isActive = false;
-        Debug.Log("Throwing");
         actualState = State.Throwing;
         GetComponent<Rigidbody>().isKinematic = false;
         value = UnityEngine.Random.Range(1, 7);
@@ -95,7 +90,6 @@ public class Dice : MonoBehaviour
         Quaternion rotation = target.rotation;
         throwingPosition = new Vector3(position.x, ThrowingHeight, position.z);
         throwingRotation = Quaternion.Euler(rotation.x + 10, rotation.y + 10, rotation.z + 10);
-        Debug.Log("StartPassingOn");
     }
 
 

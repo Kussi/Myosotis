@@ -10,7 +10,6 @@ public static class Initializer
         DiceCtrl.InitializeDices(((Player)PlayerCtrl.players[0]).Color);
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();
-        BulpCtrl.InitializeBulps(PlayerCtrl.players);
         PersonalizationCtrl.InitializePersonalization(playerName);
 
         FigureCtrl.PlaceFiguresOnStartPosition();
