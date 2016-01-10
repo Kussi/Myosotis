@@ -12,32 +12,15 @@ public static class DiceCtrl
 
     private static Dice dice;
 
-    private static void ActivateDice()
-    {
-        dice.SetActive(true);
-        Debug.Log("dice activated");
-    }
-
-    private static void DeactivateDice()
-    {
-        dice.SetActive(false);
-        Debug.Log("dice activated");
-    }
-
-    public static void ThrowDice(string playerColor)
+    public static void StartDiceThrowingProcess(string playerColor)
     {
         Debug.Log("dice starts moving");
-        dice.StartMoving(GetDicePosition(playerColor));
-    }
-
-    public static void DiceStopsMoving()
-    {
-        ActivateDice();
+        dice.StartPassingOn(GetDicePosition(playerColor));
+        dice.ActivateDice();
     }
 
     public static void Notify()
     {
-        DeactivateDice();
         GameCtrl.Notify(dice.Value);
     }
 

@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
 {
-    private readonly int Speed = 15;
+    private enum State { ReadyToThrow, Throwing, ReadyToPassOn, PassingOn }
+
+    private readonly float Speed = 15;
     private readonly float MovementAccuracy = 0.01f;
-
-    private bool isActive = false;
+    private readonly float ThrowingHeight = 3;
+    
     private int value = 1;
+    private bool isActive = false;
 
-    private bool isMoving = false;
-    private Transform targetToMove;
+    private Vector3 throwingPosition;
+    private Quaternion throwingRotation;
 
+    private State actualState = State.PassingOn;
 
     public int Value
     {
@@ -31,7 +36,7 @@ public class Dice : MonoBehaviour
     /// </summary>
     void Update()
     {
-        Move();
+        PassingOn();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -42,13 +47,25 @@ public class Dice : MonoBehaviour
             {
                 if (hit.collider.name == gameObject.name)
                 {
-                    if (isActive)
-                    {
+                    if (actualState.Equals(State.ReadyToThrow) && isActive)
                         ThrowDice();
-                        DiceCtrl.Notify();
+                    else if (actualState.Equals(State.ReadyToPassOn) && isActive)
+                    {
+                        Debug.Log("PassingOn");
+                        actualState = State.PassingOn;
+                        GetComponent<Rigidbody>().isKinematic = true;
                     }
                 }
             }
+        }
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (actualState.Equals(State.Throwing))
+        {
+            Debug.Log("ReadyToPassOn");
+            actualState = State.ReadyToPassOn;
         }
     }
 
@@ -57,45 +74,51 @@ public class Dice : MonoBehaviour
     /// </summary>
     public void ThrowDice()
     {
-        //value = UnityEngine.Random.Range(1, 7);
-        value = UnityEngine.Random.Range(5, 6);
+        isActive = false;
+        Debug.Log("Throwing");
+        actualState = State.Throwing;
+        GetComponent<Rigidbody>().isKinematic = false;
+        value = UnityEngine.Random.Range(1, 7);
+        //value = UnityEngine.Random.Range(5, 6);
         Refresh();
+        FinishThrow();
     }
 
-    /// <summary>
-    /// activtaes the dice, that is can be thrown
-    /// </summary>
-    /// <param name="isActive"></param>
-    public void SetActive(bool isActive)
+    public void ActivateDice()
     {
-        this.isActive = isActive;
+        isActive = true;
     }
 
-    public void StartMoving(Transform target)
+    public void StartPassingOn(Transform target)
     {
-        targetToMove = target;
-        isMoving = true;
+        Vector3 position = target.position;
+        Quaternion rotation = target.rotation;
+        throwingPosition = new Vector3(position.x, ThrowingHeight, position.z);
+        throwingRotation = Quaternion.Euler(rotation.x + 10, rotation.y + 10, rotation.z + 10);
+        Debug.Log("StartPassingOn");
     }
 
-    private void StopMoving()
+
+    public void PassingOn()
     {
-        isMoving = false;
-        targetToMove = null;
-        DiceCtrl.DiceStopsMoving();
+        if (actualState.Equals(State.PassingOn) && isActive)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, throwingPosition, Speed * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, throwingRotation, Time.time * Speed);
+
+            if (HasReachedTarget(transform.position, throwingPosition)) actualState = State.ReadyToThrow;
+        }
     }
 
-    public void Move()
+    public void FinishThrow()
     {
-        Debug.Log(Speed*Time.deltaTime);
-        if (isMoving && targetToMove != null)
-            transform.position = Vector3.MoveTowards(transform.position, targetToMove.position, Speed * Time.deltaTime);
-        if (targetToMove != null && HasReachedTarget(transform.position, targetToMove.position))
-            StopMoving();
+        DiceCtrl.Notify();
     }
 
     private bool HasReachedTarget(Vector3 actualPosition, Vector3 targetPosition)
     {
         if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy
+            && Math.Abs(actualPosition.y - targetPosition.y) < MovementAccuracy
             && Math.Abs(actualPosition.z - targetPosition.z) < MovementAccuracy)
             return true;
         return false;
