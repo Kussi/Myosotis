@@ -89,7 +89,9 @@ public class Dice : MonoBehaviour
         Vector3 position = target.position;
         Quaternion rotation = target.rotation;
         throwingPosition = new Vector3(position.x, ThrowingHeight, position.z);
-        throwingRotation = Quaternion.Euler(rotation.x + 10, rotation.y + 10, rotation.z + 10);
+        throwingRotation = Quaternion.Euler(rotation.x + UnityEngine.Random.Range(0,30), rotation.y 
+            + UnityEngine.Random.Range(0, 30), rotation.z 
+            + UnityEngine.Random.Range(0, 30));
     }
 
 
