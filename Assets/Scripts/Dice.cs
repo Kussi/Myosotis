@@ -37,25 +37,16 @@ public class Dice : MonoBehaviour
     void Update()
     {
         PassingOn();
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    void OnTouchDown(Vector3 hitPoint)
+    {
+        if (actualState.Equals(State.ReadyToThrow) && isActive)
+            ThrowDice();
+        else if (actualState.Equals(State.ReadyToPassOn) && isActive)
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.name == gameObject.name)
-                {
-                    if (actualState.Equals(State.ReadyToThrow) && isActive)
-                        ThrowDice();
-                    else if (actualState.Equals(State.ReadyToPassOn) && isActive)
-                    {
-                        actualState = State.PassingOn;
-                        GetComponent<Rigidbody>().isKinematic = true;
-                    }
-                }
-            }
+            actualState = State.PassingOn;
+            GetComponent<Rigidbody>().isKinematic = true;
         }
     }
 

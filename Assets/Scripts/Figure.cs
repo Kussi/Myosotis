@@ -33,25 +33,16 @@ public class Figure : MonoBehaviour
     {
         SetOnGround();
         Walk();
+    }
 
-        // Getting Touch/Mouse Inputs if the game figure is activated
-        if (isActive)
+    void OnTouchDown(Vector3 hitPoint)
+    {
+        if(isActive)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.collider.name == gameObject.name)
-                    {
-                        isMainTurnFigure = true;
-                        FigureCtrl.Notify(this);
-                    }
-                }
-            }
+            isMainTurnFigure = true;
+            FigureCtrl.Notify(this);
         }
+        Debug.LogWarning("figure touched");
     }
 
     /// <summary>

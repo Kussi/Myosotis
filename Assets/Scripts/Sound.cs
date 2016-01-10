@@ -26,6 +26,6 @@ public class Sound : MonoBehaviour
 
     public void PlayDice()
     {
-        source.PlayOneShot(dice, 0.7F);
+        source.PlayOneShot(dice, 0.4F);
     }
 }
