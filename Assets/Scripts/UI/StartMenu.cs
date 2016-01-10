@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +8,7 @@ public class StartMenu : MonoBehaviour
     public FigureButton[] figureButtons;
     public UnityEngine.UI.Text nofPlayersDisplay;
     public Color32 alertColor;
+    public GameObject SplashScreen;
 
     private static readonly string DropdownGameObject = "PlayerSelection";
     private static readonly string PlayerSelectionSuffix = "Players";
@@ -47,8 +47,8 @@ public class StartMenu : MonoBehaviour
         if (tooFewPlayers) nofPlayersDisplay.color = alertColor;
         else
         {
+            ShowSplashScreen();
             Initializer.SetupGame(playerName, GetSelectedPlayers(), nofFigures);
-            Hide();
         }
     }
 
@@ -59,6 +59,11 @@ public class StartMenu : MonoBehaviour
             if (button.IsSelected)
                 players.Add(button.color, button.GetSelectedChair());
         return players;
+    }
+
+    private void ShowSplashScreen()
+    {
+        SplashScreen.SetActive(true);
     }
 
     /// <summary>

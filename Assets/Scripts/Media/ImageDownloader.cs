@@ -29,6 +29,7 @@ public class ImageDownloader : MonoBehaviour {
                 textures.Add(texture);
             }
             ImageCtrl.SetAvailable(textures);
-        }  
+        }
+        else PersonalizationCtrl.Notify(typeof(ImageCtrl)); 
     }
 }

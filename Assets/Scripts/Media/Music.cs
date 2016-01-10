@@ -126,7 +126,8 @@ public class Music : MonoBehaviour
         clips.Add(clip);
 
         if (!isPlaying)
-            Play(); 
+            Play();
+        PersonalizationCtrl.Notify(typeof(MusicCtrl));
     }
 
     public string GetTrackName()

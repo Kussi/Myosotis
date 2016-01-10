@@ -11,7 +11,6 @@ public static class Initializer
         FigureCtrl.InitializeFigures(PlayerCtrl.players, nofFigures);
         SunCtrl.InitializeSun();
         PersonalizationCtrl.InitializePersonalization(playerName);
-
         FigureCtrl.PlaceFiguresOnStartPosition();
 
         GameCtrl.StartGame();

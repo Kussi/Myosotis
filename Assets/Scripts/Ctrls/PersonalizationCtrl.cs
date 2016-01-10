@@ -5,6 +5,8 @@ public static class PersonalizationCtrl {
 
     private static string playerName;
 
+    private static ArrayList states = new ArrayList() { typeof(MusicCtrl), typeof(ImageCtrl) };    
+
     public static string PlayerName
     {
         get { return playerName; }
@@ -20,8 +22,11 @@ public static class PersonalizationCtrl {
         SoundCtrl.InitializeSounds();
     }
 
-    public static void Notify()
+    public static void Notify(System.Type type)
     {
-        FieldCtrl.SetEventTriggers();
+        if (type == typeof(ImageCtrl))
+            FieldCtrl.SetEventTriggers();
+        if (states.Contains(type)) states.Remove(type);
+        if(states.Count == 0) GameObject.Find("StartMenu").GetComponent<StartMenu>().Hide();
     }
 }

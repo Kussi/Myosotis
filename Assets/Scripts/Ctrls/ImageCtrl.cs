@@ -49,7 +49,7 @@ public class ImageCtrl
     {
         ImageCtrl.textures = textures;
         isAvailable = true;
-        PersonalizationCtrl.Notify();
+        PersonalizationCtrl.Notify(typeof(ImageCtrl));
     }
 
     public static void SetImage(Player player, Texture newImage)

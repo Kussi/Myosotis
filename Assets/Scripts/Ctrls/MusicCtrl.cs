@@ -27,6 +27,7 @@ public class MusicCtrl
             music.SetupMusic(musicFiles);
             isAvailable = true;
         }
+        if (!isAvailable) PersonalizationCtrl.Notify(typeof(MusicCtrl));
     }
 
     public static Sprite GetPlayPauseIcon()
