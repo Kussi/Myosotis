@@ -7,6 +7,7 @@ public static class GameCtrl
     private static readonly string EndMenu = "EndMenu";
 
     private static bool gameIsRunning = false;
+    private static bool playerFinished = false;
 
     private static int playerOnTurn;
     private static ArrayList activePlayers;
@@ -23,7 +24,7 @@ public static class GameCtrl
     {
         get
         {
-            if (GameIsRunning) return (Player)PlayerCtrl.players[playerOnTurn];
+            if (GameIsRunning) return (Player)activePlayers[playerOnTurn];
             throw new InvalidGameStateException();
         }
     }
@@ -111,11 +112,18 @@ public static class GameCtrl
             player.RefreshState();
         if (playerOnTurn >= 0)
             if(PlayerOnTurn.State.GetType().Equals(typeof(PlayerStateStateAllInGoal)))
+            {
                 FinishPlayer(PlayerOnTurn);
+                playerFinished = true;
+            }
+                
         if(gameIsRunning)
         {
-            if (actualDiceValue != 6)
+            if (actualDiceValue != 6 || playerFinished)
+            {
                 ChangePlayerOnTurn();
+                playerFinished = false;
+            }
 
             ++turnCounter;
             Debug.Log("Turn " + turnCounter + ": " + PlayerOnTurn.Color);

@@ -133,7 +133,6 @@ public abstract class GameFieldBase : MonoBehaviour
 
     protected virtual void MoveFigureObject(FieldPosition position, Figure figure)
     {
-        //figure.transform.position = position.transform.position;
         figure.StartWalking(position.transform);
     }
 }

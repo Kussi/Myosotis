@@ -27,10 +27,7 @@ public static class TurnCtrl
         if (FieldCtrl.IsHomeField(startFieldIndex, figure))
         {
             if (!ReleaseFigureFromHome(figure))
-            {
-                // figure cannot be released because the HomeBench
-                // is not accessible
-            }
+                GameCtrl.Notify();
         }
         else // figure is not at home
         {
@@ -43,21 +40,12 @@ public static class TurnCtrl
         }
     }
 
-    private static Turn CreateTurn(Figure figure, int diceValue)
-    {
-        return new Turn(figure, figure.Field, diceValue);
-    }
-
-    private static void ExecuteTurn(Turn turn)
-    {
-        
-    }
-
     public static void MakeNextStep()
     {
         if(turnIsRunning && ++currentStep <= lastStep)
         {
-            MakeOneStep(currentFigure, currentStep == lastStep);
+            if(!MakeOneStep(currentFigure, currentStep == lastStep))
+                GameCtrl.Notify();
         }
         else
         {
