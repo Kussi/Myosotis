@@ -22,6 +22,7 @@ public static class TurnCtrl
     public static void Execute(Figure figure, int steps)
     {
         int startFieldIndex = figure.Field;
+        currentFigure = figure;
 
         // figure is at home and may be released
         if (FieldCtrl.IsHomeField(startFieldIndex, figure))
@@ -33,7 +34,6 @@ public static class TurnCtrl
         {
             turnIsRunning = true;
             currentStep = 0;
-            currentFigure = figure;
             lastStep = steps;
             MakeNextStep();
 
@@ -49,6 +49,8 @@ public static class TurnCtrl
         }
         else
         {
+            if(FieldCtrl.IsBarrier(currentFigure.Field))
+                MediaEventHandler.Notify(currentFigure, MediaEventHandler.GameEvent.FigureRaisesBarrier, true);
             turnIsRunning = false;
             GameCtrl.Notify();
         }

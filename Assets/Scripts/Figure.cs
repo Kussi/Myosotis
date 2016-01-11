@@ -65,9 +65,6 @@ public class Figure : MonoBehaviour
     {
         isWalking = false;
         targetToWalk = null;
-        if (isMainTurnFigure && FieldCtrl.IsRegularField(this.Field) && FieldCtrl.IsBarrier(this.Field))
-            MediaEventHandler.Notify(this, MediaEventHandler.GameEvent.FigureRaisesBarrier, true);
-
         isMainTurnFigure = false;
         FigureCtrl.FigureStopsWalking(this);
     }
