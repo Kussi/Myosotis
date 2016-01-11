@@ -11,14 +11,22 @@ public class SettingsMenu : MonoBehaviour
     private static readonly string MusicTitle = "MusicTitle";
     private static readonly string StartMenu = "StartMenu";
 
+    private bool isVisible = false;
+
     void Awake()
     {
         Hide();
     }
 
+    void Update()
+    {
+        if (isVisible && TouchInputCtrl.isActive()) TouchInputCtrl.Deactivate();
+        else if (!isVisible && !TouchInputCtrl.isActive()) TouchInputCtrl.Activate();
+    }
+
     public void Show()
     {
-
+        isVisible = true;
         GameObject[] musicSettingsObjects = FindGameObjectsOnLayer(MusicSettingsLayer);
         GameObject[] noMusicSettingsObjects = FindGameObjectsOnLayer(NoMusicSettingsLayer);
 
@@ -38,6 +46,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void Hide()
     {
+        isVisible = false;
         SetInteractable(gameObject, false);
     }
 

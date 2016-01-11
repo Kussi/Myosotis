@@ -21,6 +21,8 @@ public class StartMenu : MonoBehaviour
 
     private static int playerIndex;
     private static string playerName;
+    private static bool isVisible = true;
+
 
     void Awake()
     {
@@ -30,6 +32,9 @@ public class StartMenu : MonoBehaviour
 
     void Update()
     {
+        if (isVisible && TouchInputCtrl.isActive()) TouchInputCtrl.Deactivate();
+        else if (!isVisible && !TouchInputCtrl.isActive()) TouchInputCtrl.Activate();
+
         int number = 0;
         foreach (PlayerButton button in playerButtons)
             if (button.IsSelected) number++;
@@ -123,6 +128,7 @@ public class StartMenu : MonoBehaviour
 
     public void Show()
     {
+        isVisible = true;
         HideSplashScreen();
         gameObject.GetComponent<CanvasGroup>().alpha = 1f;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
@@ -130,6 +136,7 @@ public class StartMenu : MonoBehaviour
 
     public void Hide()
     {
+        isVisible = false;
         gameObject.GetComponent<CanvasGroup>().alpha = 0f;
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
