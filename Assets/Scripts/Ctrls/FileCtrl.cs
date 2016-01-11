@@ -37,11 +37,17 @@ public static class FileCtrl {
         ArrayList playerNames = new ArrayList();
         string playerdataDir = GetPlayerdataDir();
         if(playerdataDir != null)
-            dirs = Directory.GetDirectories(playerdataDir); 
-
-        foreach (String dir in dirs)
-            playerNames.Add(new DirectoryInfo(dir).Name);
-        return playerNames;
+        {
+            dirs = Directory.GetDirectories(playerdataDir);
+            if(dirs.Length > 0)
+            {
+                foreach (String dir in dirs)
+                    playerNames.Add(new DirectoryInfo(dir).Name);
+                return playerNames;
+            }
+                
+        }
+        return new ArrayList();  
     }
 
     public static FileInfo[] GetCheckedImageFileInfos(string playerName, ArrayList validExtensions)

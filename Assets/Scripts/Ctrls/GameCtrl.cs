@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class GameCtrl
 {
+    private static readonly string EndMenu = "EndMenu";
+
     private static bool gameIsRunning = false;
 
     private static int playerOnTurn;
@@ -37,6 +39,7 @@ public static class GameCtrl
 
     public static void StartGame()
     {
+        Reset();
         gameIsRunning = true;
         turnCounter = 0;
         activePlayers = new ArrayList(PlayerCtrl.players);
@@ -123,6 +126,6 @@ public static class GameCtrl
     private static void FinishGame()
     {
         gameIsRunning = false;
-        Debug.Log("Game Finished");
+        GameObject.Find(EndMenu).GetComponent<EndMenu>().Show();
     }
 }

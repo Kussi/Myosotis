@@ -6,12 +6,12 @@ public class GoalField : GameFieldBase
     private readonly int figureCapacity = 16;
     public Vector3[] positions = new Vector3[]
     {
-        new Vector3(-1.9f, 2.1f, 0.9f), new Vector3(-1.4f, 2.1f, 0.3f), new Vector3(-1.9f, 2.1f, -0.3f),
-        new Vector3(-1.4f, 2.1f, -0.3f), new Vector3(-0.9f, 2.1f, -0.9f), new Vector3(-0.3f, 2.1f, -1.4f),
-        new Vector3(0.3f, 2.1f, -2.9f), new Vector3(0.9f, 2.1f, -0.9f), new Vector3(1.9f, 2.1f, -0.9f),
-        new Vector3(1.4f, 2.1f, -0.3f), new Vector3(1.9f, 2.1f, 0.3f), new Vector3(1.4f, 2.1f, 0.9f),
-        new Vector3(0.9f, 2.1f, 1.9f), new Vector3(0.3f, 2.1f, 1.4f), new Vector3(-0.3f, 2.1f, 1.9f),
-        new Vector3(-0.9f, 2.1f, 1.4f)
+        new Vector3(-1.9f, 0, 0.9f), new Vector3(-1.4f, 0, 0.3f), new Vector3(-1.9f, 0, -0.3f),
+        new Vector3(-1.4f, 0, -0.9f), new Vector3(-0.9f, 0, -1.9f), new Vector3(-0.3f, 0, -1.4f),
+        new Vector3(0.3f, 0, -1.9f), new Vector3(0.9f, 0, -1.4f), new Vector3(1.9f, 0, -0.9f),
+        new Vector3(1.4f, 0, -0.3f), new Vector3(1.9f, 0, 0.3f), new Vector3(1.4f, 0, 0.9f),
+        new Vector3(0.9f, 0, 1.9f), new Vector3(0.3f, 0, 1.4f), new Vector3(-0.3f, 0, 1.9f),
+        new Vector3(-0.9f, 0, 1.4f)
     };
     private FieldPosition[] redPositions = new FieldPosition[4];
     private FieldPosition[] yellowPositions = new FieldPosition[4];

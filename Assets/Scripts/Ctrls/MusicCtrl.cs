@@ -19,7 +19,8 @@ public class MusicCtrl
     public static void Reset()
     {
         isAvailable = false;
-        music.Reset();
+        if(music != null)
+            music.Reset();
     }
 
     public static void InitializeMusic(string playerName)

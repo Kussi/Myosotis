@@ -40,7 +40,7 @@ public class RegularField : GameFieldBase
     {
         get
         {
-            if (!isBend)
+            if (isBend)
                 return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied;
             else
                 return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied 

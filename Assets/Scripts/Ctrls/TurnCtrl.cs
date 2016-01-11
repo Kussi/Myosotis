@@ -68,8 +68,9 @@ public static class TurnCtrl
 
     private static bool ReleaseFigureFromHome(Figure figure)
     {
-        MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureReleasedFromHome, true);
         bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
+        if(couldBePlaced)
+            MediaEventHandler.Notify(figure, MediaEventHandler.GameEvent.FigureReleasedFromHome, true);
         return couldBePlaced;
     }
 

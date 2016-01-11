@@ -21,7 +21,7 @@ public class Sound : MonoBehaviour
 
     public void PlayStep()
     {
-        source.PlayOneShot(step, 0.7F);
+        source.PlayOneShot(step, 1);
     }
 
     public void PlayDice()
