@@ -102,9 +102,8 @@ public static class TextCtrl
             StringBuilder text = new StringBuilder();
             try
             {   // Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader(textFile.FullName))
+                using (StreamReader sr = new StreamReader(textFile.FullName, System.Text.Encoding.Default))
                 {
-                    // Read the stream to a string, and write the string to the console.
                     text.Append(sr.ReadToEnd());
                 }
             }
