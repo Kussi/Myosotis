@@ -1,5 +1,8 @@
 ﻿using System;
 
+/// <summary>
+/// Describes all misbehaviour in the game
+/// </summary>
 public class InvalidGameStateException : Exception
 {
 

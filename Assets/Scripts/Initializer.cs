@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
+/// <summary>
+/// Responsible for the game initialization and destruction
+/// </summary>
 public static class Initializer
 {
+    /// <summary>
+    /// Sets up the game. Summarizes all Initialize Method calls
+    /// </summary>
+    /// <param name="playerName"></param>
+    /// <param name="playerColors"></param>
+    /// <param name="nofFigures"></param>
     public static void SetupGame(string playerName, Dictionary<string, int> playerColors, int nofFigures)
     {
         FieldCtrl.InitializeFields();
@@ -15,6 +23,9 @@ public static class Initializer
         GameCtrl.StartGame();
     }
 
+    /// <summary>
+    /// Destroys the game. Summarizes all Destroy and Reset Method calls
+    /// </summary>
     public static void DestroyGame()
     {
         DiceCtrl.DestroyDice();
@@ -25,5 +36,5 @@ public static class Initializer
         TurnCtrl.Reset();
 
         PersonalizationCtrl.Reset();
-    } 
+    }
 }

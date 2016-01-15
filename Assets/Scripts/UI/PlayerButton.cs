@@ -2,9 +2,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Representation of the player on the startmenu
+/// </summary>
 public class PlayerButton : MonoBehaviour
 {
-
     public Button buttonObject;
     public ChairButton[] playerChairs;
     public Color32 selectedColor;
@@ -21,13 +23,19 @@ public class PlayerButton : MonoBehaviour
         get { return isSelected; }
     }
 
-    // Use this for initialization
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
     void Awake()
     {
         ChangePlayerButtonColors(isSelected);
         ShowChairSelection(isSelected);
     }
 
+    /// <summary>
+    /// sets the button selected or not and therefore displays the chairpositions or not
+    /// </summary>
+    /// <param name="value"></param>
     public void SelectPlayer()
     {
         isSelected = !isSelected;
@@ -36,6 +44,10 @@ public class PlayerButton : MonoBehaviour
         ShowChairSelection(isSelected);
     }
 
+    /// <summary>
+    /// selects one of the chairbuttons
+    /// </summary>
+    /// <param name="number"></param>
     public void SelectChair(int number)
     {
         for (int i = 0; i < playerChairs.Length; ++i)
@@ -47,6 +59,10 @@ public class PlayerButton : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// makes the chairbuttons visible or not
+    /// </summary>
+    /// <param name="isSelected"></param>
     private void ShowChairSelection(bool isSelected)
     {
         for (int i = 0; i < playerChairs.Length; ++i)
@@ -61,6 +77,10 @@ public class PlayerButton : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// changes the color of the button in case of selection/deselction
+    /// </summary>
+    /// <param name="isSelected"></param>
     private void ChangePlayerButtonColors(bool isSelected)
     {
         ColorBlock result = buttonObject.colors;
@@ -71,12 +91,20 @@ public class PlayerButton : MonoBehaviour
         buttonObject.colors = result;
     }
 
+    /// <summary>
+    /// changes the icon of the button in case of selection/deselction
+    /// </summary>
+    /// <param name="isSelected"></param>
     private void ChangePlayerIcon(bool isSelected)
     {
         if (isSelected) icon.sprite = selectedIcon;
         else icon.sprite = deselectedIcon;
     }
 
+    /// <summary>
+    /// Checks which chairbutton is selected and returns it
+    /// </summary>
+    /// <returns></returns>
     public int GetSelectedChair()
     {
         int result;

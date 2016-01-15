@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// utility class. Helps to accept multitouch input
+/// </summary>
 public class TouchInput : MonoBehaviour
 {
     public bool isActive;
@@ -21,7 +24,13 @@ public class TouchInput : MonoBehaviour
         camera = Camera.main;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Checks single and/or multiple inputs and sends the events to the receiver. Due to the non existing property
+    /// Input.touchCount on regular computers (with no touch input) the second part of the method has to be
+    /// commented out for regular computer builds, as well as the if statement (#if UNITY_EDITOR // #endif). 
+    /// Otherwise the touchinput won't work. For touchtable builds the if statement has to work and the second part
+    /// of the code must be working too.
+    /// </summary>
     void Update()
     {
         if (isActive)
@@ -115,6 +124,10 @@ public class TouchInput : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// activates the touchinput. Is deactivated when menus are visible.
+    /// </summary>
+    /// <param name="value"></param>
     public void SetActive(bool value)
     {
         isActive = value;

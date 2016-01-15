@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 
+/// <summary>
+/// Representation of the figure objects
+/// </summary>
 public class Figure : MonoBehaviour
 {
     public bool drawRays = true;
@@ -35,9 +37,14 @@ public class Figure : MonoBehaviour
         Walk();
     }
 
+    /// <summary>
+    /// performs after a touch and checks whether the figure is activated or not.
+    /// Notifies the FigureCtrl if it is active
+    /// </summary>
+    /// <param name="hitPoint"></param>
     void OnTouchDown(Vector3 hitPoint)
     {
-        if(isActive)
+        if (isActive)
         {
             isMainTurnFigure = true;
             FigureCtrl.Notify(this);
@@ -53,6 +60,10 @@ public class Figure : MonoBehaviour
         this.isActive = isActive;
     }
 
+    /// <summary>
+    /// starts the moving process of the figure
+    /// </summary>
+    /// <param name="target"></param>
     public void StartWalking(Transform target)
     {
         FigureCtrl.FigureStartsWalking(this);
@@ -60,7 +71,9 @@ public class Figure : MonoBehaviour
         isWalking = true;
         soundPlayed = false;
     }
-
+    /// <summary>
+    /// stops the moving process of the figure
+    /// </summary>
     private void StopWalking()
     {
         isWalking = false;
@@ -69,6 +82,9 @@ public class Figure : MonoBehaviour
         FigureCtrl.FigureStopsWalking(this);
     }
 
+    /// <summary>
+    /// performes the moving process of the figure
+    /// </summary>
     private void Walk()
     {
         if (isWalking)
@@ -77,6 +93,12 @@ public class Figure : MonoBehaviour
             StopWalking();
     }
 
+    /// <summary>
+    /// checks whether the figure has reached its target or not, when it's moved from one to another players position
+    /// </summary>
+    /// <param name="actualPosition"></param>
+    /// <param name="targetPosition"></param>
+    /// <returns></returns>
     private bool HasReachedTarget(Vector3 actualPosition, Vector3 targetPosition)
     {
         if (soundPlayed == false && Math.Abs(actualPosition.x - targetPosition.x) < SoundAccuracy
@@ -85,9 +107,9 @@ public class Figure : MonoBehaviour
             MediaEventHandler.Notify(MediaEventHandler.SoundEvent.FigureMakesStep);
             soundPlayed = true;
         }
-            
 
-        if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy 
+
+        if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy
             && Math.Abs(actualPosition.z - targetPosition.z) < MovementAccuracy)
             return true;
 
@@ -96,7 +118,7 @@ public class Figure : MonoBehaviour
     }
 
     /// <summary>
-    /// places the figure on top of a surface
+    /// places the figure on top of a surface (the ground or Gamefields)
     /// </summary>
     public void SetOnGround()
     {

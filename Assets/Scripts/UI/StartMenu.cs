@@ -2,6 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Representation of the startmenu, which appears at the very beginning of the
+/// game
+/// </summary>
 public class StartMenu : MonoBehaviour
 {
     public PlayerButton[] playerButtons;
@@ -22,7 +26,6 @@ public class StartMenu : MonoBehaviour
     private static int playerIndex;
     private static string playerName;
     private static bool isVisible = true;
-
 
     void Awake()
     {
@@ -57,6 +60,10 @@ public class StartMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// returns all players that are selected and will join the game
+    /// </summary>
+    /// <returns></returns>
     private Dictionary<string, int> GetSelectedPlayers()
     {
         Dictionary<string, int> players = new Dictionary<string, int>();
@@ -66,11 +73,17 @@ public class StartMenu : MonoBehaviour
         return players;
     }
 
+    /// <summary>
+    /// hides the splashscreen
+    /// </summary>
     private void HideSplashScreen()
     {
         SplashScreen.SetActive(false);
     }
 
+    /// <summary>
+    /// shows the splashscreen
+    /// </summary>
     private void ShowSplashScreen()
     {
         SplashScreen.SetActive(true);
@@ -86,6 +99,11 @@ public class StartMenu : MonoBehaviour
         playerName = GetSelectedPlayerName();
     }
 
+    /// <summary>
+    /// Gets the name of the selected player in the dropdown (the player whose media will be
+    /// loaded)
+    /// </summary>
+    /// <returns></returns>
     private string GetSelectedPlayerName()
     {
         Dropdown dropdown = GameObject.Find(DropdownGameObject).GetComponent<Dropdown>();
@@ -116,16 +134,23 @@ public class StartMenu : MonoBehaviour
         GameObject.Find(DropdownGameObject + "/Label").GetComponent<UnityEngine.UI.Text>().text = GetSelectedPlayerName();
     }
 
+    /// <summary>
+    /// selects one of the figure buttons and deselects the others
+    /// </summary>
+    /// <param name="value"></param>
     public void SelectFigures(int value)
     {
         for (int i = 0; i < figureButtons.Length; ++i)
         {
             if (i + 1 == value) figureButtons[i].SetSelected(true);
-            else figureButtons[i].SetSelected(false); 
+            else figureButtons[i].SetSelected(false);
         }
         nofFigures = value;
     }
 
+    /// <summary>
+    /// displays the menu
+    /// </summary>
     public void Show()
     {
         isVisible = true;
@@ -134,6 +159,9 @@ public class StartMenu : MonoBehaviour
         gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
+    /// <summary>
+    /// hides the menu
+    /// </summary>
     public void Hide()
     {
         isVisible = false;

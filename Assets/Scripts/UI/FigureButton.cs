@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class FigureButton : MonoBehaviour {
-
+/// <summary>
+/// Representation of the figureselectionbuttons on the startmenu
+/// </summary>
+public class FigureButton : MonoBehaviour
+{
     public Sprite selectedIcon;
     public Sprite deselectedIcon;
 
@@ -13,6 +15,11 @@ public class FigureButton : MonoBehaviour {
         get { return isSelected; }
     }
 
+    /// <summary>
+    /// turns colored if its selected and gray if not. Only one button can be colored
+    /// at the time
+    /// </summary>
+    /// <param name="value"></param>
     public void SetSelected(bool value)
     {
         isSelected = value;

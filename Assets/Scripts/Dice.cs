@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Representation of the Dice Object
+/// </summary>
 public class Dice : MonoBehaviour
 {
     private enum State { ReadyToThrow, Throwing, ReadyToPassOn, PassingOn }
@@ -39,6 +41,10 @@ public class Dice : MonoBehaviour
         PassingOn();
     }
 
+    /// <summary>
+    /// Checks whether the dice can be thrown or not
+    /// </summary>
+    /// <param name="hitPoint">Position of the touch (is not used, but implemented due to the TouchInput.cs)</param>
     void OnTouchDown(Vector3 hitPoint)
     {
         if (actualState.Equals(State.ReadyToThrow) && isActive)
@@ -50,6 +56,10 @@ public class Dice : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks all Collisions between dice and floor/ground after it has been thrown
+    /// </summary>
+    /// <param name="col"></param>
     void OnCollisionEnter(Collision col)
     {
         MediaEventHandler.Notify(MediaEventHandler.SoundEvent.DiceFallsOnGround);
@@ -71,11 +81,18 @@ public class Dice : MonoBehaviour
         FinishThrow();
     }
 
+    /// <summary>
+    /// activates the dice
+    /// </summary>
     public void ActivateDice()
     {
         isActive = true;
     }
 
+    /// <summary>
+    /// starts the movement of the dice to the next player
+    /// </summary>
+    /// <param name="target">Transform of the next dice position</param>
     public void StartPassingOn(Transform target)
     {
         Vector3 position = target.position;
@@ -86,7 +103,9 @@ public class Dice : MonoBehaviour
             + UnityEngine.Random.Range(0, 30));
     }
 
-
+    /// <summary>
+    /// moves the dice to the next players position
+    /// </summary>
     public void PassingOn()
     {
         if (actualState.Equals(State.PassingOn) && isActive)
@@ -98,11 +117,20 @@ public class Dice : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// finishes the throw
+    /// </summary>
     public void FinishThrow()
     {
         DiceCtrl.Notify();
     }
 
+    /// <summary>
+    /// checks whether the dice has reached its target or not, when it's moved from one to another players position
+    /// </summary>
+    /// <param name="actualPosition"></param>
+    /// <param name="targetPosition"></param>
+    /// <returns></returns>
     private bool HasReachedTarget(Vector3 actualPosition, Vector3 targetPosition)
     {
         if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy

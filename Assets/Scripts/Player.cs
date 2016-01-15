@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-
+﻿/// <summary>
+/// Representation of a Player
+/// </summary>
 public class Player
 {
     private IPlayerState state;

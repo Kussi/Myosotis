@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Represents possible player chair positions on the startmenu
+/// </summary>
 public class ChairButton : MonoBehaviour {
 
     public Button buttonObject;
@@ -16,6 +19,11 @@ public class ChairButton : MonoBehaviour {
         get { return isSelected; }
     }
 
+    /// <summary>
+    /// sets a button selected and deselects the other one of the same player and the
+    /// other way round
+    /// </summary>
+    /// <param name="value"></param>
     public void SetSelected(bool value)
     {
         isSelected = value;
@@ -26,6 +34,10 @@ public class ChairButton : MonoBehaviour {
             gameObject.GetComponent<UnityEngine.UI.Image>().sprite = deselectedIcon;
     }
 
+    /// <summary>
+    /// makes the chairbuttons visible or hides them
+    /// </summary>
+    /// <param name="isActive"></param>
     public void Show(bool isActive)
     {
         ColorBlock result = buttonObject.colors;
