@@ -1,7 +1,5 @@
 ﻿public static class TurnCtrl
 {
-    private static readonly int MaxNofTurns = 5;
-
     private static bool hasToGoBackwards = false;
     private static bool turnIsRunning = false;
     private static Figure currentFigure;

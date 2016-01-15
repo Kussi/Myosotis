@@ -101,6 +101,7 @@ public class Figure : MonoBehaviour
     /// <returns></returns>
     private bool HasReachedTarget(Vector3 actualPosition, Vector3 targetPosition)
     {
+        // has to be catched earlier that the timing of the sound matches the actual step
         if (soundPlayed == false && Math.Abs(actualPosition.x - targetPosition.x) < SoundAccuracy
             && Math.Abs(actualPosition.z - targetPosition.z) < SoundAccuracy)
         {
@@ -108,11 +109,11 @@ public class Figure : MonoBehaviour
             soundPlayed = true;
         }
 
-
+        // the y-coordinate (height) does not have to be checked, because the figures are placed
+        // on the ground anyway by the method SetOnGround
         if (Math.Abs(actualPosition.x - targetPosition.x) < MovementAccuracy
             && Math.Abs(actualPosition.z - targetPosition.z) < MovementAccuracy)
             return true;
-
 
         return false;
     }
