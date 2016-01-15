@@ -218,8 +218,8 @@ public static class FieldCtrl
         int newFieldIndex = GetNextRegularFieldIndex(figure.Field);
         if (!IsRegularField(newFieldIndex)) throw new InvalidGameStateException();
         if (IsBarrier(newFieldIndex)) throw new InvalidGameStateException();
-        MoveFigureRegular(figure, newFieldIndex);
         Figure figureToSendHome = GetFigureToSendHome((RegularField)fields[newFieldIndex], figure);
+        MoveFigureRegular(figure, newFieldIndex);
         return figureToSendHome;
     }
 

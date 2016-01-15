@@ -12,15 +12,13 @@ public class Figure : MonoBehaviour
     private readonly float GameFigueScale = 0.6F;
     private readonly float MovementAccuracy = 0.01f;
     private readonly float SoundAccuracy = 0.1f;
-    private readonly int Speed = 5;
+    private readonly int Speed = 30;
 
     private int field;
     private bool isActive = false;
     private bool isWalking = false;
     private Transform targetToWalk;
     private bool soundPlayed = false;
-
-    private bool isMainTurnFigure = false;
 
     public int Field
     {
@@ -44,11 +42,7 @@ public class Figure : MonoBehaviour
     /// <param name="hitPoint"></param>
     void OnTouchDown(Vector3 hitPoint)
     {
-        if (isActive)
-        {
-            isMainTurnFigure = true;
-            FigureCtrl.Notify(this);
-        }
+        if (isActive) FigureCtrl.Notify(this);
     }
 
     /// <summary>
@@ -78,7 +72,6 @@ public class Figure : MonoBehaviour
     {
         isWalking = false;
         targetToWalk = null;
-        isMainTurnFigure = false;
         FigureCtrl.FigureStopsWalking(this);
     }
 

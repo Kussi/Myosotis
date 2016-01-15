@@ -135,6 +135,12 @@
         return true;
     }
 
+    /// <summary>
+    /// returns a figure that has to be sent home. Null if there is no figure
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="isLastStep"></param>
+    /// <returns></returns>
     private static Figure MakeOneRegularStep(Figure figure, bool isLastStep)
     {
         return FieldCtrl.PlaceFigureOnNextRegularField(figure, isLastStep);
