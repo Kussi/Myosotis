@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class FileCtrl
 {
-    private static readonly string PlayerdataDirectory = "Playerdaten";
+    private static readonly string PlayerdataDirectory = "Spielerdaten";
     private static readonly string[] MediaDirectories = new string[] { "Bilder", "Musik", "Texte" };
 
     private enum MediaType : int { Images = 0, Music = 1, Texts = 2 }
