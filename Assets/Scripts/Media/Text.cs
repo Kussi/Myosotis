@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Text : MonoBehaviour
 {
     private static string ParentObject = "TextSystem";
+    private static readonly int MinWidth = 400;
+    private static readonly int MaxWidth = 1000;
     private enum Quadrant { RightTop, LeftTop, LeftBottom, RightBottom, Default = 0 };
 
     public float minAspectRatio;
@@ -191,7 +193,11 @@ public class Text : MonoBehaviour
     private void ChangeMinWidth(int difference)
     {
         LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
-        layoutElement.minWidth += difference;
+        if (difference < 0 && layoutElement.minWidth + difference >= MinWidth
+            || difference > 0 && layoutElement.minWidth + difference <= MaxWidth)
+        {
+            layoutElement.minWidth += difference;
+        }            
     }
 
     /// <summary>

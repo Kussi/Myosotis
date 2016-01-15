@@ -22,7 +22,7 @@ public class Sound : MonoBehaviour
     /// </summary>
     public void PlayApplause()
     {
-        source.PlayOneShot(applause, 0.7F);
+        source.PlayOneShot(applause, 0.8f);
     }
 
     /// <summary>
@@ -38,6 +38,6 @@ public class Sound : MonoBehaviour
     /// </summary>
     public void PlayDice()
     {
-        source.PlayOneShot(dice, 0.4F);
+        source.PlayOneShot(dice, 1);
     }
 }

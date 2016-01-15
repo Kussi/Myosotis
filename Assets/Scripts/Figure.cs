@@ -12,7 +12,7 @@ public class Figure : MonoBehaviour
     private readonly float GameFigueScale = 0.6F;
     private readonly float MovementAccuracy = 0.01f;
     private readonly float SoundAccuracy = 0.1f;
-    private readonly int Speed = 30;
+    private readonly int Speed = 5;
 
     private int field;
     private bool isActive = false;

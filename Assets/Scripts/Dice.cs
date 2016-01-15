@@ -75,8 +75,7 @@ public class Dice : MonoBehaviour
         isActive = false;
         actualState = State.Throwing;
         GetComponent<Rigidbody>().isKinematic = false;
-        //value = UnityEngine.Random.Range(1, 7);
-        value = UnityEngine.Random.Range(5, 7);
+        value = UnityEngine.Random.Range(1, 7);
         Refresh();
         FinishThrow();
     }
