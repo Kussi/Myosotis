@@ -2,6 +2,9 @@
 using System.Collections;
 using System.IO;
 
+/// <summary>
+/// Responsible for downloading all imagefiles from the directory
+/// </summary>
 public class ImageDownloader : MonoBehaviour {
 
     public static Texture startImage;

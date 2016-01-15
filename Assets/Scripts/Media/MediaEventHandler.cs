@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using UnityEngine;
-
+﻿/// <summary>
+/// Responsible for receiving events and handing them over to the responsible class 
+/// </summary>
 public static class MediaEventHandler
 {
     public enum GameEvent
     {
         FigureReleasedFromHome, FigureHasToGoHome, FigureStepsOnSingleTriggeredField,
         FigureStepsOnMultiTriggeredField, FigureRaisesBarrier, FigureEnteresGoal, FigureEnteresStair,
-        
+
     };
 
     public enum SoundEvent
@@ -20,15 +20,15 @@ public static class MediaEventHandler
         Player player = FigureCtrl.GetPlayer(figure);
         switch (gameEvent)
         {
-            
+
             case GameEvent.FigureStepsOnSingleTriggeredField:
-                if(isLastStep) ImageCtrl.ChangeImageRandomly(player);
+                if (isLastStep) ImageCtrl.ChangeImageRandomly(player);
                 break;
             case GameEvent.FigureStepsOnMultiTriggeredField:
-                if(isLastStep) ImageCtrl.ChangeAllImages();
+                if (isLastStep) ImageCtrl.ChangeAllImages();
                 break;
             case GameEvent.FigureRaisesBarrier:
-                if(isLastStep) TextCtrl.ShowRandomText(figure);
+                if (isLastStep) TextCtrl.ShowRandomText(figure);
                 break;
             case GameEvent.FigureEnteresGoal:
                 if (isLastStep) SoundCtrl.PlayApplaus();
@@ -40,7 +40,7 @@ public static class MediaEventHandler
 
     public static void Notify(SoundEvent soundEvent)
     {
-        switch(soundEvent)
+        switch (soundEvent)
         {
             case SoundEvent.DiceFallsOnGround:
                 SoundCtrl.PlayDice();

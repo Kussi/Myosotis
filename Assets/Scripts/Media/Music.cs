@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
+/// <summary>
+/// Representation of the music element
+/// </summary>
 public class Music : MonoBehaviour
 {
     public Sprite pauseIcon;
@@ -18,6 +21,9 @@ public class Music : MonoBehaviour
 
     private int index = 0;
 
+    /// <summary>
+    /// resets the original setup
+    /// </summary>
     public void Reset()
     {
         GameObject.Destroy(source.gameObject.GetComponent<AudioSource>());
@@ -43,17 +49,27 @@ public class Music : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// starts loading the tracks
+    /// </summary>
+    /// <param name="musicFiles"></param>
     public void SetupMusic(FileInfo[] musicFiles)
     {
         LoadMusic(musicFiles);
     }
 
+    /// <summary>
+    /// plays or pauses the music
+    /// </summary>
     public void PlayPause()
     {
         if (!isPlaying) Play();
         else Pause();
     }
 
+    /// <summary>
+    /// pauses the sound
+    /// </summary>
     private void Pause()
     {
         AudioListener.pause = true;
@@ -61,6 +77,9 @@ public class Music : MonoBehaviour
         isPaused = true;
     }
 
+    /// <summary>
+    /// plays the sound
+    /// </summary>
     private void Play()
     {
         if (source.clip == null)
@@ -71,24 +90,39 @@ public class Music : MonoBehaviour
         isPlaying = true;
     }
 
+    /// <summary>
+    /// returns the suitable play or pause icon (when it's playing, tha pause
+    /// button has to be shown and the other way round)
+    /// </summary>
+    /// <returns></returns>
     public Sprite GetPlayPauseIcon()
     {
         if (isPaused) return playIcon;
         return pauseIcon;
     }
 
+    /// <summary>
+    /// skips the music backwards
+    /// </summary>
     public void Previous()
     {
         ChangeClip(ChangeDirection.Previous);
         Play();
     }
 
+    /// <summary>
+    /// skips the music forwards
+    /// </summary>
     public void Next()
     {
         ChangeClip(ChangeDirection.Next);
         Play();
     }
 
+    /// <summary>
+    /// changes the track
+    /// </summary>
+    /// <param name="direction"></param>
     private void ChangeClip(ChangeDirection direction)
     {
         if (direction == ChangeDirection.Next)
@@ -106,11 +140,19 @@ public class Music : MonoBehaviour
         else source.clip = clips[index];
     }
 
+    /// <summary>
+    /// changes the music volume
+    /// </summary>
+    /// <param name="volume"></param>
     public void ChangeVolume(float volume)
     {
         AudioListener.volume = volume;
     }
 
+    /// <summary>
+    /// loads all musicfiles
+    /// </summary>
+    /// <param name="musicFiles"></param>
     private void LoadMusic(FileInfo[] musicFiles)
     {
         clips.Clear();
@@ -121,6 +163,11 @@ public class Music : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// loads one musicfile from the directory
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
     private IEnumerator LoadFile(string path)
     {
         WWW www = new WWW(FileIndicator + path);
@@ -139,6 +186,10 @@ public class Music : MonoBehaviour
         PersonalizationCtrl.Notify(typeof(MusicCtrl));
     }
 
+    /// <summary>
+    /// returns the trackname
+    /// </summary>
+    /// <returns></returns>
     public string GetTrackName()
     {
         return clips[index].name;

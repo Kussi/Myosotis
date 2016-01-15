@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
+/// <summary>
+/// Representation of a textbubble element
+/// </summary>
 public class Text : MonoBehaviour
 {
     private static string ParentObject = "TextSystem";
@@ -19,14 +21,18 @@ public class Text : MonoBehaviour
     private float verticalOffset = 0;
     private float horizontalOffset = 0;
 
-    // Use this for initialization
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
     void Awake()
     {
         gameObject.transform.parent.gameObject.transform.SetParent(GameObject.Find(ParentObject).transform);
         gameObject.transform.parent.transform.localScale = new Vector3(1, 1, 1);
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// resizes the bubble according to its content
+    /// </summary>
     void Update()
     {
         float aspectRatio = GetMinWidth() / GetPreferredHeight();
@@ -76,11 +82,20 @@ public class Text : MonoBehaviour
         SetVisible();
     }
 
+    /// <summary>
+    /// assigns a figure to the bubble
+    /// </summary>
+    /// <param name="figure"></param>
     public void SetFigure(Figure figure)
     {
         this.figure = figure;
     }
 
+    /// <summary>
+    /// returns the position of a figue on the gameboard
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     private Vector2 GetViewportPosition(Figure figure)
     {
         Vector2 position = GetNormalizedPosition(figure);
@@ -90,6 +105,12 @@ public class Text : MonoBehaviour
         return position;
     }
 
+    /// <summary>
+    /// returns the normalized position of a figure (for the
+    /// placement on the canvas level)
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     private static Vector2 GetNormalizedPosition(Figure figure)
     {
         return Camera.main.WorldToViewportPoint(figure.transform.position);
@@ -121,6 +142,10 @@ public class Text : MonoBehaviour
         return LayoutUtility.GetPreferredHeight(gameObject.GetComponent<RectTransform>());
     }
 
+    /// <summary>
+    /// returns the width of the bubble as a sum of minwidth and paddings
+    /// </summary>
+    /// <returns></returns>
     private float GetWidth()
     {
         LayoutGroup group = gameObject.transform.parent.GetComponent<LayoutGroup>();
@@ -130,6 +155,10 @@ public class Text : MonoBehaviour
         return width;
     }
 
+    /// <summary>
+    /// returns the height of the bubble as a sum of preferredheight and paddings
+    /// </summary>
+    /// <returns></returns>
     private float GetHeight()
     {
         LayoutGroup group = gameObject.transform.parent.GetComponent<LayoutGroup>();
@@ -139,22 +168,35 @@ public class Text : MonoBehaviour
         return height;
     }
 
+    /// <summary>
+    /// increases the aspectRatio by increasing the width
+    /// </summary>
     private void IncreaseAspectRatio()
     {
         ChangeMinWidth(step);
     }
 
+    /// <summary>
+    /// decreases the aspectRatio by decreasing the width
+    /// </summary>
     private void DecreaseAspectRatio()
     {
         ChangeMinWidth(-step);
     }
 
+    /// <summary>
+    /// change the width of the bubble
+    /// </summary>
+    /// <param name="difference"></param>
     private void ChangeMinWidth(int difference)
     {
         LayoutElement layoutElement = gameObject.GetComponent<LayoutElement>();
         layoutElement.minWidth += difference;
     }
 
+    /// <summary>
+    /// display the bubble
+    /// </summary>
     private void SetVisible()
     {
         gameObject.GetComponent<UnityEngine.UI.Text>().color = new Color32(0, 0, 0, 255);
