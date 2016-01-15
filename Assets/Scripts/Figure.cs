@@ -20,6 +20,8 @@ public class Figure : MonoBehaviour
     private Transform targetToWalk;
     private bool soundPlayed = false;
 
+    public bool isMainFigure = false;
+
     public int Field
     {
         get { return field; }
@@ -42,7 +44,8 @@ public class Figure : MonoBehaviour
     /// <param name="hitPoint"></param>
     void OnTouchDown(Vector3 hitPoint)
     {
-        if (isActive) FigureCtrl.Notify(this);
+        if (isActive)
+            FigureCtrl.Notify(this);
     }
 
     /// <summary>
@@ -60,7 +63,6 @@ public class Figure : MonoBehaviour
     /// <param name="target"></param>
     public void StartWalking(Transform target)
     {
-        FigureCtrl.FigureStartsWalking(this);
         targetToWalk = target;
         isWalking = true;
         soundPlayed = false;
@@ -72,7 +74,8 @@ public class Figure : MonoBehaviour
     {
         isWalking = false;
         targetToWalk = null;
-        FigureCtrl.FigureStopsWalking(this);
+        if (isMainFigure)
+            TurnCtrl.MakeNextStep();
     }
 
     /// <summary>

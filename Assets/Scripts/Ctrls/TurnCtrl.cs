@@ -27,6 +27,7 @@
     {
         int startFieldIndex = figure.Field;
         currentFigure = figure;
+        figure.isMainFigure = true;
 
         // figure is at home and may be released
         if (FieldCtrl.IsHomeField(startFieldIndex, figure))
@@ -56,9 +57,11 @@
         }
         else
         {
-            if(FieldCtrl.IsBarrier(currentFigure.Field))
+            if(FieldCtrl.IsRegularField(currentFigure.Field) && FieldCtrl.IsBarrier(currentFigure.Field))
                 MediaEventHandler.Notify(currentFigure, MediaEventHandler.GameEvent.FigureRaisesBarrier, true);
             turnIsRunning = false;
+            currentFigure.isMainFigure = false;
+            currentFigure = null;   
             GameCtrl.Notify();
         }
     }

@@ -15,8 +15,6 @@ public static class FigureCtrl
 
     public static readonly int EmptyFieldEntry = -1;
 
-    private static bool figuresAreWalking = false;
-    private static ArrayList walkingFigures = new ArrayList();
     private static int nofFigures;
 
     private static Dictionary<Figure, Player> figures = new Dictionary<Figure, Player>();
@@ -24,11 +22,6 @@ public static class FigureCtrl
     public static int NofFigures
     {
         get { return nofFigures; }
-    }
-
-    public static bool FiguresAreWalking
-    {
-        get { return figuresAreWalking; }
     }
 
     /// <summary>
@@ -190,33 +183,6 @@ public static class FigureCtrl
             {
                 FieldCtrl.InitiallyPlaceFigure(figure);
             }
-        }
-    }
-
-    /// <summary>
-    /// Starts a figure to walk
-    /// </summary>
-    /// <param name="figure"></param>
-    public static void FigureStartsWalking(Figure figure)
-    {
-        if (walkingFigures.Count == 0)
-            figuresAreWalking = true;
-        walkingFigures.Add(figure);
-    }
-
-    /// <summary>
-    /// stops a figure to walk
-    /// </summary>
-    /// <param name="figure"></param>
-    public static void FigureStopsWalking(Figure figure)
-    {
-        if (!walkingFigures.Contains(figure))
-            throw new InvalidGameStateException();
-        walkingFigures.Remove(figure);
-        if (walkingFigures.Count == 0)
-        {
-            figuresAreWalking = false;
-            TurnCtrl.MakeNextStep();
         }
     }
 
