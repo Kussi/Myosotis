@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-public static class TurnCtrl
+﻿public static class TurnCtrl
 {
     private static readonly int MaxNofTurns = 5;
 
@@ -10,6 +8,9 @@ public static class TurnCtrl
     private static int currentStep;
     private static int lastStep;
 
+    /// <summary>
+    /// Resets the original setup
+    /// </summary>
     public static void Reset()
     {
         hasToGoBackwards = false;
@@ -19,6 +20,11 @@ public static class TurnCtrl
         lastStep = 0;
     }
 
+    /// <summary>
+    /// starts executing the actual turn
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="steps"></param>
     public static void Execute(Figure figure, int steps)
     {
         int startFieldIndex = figure.Field;
@@ -40,6 +46,9 @@ public static class TurnCtrl
         }
     }
 
+    /// <summary>
+    /// performs one step of the actual figure (if it has to go one more)
+    /// </summary>
     public static void MakeNextStep()
     {
         if(turnIsRunning && ++currentStep <= lastStep)
@@ -56,6 +65,11 @@ public static class TurnCtrl
         }
     }
 
+    /// <summary>
+    /// releases a figure from it homefield to its homebench
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     private static bool ReleaseFigureFromHome(Figure figure)
     {
         bool couldBePlaced = FieldCtrl.PlaceFigureOnHomeBench(figure);
@@ -64,6 +78,12 @@ public static class TurnCtrl
         return couldBePlaced;
     }
 
+    /// <summary>
+    /// performs one step and checks the different possibilities
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="isLastStep"></param>
+    /// <returns></returns>
     private static bool MakeOneStep(Figure figure, bool isLastStep)
     {
         int actualFieldIndex = figure.Field;

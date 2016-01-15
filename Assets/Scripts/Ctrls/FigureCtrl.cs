@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Responsible for the figure control
+/// </summary>
 public static class FigureCtrl
 {
     private static readonly string FigureParentalSuffix = "Corner";
@@ -28,6 +31,11 @@ public static class FigureCtrl
         get { return figuresAreWalking; }
     }
 
+    /// <summary>
+    /// returns all figures of all players in game
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     private static ArrayList GetFigures(Player player)
     {
         ArrayList result = new ArrayList();
@@ -45,6 +53,11 @@ public static class FigureCtrl
         return result;
     }
 
+    /// <summary>
+    /// returns all players in game
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     public static Player GetPlayer(Figure figure)
     {
         Player result;
@@ -54,12 +67,22 @@ public static class FigureCtrl
         return result;
     }
 
+    /// <summary>
+    /// gets the notification of the touched figure and
+    /// hands it over to the gamectrl
+    /// </summary>
+    /// <param name="figure"></param>
     public static void Notify(Figure figure)
     {
         DeactivateAllFigures(GetPlayer(figure));
         GameCtrl.Notify(figure);
     }
 
+    /// <summary>
+    /// activates all figures on regular or stair field (not in goal or
+    /// at home)
+    /// </summary>
+    /// <param name="player"></param>
     public static void ActivateReleasedFigures(Player player)
     {
         ArrayList figures = GetFiguresOnRegularOrStairField(player);
@@ -67,6 +90,10 @@ public static class FigureCtrl
             ActivateFigure(figure);
     }
 
+    /// <summary>
+    /// activates all figures except from them who are in goal
+    /// </summary>
+    /// <param name="player"></param>
     public static void ActivateAllFigures(Player player)
     {
         ArrayList figures = GetFigures(player);
@@ -75,6 +102,10 @@ public static class FigureCtrl
                 ActivateFigure(figure);
     }
 
+    /// <summary>
+    /// deactivates all figures after one has been touched
+    /// </summary>
+    /// <param name="player"></param>
     public static void DeactivateAllFigures(Player player)
     {
         ArrayList figures = GetFigures(player);
@@ -82,18 +113,31 @@ public static class FigureCtrl
             DeactivateFigure(figure);
     }
 
+    /// <summary>
+    /// activates a figure
+    /// </summary>
+    /// <param name="figure"></param>
     private static void ActivateFigure(Figure figure)
     {
         figure.SetActive(true);
         Debug.Log(figure.name + " activated");
     }
 
+    /// <summary>
+    /// deactivates a figure
+    /// </summary>
+    /// <param name="figure"></param>
     private static void DeactivateFigure(Figure figure)
     {
         figure.SetActive(false);
         Debug.Log(figure.name + " deactivated");
     }
 
+    /// <summary>
+    /// returns all figures that are in goal
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     public static ArrayList GetFiguresOnGoalField(Player player)
     {
         ArrayList figuresOnGoalField = new ArrayList();
@@ -104,6 +148,11 @@ public static class FigureCtrl
         return figuresOnGoalField;
     }
 
+    /// <summary>
+    /// returns all figures that are at home
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     public static ArrayList GetFiguresOnHomeField(Player player)
     {
         ArrayList figuresOnGoalField = new ArrayList();
@@ -114,6 +163,11 @@ public static class FigureCtrl
         return figuresOnGoalField;
     }
 
+    /// <summary>
+    /// returns all figures that are on a regular or stair field
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     public static ArrayList GetFiguresOnRegularOrStairField(Player player)
     {
         ArrayList figuresOnGoalField = new ArrayList();
@@ -125,6 +179,9 @@ public static class FigureCtrl
         return figuresOnGoalField;
     }
 
+    /// <summary>
+    /// Places all figures at the very beginning of the game at their home fields
+    /// </summary>
     public static void PlaceFiguresOnStartPosition()
     {
         if (!GameCtrl.GameIsRunning)
@@ -136,6 +193,10 @@ public static class FigureCtrl
         }
     }
 
+    /// <summary>
+    /// Starts a figure to walk
+    /// </summary>
+    /// <param name="figure"></param>
     public static void FigureStartsWalking(Figure figure)
     {
         if (walkingFigures.Count == 0)
@@ -143,6 +204,10 @@ public static class FigureCtrl
         walkingFigures.Add(figure);
     }
 
+    /// <summary>
+    /// stops a figure to walk
+    /// </summary>
+    /// <param name="figure"></param>
     public static void FigureStopsWalking(Figure figure)
     {
         if (!walkingFigures.Contains(figure))
@@ -155,6 +220,11 @@ public static class FigureCtrl
         }
     }
 
+    /// <summary>
+    /// Initializes the number of figures that are selected in the startmenu
+    /// </summary>
+    /// <param name="players"></param>
+    /// <param name="nofFigures"></param>
     public static void InitializeFigures(ArrayList players, int nofFigures)
     {
         FigureCtrl.nofFigures = nofFigures;
@@ -181,9 +251,12 @@ public static class FigureCtrl
         }
     }
 
+    /// <summary>
+    /// Destroys figure objects
+    /// </summary>
     public static void DestroyFigures()
     {
-        foreach(Figure figure in figures.Keys)
+        foreach (Figure figure in figures.Keys)
         {
             GameObject.Destroy(figure.gameObject);
         }

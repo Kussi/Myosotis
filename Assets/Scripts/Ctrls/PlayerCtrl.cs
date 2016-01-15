@@ -3,9 +3,11 @@ using System.Collections;
 using System.Text;
 using System.Collections.Generic;
 
+/// <summary>
+/// controls the player class
+/// </summary>
 public static class PlayerCtrl
 {
-
     private static readonly Dictionary<string, int> PlayerAngles = new Dictionary<string, int>
     {
         { "red", 180 }, { "yellow", 270 }, { "blue", 0 }, { "green", 90 }
@@ -19,11 +21,20 @@ public static class PlayerCtrl
 
     public static ArrayList players = new ArrayList();
 
+    /// <summary>
+    /// returns all players
+    /// </summary>
+    /// <returns></returns>
     public static ArrayList GetPlayers()
     {
         return players;
     }
 
+    /// <summary>
+    /// returns the players color
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     public static Color GetColor(Player player)
     {
         Color color;
@@ -33,7 +44,7 @@ public static class PlayerCtrl
     }
 
     /// <summary>
-    /// Initializing the given number of Players
+    /// Initializes the given number of Players
     /// </summary>
     /// <param name="nofPlayers">number of players, that will participate the game</param>
     public static void InitializePlayers(Dictionary<string, int> playerColors)
@@ -47,6 +58,12 @@ public static class PlayerCtrl
         Debug.Log(ToString());
     }
 
+    /// <summary>
+    /// Returns the Angle of the players position
+    /// </summary>
+    /// <param name="color"></param>
+    /// <param name="marker"></param>
+    /// <returns></returns>
     private static int GetPlayerAngle(string color, int marker)
     {
         int angle;
@@ -71,9 +88,12 @@ public static class PlayerCtrl
         return result.ToString();
     }
 
+    /// <summary>
+    /// Resets the original Setup
+    /// </summary>
     public static void Reset()
     {
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
             players = new ArrayList();
         }

@@ -1,15 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public static class FileCtrl {
-
-    private static readonly string PlayerdataDirectory = "Playerdata";
-    private static readonly string[] MediaDirectories = new string[] { "Images", "Music", "Texts" };
+public static class FileCtrl
+{
+    private static readonly string PlayerdataDirectory = "Playerdaten";
+    private static readonly string[] MediaDirectories = new string[] { "Bilder", "Musik", "Texte" };
 
     private enum MediaType : int { Images = 0, Music = 1, Texts = 2 }
 
@@ -17,7 +15,7 @@ public static class FileCtrl {
     {
         get
         {
-            return Application.platform == RuntimePlatform.WindowsEditor 
+            return Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.OSXEditor;
         }
     }
@@ -31,23 +29,23 @@ public static class FileCtrl {
         }
     }
 
-	public static ArrayList GetPlayerList()
+    public static ArrayList GetPlayerList()
     {
         String[] dirs = null;
         ArrayList playerNames = new ArrayList();
         string playerdataDir = GetPlayerdataDir();
-        if(playerdataDir != null)
+        if (playerdataDir != null)
         {
             dirs = Directory.GetDirectories(playerdataDir);
-            if(dirs.Length > 0)
+            if (dirs.Length > 0)
             {
                 foreach (String dir in dirs)
                     playerNames.Add(new DirectoryInfo(dir).Name);
                 return playerNames;
             }
-                
+
         }
-        return new ArrayList();  
+        return new ArrayList();
     }
 
     public static FileInfo[] GetCheckedImageFileInfos(string playerName, ArrayList validExtensions)
@@ -68,14 +66,14 @@ public static class FileCtrl {
     private static FileInfo[] GetCheckedFileInfos(string playerName, MediaType type, ArrayList validExtensions)
     {
         string personalMediaDir = GetPersonalMediaDir(playerName, type);
-        if(personalMediaDir != null)
+        if (personalMediaDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(personalMediaDir);
             FileInfo[] fileInfos = directoryInfo.GetFiles()
                 .Where(f => IsValidFileType(f.Name, validExtensions))
                 .ToArray();
             if (fileInfos.Length > 0)
-                return fileInfos;   
+                return fileInfos;
             return null;
         }
         return null;
@@ -94,13 +92,13 @@ public static class FileCtrl {
     private static string GetPersonalPlayerdataDir(string playerName)
     {
         string PlayerdataDir = GetPlayerdataDir();
-        if(PlayerdataDir != null)
+        if (PlayerdataDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(PlayerdataDir);
             bool containsPersonalPlayerdataDir = directoryInfo.GetDirectories()
             .Any(d => d.Name.Equals(playerName));
             if (containsPersonalPlayerdataDir)
-                return PlayerdataDir + playerName + "/";   
+                return PlayerdataDir + playerName + "/";
             return null;
         }
         return null;
@@ -109,13 +107,13 @@ public static class FileCtrl {
     private static string GetPersonalMediaDir(string playerName, MediaType type)
     {
         string personalPlayerdataDir = GetPersonalPlayerdataDir(playerName);
-        if(personalPlayerdataDir != null)
+        if (personalPlayerdataDir != null)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(personalPlayerdataDir);
             bool containsPersonalMediaDir = directoryInfo.GetDirectories()
             .Any(d => d.Name.Equals(MediaDirectories[(int)type]));
             if (containsPersonalMediaDir)
-                return personalPlayerdataDir + MediaDirectories[(int)type] + "/";             
+                return personalPlayerdataDir + MediaDirectories[(int)type] + "/";
             return null;
         }
         return null;

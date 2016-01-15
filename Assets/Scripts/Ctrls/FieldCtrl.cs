@@ -4,6 +4,9 @@ using System;
 using System.Collections;
 using System.Text;
 
+/// <summary>
+/// Responsible for control of the fields
+/// </summary>
 public static class FieldCtrl
 {
     private static readonly string RegularFieldPrefix = "Field";
@@ -127,6 +130,11 @@ public static class FieldCtrl
         return true;
     }
 
+    /// <summary>
+    /// returns the fieldindex of the next regular field
+    /// </summary>
+    /// <param name="actualFieldIndex"></param>
+    /// <returns></returns>
     public static int GetNextRegularFieldIndex(int actualFieldIndex)
     {
         if (actualFieldIndex < 0 || actualFieldIndex >= NofRegularFields)
@@ -147,6 +155,12 @@ public static class FieldCtrl
         return nextFieldIndex;
     }
 
+    /// <summary>
+    /// returns a figure, if there is one to send home. Otherwise null is returned
+    /// </summary>
+    /// <param name="field"></param>
+    /// <param name="arrivingFigure"></param>
+    /// <returns></returns>
     private static Figure GetFigureToSendHome(RegularField field, Figure arrivingFigure)
     {
         return field.GetFigureToSendHome(arrivingFigure);
@@ -172,6 +186,12 @@ public static class FieldCtrl
         return GetPlayerField(figure, 3);
     }
 
+    /// <summary>
+    /// gets the index of one of the predefined special player fields
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     private static int GetPlayerField(Figure figure, int index)
     {
         Player player = FigureCtrl.GetPlayer(figure);
@@ -236,12 +256,21 @@ public static class FieldCtrl
         MoveFigureHome(figure);
     }
 
+    /// <summary>
+    /// Performes the smooth movement of a figure
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="fieldIndex"></param>
     private static void MoveFigureRegular(Figure figure, int fieldIndex)
     {
         fields[figure.Field].RemoveFigure(figure);
         fields[fieldIndex].PlaceFigure(figure);
     }
 
+    /// <summary>
+    /// performs the smooth movement of a figure home
+    /// </summary>
+    /// <param name="figure"></param>
     public static void MoveFigureHome(Figure figure)
     {
         if (!IsRegularField(figure.Field))
@@ -250,6 +279,11 @@ public static class FieldCtrl
         fields[GetHomeField(figure)].PlaceFigure(figure);
     }
 
+    /// <summary>
+    /// places all figures at the very beginning of the game without moving them
+    /// smoothly
+    /// </summary>
+    /// <param name="figure"></param>
     public static void InitiallyPlaceFigure(Figure figure)
     {
         if (GameCtrl.GameIsRunning)
@@ -259,6 +293,11 @@ public static class FieldCtrl
         field.InitiallyPlaceFigure(figure);
     }
 
+    /// <summary>
+    /// set a field as a single event trigger and change its appearance
+    /// </summary>
+    /// <param name="field"></param>
+    /// <param name="value"></param>
     private static void SetAsSingleEventTrigger(GameFieldBase field, bool value)
     {
         field.IsSingleEventTrigger = value;
@@ -301,6 +340,11 @@ public static class FieldCtrl
         }
     }
 
+    /// <summary>
+    /// set a field as a multi event trigger and change its appearance
+    /// </summary>
+    /// <param name="field"></param>
+    /// <param name="value"></param>
     private static void SetAsMultiEventTrigger(GameFieldBase field, bool value)
     {
         field.IsMultiEventTrigger = value;
@@ -324,6 +368,9 @@ public static class FieldCtrl
         }
     }
 
+    /// <summary>
+    /// set all predefined fieldtriggers
+    /// </summary>
     public static void SetEventTriggers()
     {
         if (ImageCtrl.IsAvailable)
@@ -337,6 +384,9 @@ public static class FieldCtrl
         }
     }
 
+    /// <summary>
+    /// initialize all fields
+    /// </summary>
     public static void InitializeFields()
     {
         fields = new Dictionary<int, GameFieldBase>();
@@ -381,6 +431,9 @@ public static class FieldCtrl
         fields[GoalFieldIndex].Index = GoalFieldIndex;
     }
 
+    /// <summary>
+    /// destroy all fields
+    /// </summary>
     public static void DestroyFields()
     {
         foreach (GameFieldBase field in fields.Values)
@@ -397,11 +450,11 @@ public static class FieldCtrl
                 else if (regularField.IsBench)
                     material.Append(BenchMaterial);
                 else material.Append(RegularMaterial);
-                regularField.gameObject.GetComponentInChildren<MeshRenderer>().material = 
+                regularField.gameObject.GetComponentInChildren<MeshRenderer>().material =
                     Resources.Load(material.ToString(), typeof(Material)) as Material;
                 Debug.Log(material.ToString());
                 GameObject.Destroy(field.gameObject.GetComponent<RegularField>());
-            }   
+            }
             else if (homeField != null)
                 GameObject.Destroy(field.gameObject.GetComponent<HomeField>());
             else if (goalField != null)

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
+/// <summary>
+/// Activates and deactivates the touchinput according to the
+/// visibility of the menus
+/// </summary>
 public static class TouchInputCtrl {
 
 	private static Camera camera = Camera.main;

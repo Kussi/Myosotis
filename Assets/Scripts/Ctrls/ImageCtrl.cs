@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -23,10 +22,13 @@ public class ImageCtrl
         get { return isAvailable; }
     }
 
+    /// <summary>
+    /// Resets the original setup
+    /// </summary>
     public static void Reset()
     {
         isAvailable = false;
-        foreach(Player player in images.Keys)
+        foreach (Player player in images.Keys)
         {
             RawImage playerImage = GetPlayerImage(player).GetComponent<RawImage>();
             Color color = playerImage.color;
@@ -43,6 +45,10 @@ public class ImageCtrl
         textures = null;
     }
 
+    /// <summary>
+    /// starts the image download via imagedownloader class
+    /// </summary>
+    /// <param name="players"></param>
     public static void InitializeImages(ArrayList players)
     {
         ImageCtrl.players = players;
@@ -52,6 +58,9 @@ public class ImageCtrl
         imageDownloaderObject.AddComponent<ImageDownloader>();
     }
 
+    /// <summary>
+    /// sets up all image objects and fills them with the start image
+    /// </summary>
     public static void SetupImages()
     {
         foreach (Player player in players)
@@ -65,6 +74,10 @@ public class ImageCtrl
         }
     }
 
+    /// <summary>
+    /// sets the personalized images as available, which enables the event fields
+    /// </summary>
+    /// <param name="textures"></param>
     public static void SetAvailable(ArrayList textures)
     {
         ImageCtrl.textures = textures;
@@ -72,20 +85,33 @@ public class ImageCtrl
         PersonalizationCtrl.Notify(typeof(ImageCtrl));
     }
 
+    /// <summary>
+    /// Sets an image of a player
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="newImage"></param>
     public static void SetImage(Player player, Texture newImage)
-    { 
+    {
         Image image = GetPlayerImage(player);
         image.SetImage(newImage);
         RotateImage(player, image.gameObject);
         FitImageIntoFrame(player, image.gameObject);
     }
 
+    /// <summary>
+    /// removes the image of a player
+    /// </summary>
+    /// <param name="player"></param>
     private static void RemoveImage(Player player)
     {
         Image image = GetPlayerImage(player);
         image.SetImage(null);
     }
 
+    /// <summary>
+    /// sets the players image to the start image
+    /// </summary>
+    /// <param name="player"></param>
     private static void SetupInitialAppearance(Player player)
     {
         Texture image = Resources.Load(WelcomeImage) as Texture;
@@ -98,6 +124,11 @@ public class ImageCtrl
         }
     }
 
+    /// <summary>
+    /// returns the players image
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     private static Image GetPlayerImage(Player player)
     {
         Image image;
@@ -106,6 +137,11 @@ public class ImageCtrl
         return image;
     }
 
+    /// <summary>
+    /// changes the pictures size to fit into the frame
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="image"></param>
     private static void FitImageIntoFrame(Player player, GameObject image)
     {
         Rect mask = image.transform.parent.GetComponent<RectTransform>().rect;
@@ -117,7 +153,7 @@ public class ImageCtrl
         float pictureRatio = pictureWidth / pictureHeight;
         float newPictureWidth, newPictureHeight;
 
-        if(IsWidePictureFrame(player))
+        if (IsWidePictureFrame(player))
         {
             float temp = maskWidth;
             maskWidth = maskHeight;
@@ -147,6 +183,11 @@ public class ImageCtrl
         image.GetComponent<RectTransform>().sizeDelta = new Vector2(newPictureWidth, newPictureHeight);
     }
 
+    /// <summary>
+    /// rotates the image acoording to the players angle
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="image"></param>
     private static void RotateImage(Player player, GameObject image)
     {
         int rotationAngle = player.PlayerAngle;
@@ -155,11 +196,20 @@ public class ImageCtrl
         image.GetComponent<RectTransform>().eulerAngles = rotation;
     }
 
+    /// <summary>
+    /// checks whether the picture is wide (width > height) or not
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     private static bool IsWidePictureFrame(Player player)
     {
         return player.PlayerAngle % 180 != 0;
     }
 
+    /// <summary>
+    /// changes the image of a player to a random one of the personalized directory
+    /// </summary>
+    /// <param name="player"></param>
     public static void ChangeImageRandomly(Player player)
     {
         if (IsAvailable)
@@ -173,14 +223,14 @@ public class ImageCtrl
         }
     }
 
+    /// <summary>
+    /// changes the images of all players randomly
+    /// </summary>
     public static void ChangeAllImages()
     {
         if (notYetDisplayedImages.Count == 0)
             notYetDisplayedImages.AddRange(textures);
-        int randomIndex = Random.Range(0, notYetDisplayedImages.Count);
-        Texture image = (Texture)notYetDisplayedImages[randomIndex];
-        foreach(Player player in PlayerCtrl.players)
-            SetImage(player, image);
-        notYetDisplayedImages.Remove(image);
+        foreach (Player player in PlayerCtrl.players)
+            ChangeImageRandomly(player);
     }
 }

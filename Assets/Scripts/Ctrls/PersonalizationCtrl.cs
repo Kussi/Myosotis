@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Responsible for all of the personalized Ctrls. Sums up all of these
+/// </summary>
 public static class PersonalizationCtrl {
 
     private static string playerName;
@@ -12,6 +15,9 @@ public static class PersonalizationCtrl {
         get { return playerName; }
     }
 
+    /// <summary>
+    /// Resets the original setup
+    /// </summary>
     public static void Reset()
     {
         MusicCtrl.Reset();
@@ -20,6 +26,10 @@ public static class PersonalizationCtrl {
         SoundCtrl.Reset();
     }
 
+    /// <summary>
+    /// initialized personalization
+    /// </summary>
+    /// <param name="playerName"></param>
     public static void InitializePersonalization(string playerName)
     {
         PersonalizationCtrl.playerName = playerName;
@@ -30,6 +40,10 @@ public static class PersonalizationCtrl {
         SoundCtrl.InitializeSounds();
     }
 
+    /// <summary>
+    /// checks whether the personalized media are ready and if yes, hides the startmenu / splashscreen
+    /// </summary>
+    /// <param name="type"></param>
     public static void Notify(System.Type type)
     {
         if (type == typeof(ImageCtrl))

@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 using System;
 
+/// <summary>
+/// controls the personalized text object
+/// </summary>
 public static class TextCtrl
 {
     private static string ParentObject = "TextSystem";
@@ -15,6 +18,9 @@ public static class TextCtrl
 
     private static bool isActive = false;
 
+    /// <summary>
+    /// resets the original setup
+    /// </summary>
     public static void Reset()
     {
         texts = new ArrayList();
@@ -27,6 +33,10 @@ public static class TextCtrl
         }
     }
 
+    /// <summary>
+    /// initializes the texts if there are any
+    /// </summary>
+    /// <param name="playerName"></param>
     public static void InitializeTexts(string playerName)
     {
         FileInfo[] textFiles = FileCtrl.GetCheckedTextFileInfos(playerName, ValidExtensions);
@@ -38,9 +48,13 @@ public static class TextCtrl
         }
     }
 
+    /// <summary>
+    /// fetches a text randomly and displays it
+    /// </summary>
+    /// <param name="figure"></param>
     public static void ShowRandomText(Figure figure)
     {
-        if(isActive)
+        if (isActive)
         {
             if (notYetDisplayedTexts.Count == 0)
                 notYetDisplayedTexts.AddRange(texts);
@@ -51,6 +65,11 @@ public static class TextCtrl
         }
     }
 
+    /// <summary>
+    /// displays a text positionned next to the figure
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <param name="text"></param>
     private static void ShowText(Figure figure, string text)
     {
         GameObject textObject = (GameObject)GameObject.Instantiate(Resources.Load(TextPrefab, typeof(GameObject)));
@@ -58,6 +77,11 @@ public static class TextCtrl
         textObject.GetComponentInChildren<Text>().SetFigure(figure);
     }
 
+    /// <summary>
+    /// returns the position of the figure
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     private static Vector2 GetPosition(Figure figure)
     {
         Vector3 position = Camera.main.WorldToViewportPoint(figure.transform.position);
@@ -67,6 +91,10 @@ public static class TextCtrl
         return position;
     }
 
+    /// <summary>
+    /// adds all found texts in the list
+    /// </summary>
+    /// <param name="textFiles"></param>
     private static void AddTexts(FileInfo[] textFiles)
     {
         foreach (FileInfo textFile in textFiles)
