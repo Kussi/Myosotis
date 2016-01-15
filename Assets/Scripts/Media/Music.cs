@@ -146,7 +146,7 @@ public class Music : MonoBehaviour
     /// <param name="volume"></param>
     public void ChangeVolume(float volume)
     {
-        AudioListener.volume = volume;
+        source.volume = volume;
     }
 
     /// <summary>
