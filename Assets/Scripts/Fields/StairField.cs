@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Representation of a stair field
+/// </summary>
 public class StairField : GameFieldBase
 {
     private readonly int figureCapacity = 4;

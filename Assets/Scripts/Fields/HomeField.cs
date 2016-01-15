@@ -1,6 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Representation of a homefield
+/// </summary>
 public class HomeField : GameFieldBase
 {
     private readonly int figureCapacity = 4;
@@ -10,19 +12,27 @@ public class HomeField : GameFieldBase
     /// <summary>
     /// Use this for initialization
     /// </summary>
-    void Awake ()
+    void Awake()
     {
         fieldPositions = new FieldPosition[figureCapacity];
         InitializeFieldPositions(positions);
     }
 
+    /// <summary>
+    /// Starts the figure to walk to position
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="figure"></param>
     protected override void MoveFigureObject(FieldPosition position, Figure figure)
     {
         Debug.Log("Move Figure Home");
-        //figure.transform.position = position.transform.position;
         figure.StartWalking(position.transform);
     }
 
+    /// <summary>
+    /// places a figure at the very beginning of the game (without moving the smoothly)
+    /// </summary>
+    /// <param name="figure"></param>
     public void InitiallyPlaceFigure(Figure figure)
     {
         if (GameCtrl.GameIsRunning) throw new InvalidGameStateException();

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Representation of a regular (regular, bend or bench) field
+/// </summary>
 public class RegularField : GameFieldBase
 {
-
     private readonly int figureCapacity = 2;
     private readonly string parentBenchObject = "BenchFields";
     private readonly string parentBendObject = "BendFields";
@@ -43,7 +44,7 @@ public class RegularField : GameFieldBase
             if (isBend)
                 return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied;
             else
-                return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied 
+                return !fieldPositions[0].IsOccupied && !fieldPositions[1].IsOccupied
                     && !fieldPositions[2].IsOccupied;
         }
     }
@@ -81,7 +82,8 @@ public class RegularField : GameFieldBase
     }
 
     /// <summary>
-    /// Removes the Figure from its actual field an places it here
+    /// Places a figure at this field (only references, not the object itself. this
+    /// is implemented in figure and figureCtrl classes.)
     /// </summary>
     /// <param name="figure">Figure that has to be moved</param>
     public override void PlaceFigure(Figure figure)
@@ -98,14 +100,14 @@ public class RegularField : GameFieldBase
                     break;
                 }
             }
-            if(fieldPosition == null)
+            if (fieldPosition == null)
                 throw new InvalidGameStateException();
         }
         else
         {
             if (IsFullyEmpty)
                 fieldPosition = fieldPositions[0];
-            else if(fieldPositions[0].IsOccupied)
+            else if (fieldPositions[0].IsOccupied)
             {
                 ChangePosition(fieldPositions[0], fieldPositions[1]);
                 fieldPosition = fieldPositions[2];
@@ -118,6 +120,11 @@ public class RegularField : GameFieldBase
         MoveFigureObject(fieldPosition, figure);
     }
 
+    /// <summary>
+    /// Return a gamefigure if there is one to send home. otherwise null is returned
+    /// </summary>
+    /// <param name="figure"></param>
+    /// <returns></returns>
     public Figure GetFigureToSendHome(Figure figure)
     {
         if (isBench) return null;
@@ -129,6 +136,11 @@ public class RegularField : GameFieldBase
         return figureToSendHome;
     }
 
+    /// <summary>
+    /// changes the position from a figure on the same field
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
     private void ChangePosition(FieldPosition from, FieldPosition to)
     {
         Figure figure = from.Figure;

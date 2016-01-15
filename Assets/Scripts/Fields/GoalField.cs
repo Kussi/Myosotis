@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Representation of the goalfield
+/// </summary>
 public class GoalField : GameFieldBase
 {
     private readonly int figureCapacity = 16;
@@ -35,6 +37,11 @@ public class GoalField : GameFieldBase
         }
     }
 
+    /// <summary>
+    /// Places a figure at this field (only references, not the object itself. this
+    /// is implemented in figure and figureCtrl classes.)
+    /// </summary>
+    /// <param name="figure">Figure that has to be moved</param>
     public override void PlaceFigure(Figure figure)
     {
         FieldPosition[] fieldPositions;

@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-public class FieldPosition : MonoBehaviour {
-
+/// <summary>
+/// Represents a position on a gamefield
+/// </summary>
+public class FieldPosition : MonoBehaviour
+{
     private Figure figure;
 
     public bool IsOccupied

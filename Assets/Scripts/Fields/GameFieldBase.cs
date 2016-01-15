@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// parental class of all game fields
+/// </summary>
 public abstract class GameFieldBase : MonoBehaviour
 {
     protected static readonly string PositionPrefix = "Position";
